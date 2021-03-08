@@ -21,14 +21,15 @@
 
 The aim of the project is to develop a smartphone application which will collect, store and transmit the data from all available sensors of a given smartphone (e.g. accelerometers, thermometer, gyroscope, barometer, camera, microphone etc). Although similar apps exist, none of them provides the option to log any sensor, mostly the camera and/or microphone are missing and need seperate apps to be logged.
 
-The app needs to be compatible with different smartphone operating systems (Android, iOS) and versions. The app needs to provide the following additional features: 
-
-&nbsp; i) select the sampling rate of the data logging per sensor 
-&nbsp; ii) log multiple sensors simultaneously 
-&nbsp; iii) automatically store data on cloud
-
-Additionally, the app should include an annotation feature. This feature will permit to define a data tag while the logging is running (e.g. biking if the person is biking during the data log). More than one tag should be able to be assigned during the course of the registration without interrupting the process. Such a feature does not exist in available apps and is crucial for facilitating annotated data collection.
-
 ## Project Objectives
 
+The app needs to be compatible with different smartphone operating systems (Android, iOS) and versions. The app needs to provide the following additional features:  
+&nbsp; i) select the sampling rate of the data logging per sensor  
+&nbsp; ii) log multiple sensors simultaneously  
+&nbsp; iii) automatically store data on cloud/be able to transfer the data to a computer  
+Additionally, the app should include an annotation feature. This feature will permit to define a data tag while the logging is running (e.g. biking if the person is biking during the data log). More than one tag should be able to be assigned during the course of the registration without interrupting the process. Such a feature does not exist in available apps and is crucial for facilitating annotated data collection.
+
+The outcome of this project is the development of a consistent tool, accessible to everyone, to harvest the rich data available in modern smartphones with the aim to enable the design and development of machine learning (ML) applications. In particular, we envision to make use of this app in order to launch tutorials and tasks to enhance ML courses in the school of Comptuting with practical ML development exercises and projects. Moreover, we expect that this app will be also useful for ML training and research purposes for Honours and HDR students.
+
 ## Stakeholders
+
