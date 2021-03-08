@@ -20,7 +20,11 @@
 ## Project Background
 
 The aim of the project is to develop a smartphone application which will collect, store and transmit the data from all available sensors of a given smartphone (e.g. accelerometers, thermometer, gyroscope, barometer, camera, microphone etc). Although similar apps exist, none of them provides the option to log any sensor, mostly the camera and/or microphone are missing and need seperate apps to be logged.
-The app needs to be compatible with different smartphone operating systems (Android, iOS) and versions. The app needs to provide the following additional features: i) select the sampling rate of the data logging per sensor, ii) log multiple sensors simultaneously, iii) automatically store data on cloud. Additionally, the app should include an annotation feature. This feature will permit to define a data tag while the logging is running (e.g. biking if the person is biking during the data log). More than one tags should be able to be assigned during the course of the registration without interrupting the process. Such a feature does not exist in available apps and is crucial for facilitating annotated data collection.
+The app needs to be compatible with different smartphone operating systems (Android, iOS) and versions. The app needs to provide the following additional features: 
+i) select the sampling rate of the data logging per sensor 
+ii) log multiple sensors simultaneously 
+iii) automatically store data on cloud
+Additionally, the app should include an annotation feature. This feature will permit to define a data tag while the logging is running (e.g. biking if the person is biking during the data log). More than one tag should be able to be assigned during the course of the registration without interrupting the process. Such a feature does not exist in available apps and is crucial for facilitating annotated data collection.
 
 ## Project Objectives
 
