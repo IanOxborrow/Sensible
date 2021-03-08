@@ -2,11 +2,11 @@
 
 ## Team Roles
 
+* Ryan Turner (u6040885) Project Manager
 * Madeleine Carden (u5849803) Client Liason 
-* Ryan Turner (u6040885) Team Leader
 * King Ho Cheung (u6181123) Presentation Manager, iOS frontend developer
 * Ian Oxborrow (u6668026) Documentation Manager
-* Chathura Galappaththi (u6947345) Android front end developer
+* Chathura Galappaththi (u6947345) Android frontend developer
 * Tristan Smith (u6949592) Backend Developer
 
 \* Team roles are subject to change as the project development progresses
