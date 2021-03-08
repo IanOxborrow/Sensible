@@ -32,4 +32,12 @@ Additionally, the app should include an annotation feature. This feature will pe
 The outcome of this project is the development of a consistent tool, accessible to everyone, to harvest the rich data available in modern smartphones with the aim to enable the design and development of machine learning (ML) applications. In particular, we envision to make use of this app in order to launch tutorials and tasks to enhance ML courses in the school of Comptuting with practical ML development exercises and projects. Moreover, we expect that this app will be also useful for ML training and research purposes for Honours and HDR students.
 
 ## Stakeholders
+Primary project owner: DR ELENI DASKALAKI
 
+Other project owners: CHIRATH HETTIARACHCHI, SANDARU SENEVIRATNE, ROBIN VLIEGER
+
+Project team: IAN OXBORROW, MADELEINE CARDEN, MICHAEL CHEUNG, RYAN TURNER, TRISTAN SMITH, CHATHURA GALAPPATHTHI
+
+Examiner: PRISCILLA KAN JOHN
+
+Tutor: ANDREA PARSONS
