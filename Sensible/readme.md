@@ -1,6 +1,6 @@
   Run instructions for iOS:
   * cd "sensible-techlauncher/Sensible" && npx react-native run-ios
-    - or -
+    \- or -
   * Open Sensible/ios/Sensible.xcworkspace in Xcode or run "xed -b ios"
   * Hit the Run button
 
