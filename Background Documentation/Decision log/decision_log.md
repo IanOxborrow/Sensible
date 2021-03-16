@@ -1,20 +1,20 @@
 # Decision Log
 
-This decision log is ordered most recent at the top, to least recent at the bottom.
+This decision log is ordered most recent at the top, to least recent at the bottom. \n
 
-Decision: What sensors should we prioritise?
-Result: Stage 1 - Accelerometer, Barometer, Magnometer and Gyroscope
-        Stage 2 - Camera, Microphone, GPS Location, Wifi Signal Strength, User Proximity
-        Stage 3 - Possibles: Temperature, Humidity, Ambient Light
-Decision by: Sensible team only
+Decision: What sensors should we prioritise? \n
+Result: Stage 1 - Accelerometer, Barometer, Magnometer and Gyroscope \n
+        Stage 2 - Camera, Microphone, GPS Location, Wifi Signal Strength, User Proximity \n
+        Stage 3 - Possibles: Temperature, Humidity, Ambient Light \n
+Decision by: Sensible team only \n
 
-Decision: What tools should we use to develop the project?
-Result: draw.io, Miro, Gitlab, Word and Excel
-Decision by: Sensible team only
+Decision: What tools should we use to develop the project? \n
+Result: draw.io, Miro, Gitlab, Word and Excel \n
+Decision by: Sensible team only \n
 
 
-Decision: Which open source license should we use?
-Result: BDS3
+Decision: Which open source license should we use? \n
+Result: BDS3 \n
 Decision by: Sensible team only
 
 
