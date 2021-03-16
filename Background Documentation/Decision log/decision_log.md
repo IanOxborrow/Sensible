@@ -3,9 +3,10 @@
 This decision log is ordered most recent at the top, to least recent at the bottom. <br />
 
 Decision: What sensors should we prioritise? <br />
-Result: Stage 1 - Accelerometer, Barometer, Magnometer and Gyroscope <br />
-        Stage 2 - Camera, Microphone, GPS Location, Wifi Signal Strength, User Proximity <br />
-        Stage 3 - Possibles: Temperature, Humidity, Ambient Light <br />
+Result: 
+* Stage 1 - Accelerometer, Barometer, Magnometer and Gyroscope <br />
+* Stage 2 - Camera, Microphone, GPS Location, Wifi Signal Strength, User Proximity <br />
+* Stage 3 - Possibles: Temperature, Humidity, Ambient Light <br />
 Decision by: Sensible team only <br />
 
 Decision: What tools should we use to develop the project? <br />
