@@ -7,6 +7,7 @@ Result:
 * Stage 1 - Accelerometer, Barometer, Magnometer and Gyroscope <br />
 * Stage 2 - Camera, Microphone, GPS Location, Wifi Signal Strength, User Proximity <br />
 * Stage 3 - Possibles: Temperature, Humidity, Ambient Light <br />
+
 Decision by: Sensible team only <br />
 
 Decision: What tools should we use to develop the project? <br />
