@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360" height="745" viewBox="0 0 360 745">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Mask" width="360" height="56" fill="#6200ee"/>
+    </clipPath>
+    <filter id="Rectangle" x="7.5" y="195.5" width="143" height="160" filterUnits="userSpaceOnUse">
+      <feOffset dy="5" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feFlood flood-opacity="0.2"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-2" x="-6" y="180" width="170" height="187" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="7" result="blur-2"/>
+      <feFlood flood-opacity="0.122"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-3" x="0" y="191" width="158" height="175" filterUnits="userSpaceOnUse">
+      <feOffset dy="8" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="5" result="blur-3"/>
+      <feFlood flood-opacity="0.141"/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-4" x="7.5" y="239.5" width="143" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="5" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur-4"/>
+      <feFlood flood-opacity="0.2"/>
+      <feComposite operator="in" in2="blur-4"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-5" x="-6" y="224" width="170" height="146" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="7" result="blur-5"/>
+      <feFlood flood-opacity="0.122"/>
+      <feComposite operator="in" in2="blur-5"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-6" x="0" y="235" width="158" height="134" filterUnits="userSpaceOnUse">
+      <feOffset dy="8" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="5" result="blur-6"/>
+      <feFlood flood-opacity="0.141"/>
+      <feComposite operator="in" in2="blur-6"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <clipPath id="clip-path-2">
+      <rect width="128" height="94" fill="none"/>
+    </clipPath>
+    <filter id="Rectangle-7" x="166" y="674" width="184" height="55" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-7"/>
+      <feFlood flood-opacity="0.2"/>
+      <feComposite operator="in" in2="blur-7"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-8" x="157" y="664" width="202" height="73" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="5" result="blur-8"/>
+      <feFlood flood-opacity="0.122"/>
+      <feComposite operator="in" in2="blur-8"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle-9" x="164.5" y="674.5" width="187" height="58" filterUnits="userSpaceOnUse">
+      <feOffset dy="4" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur-9"/>
+      <feFlood flood-opacity="0.141"/>
+      <feComposite operator="in" in2="blur-9"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <clipPath id="clip-path-3">
+      <rect id="FAB_Mask" data-name="FAB Mask" width="172" height="43" rx="21.5" fill="#6200ee"/>
+    </clipPath>
+    <clipPath id="clip-Home_Screen_1_1">
+      <rect width="360" height="745"/>
+    </clipPath>
+  </defs>
+  <g id="Home_Screen_1_1" data-name="Home Screen 1 – 1" clip-path="url(#clip-Home_Screen_1_1)">
+    <rect width="360" height="745" fill="#fff"/>
+    <g id="Group_3" data-name="Group 3">
+      <g id="App_bar_1._Top_A._Standard_a._Flat" data-name="App bar / 1. Top /A. Standard/a. Flat" transform="translate(-60 -290)">
+        <g id="Light_App_bar_1._Top_A._Standard_a._Flat" data-name="Light 🌕/ App bar / 1. Top / A. Standard / a. Flat" transform="translate(60 314)">
+          <g id="Light_Elevation_00dp" data-name="Light 🌕/Elevation/00dp">
+            <rect id="Rectangle-10" data-name="Rectangle" width="360" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+          </g>
+          <rect id="Primary" width="360" height="56" fill="#6200ee"/>
+          <g id="Mask_Group" data-name="Mask Group" clip-path="url(#clip-path)">
+            <text id="_Page_Title" data-name="✏️ Page Title" transform="translate(16 14)" fill="#fff" font-size="20" font-family="Roboto-Medium, Roboto" font-weight="500" letter-spacing="0.008em"><tspan x="0" y="21">New Recording</tspan></text>
+            <g id="_Leading_Icon_l_Use_High_Emphasis" data-name="📍 Leading Icon l Use High Emphasis" transform="translate(16 16)">
+              <rect id="Boundary" width="24" height="24" fill="none"/>
+            </g>
+            <g id="_Trailing_icon_1" data-name="📍Trailing icon 1" transform="translate(224 16)">
+              <rect id="Boundary-2" data-name="Boundary" width="24" height="24" fill="none"/>
+            </g>
+          </g>
+        </g>
+        <g id="ΩElements_System_bar_Primary" data-name="ΩElements/System bar/Primary" transform="translate(60 290)">
+          <rect id="Rectangle-11" data-name="Rectangle" width="360" height="24" fill="#5600e8"/>
+          <path id="Mask-2" data-name="Mask" d="M34,0H46L40,10ZM18,5a5,5,0,1,1,5,5A5,5,0,0,1,18,5ZM0,10V0H10V10Z" transform="translate(306 7)" fill="rgba(255,255,255,0.38)"/>
+        </g>
+      </g>
+    </g>
+    <g id="icon_navigation_close_24px" data-name="icon/navigation/close_24px" transform="translate(323 40)">
+      <rect id="Boundary-3" data-name="Boundary" width="24" height="24" fill="none"/>
+      <path id="_Color" data-name=" ↳Color" d="M14,1.41,12.59,0,7,5.59,1.41,0,0,1.41,5.59,7,0,12.59,1.41,14,7,8.41,12.59,14,14,12.59,8.41,7Z" transform="translate(5 5)" fill="#fff"/>
+    </g>
+    <g id="Light_Menus_2_States_Exposed_Dropdown_Above" data-name="Light 🌕/ Menus/(2 States) Exposed Dropdown/ Above" transform="translate(21 151)">
+      <g id="Light_Lists_Single-line_Body_2_w_right_icon" data-name="Light 🌕/ Lists/Single-line/Body 2 w/ right icon">
+        <g id="icon_navigation_arrow_drop_down_24px" data-name="icon/navigation/arrow_drop_down_24px" transform="translate(92)">
+          <rect id="Boundary-4" data-name="Boundary" width="24" height="24" fill="none"/>
+          <path id="_Color-2" data-name=" ↳Color" d="M0,0,5,5l5-5Z" transform="translate(7 10)"/>
+        </g>
+        <text id="_Subtitle_1" data-name="✏️ Subtitle 1" transform="translate(0 17)" fill="rgba(0,0,0,0.87)" font-size="14" font-family="Roboto-Regular, Roboto" letter-spacing="0.018em"><tspan x="0" y="0">Thermomoter</tspan></text>
+      </g>
+    </g>
+    <text id="Sensors" transform="translate(15 96)" fill="rgba(0,0,0,0.87)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="17">Sensors</tspan></text>
+    <text id="Labels" transform="translate(15 368)" fill="rgba(0,0,0,0.87)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="17">Labels</tspan></text>
+    <g id="Light_Menus_2_States_Exposed_Dropdown_Above-2" data-name="Light 🌕/ Menus/(2 States) Exposed Dropdown/ Above" transform="translate(15 198)">
+      <g id="Light_Elevation_00dp-2" data-name="Light 🌕/Elevation/00dp">
+        <g id="Shadow">
+          <g transform="matrix(1, 0, 0, 1, -15, -198)" filter="url(#Rectangle)" style="mix-blend-mode: multiply;isolation: isolate">
+            <rect id="Rectangle-12" data-name="Rectangle" width="128" height="145" rx="4" transform="translate(15 198)" fill="#fff"/>
+          </g>
+          <g transform="matrix(1, 0, 0, 1, -15, -198)" filter="url(#Rectangle-2)" style="mix-blend-mode: multiply;isolation: isolate">
+            <rect id="Rectangle-13" data-name="Rectangle" width="128" height="145" rx="4" transform="translate(15 198)" fill="#fff"/>
+          </g>
+          <g transform="matrix(1, 0, 0, 1, -15, -198)" filter="url(#Rectangle-3)" style="mix-blend-mode: multiply;isolation: isolate">
+            <rect id="Rectangle-14" data-name="Rectangle" width="128" height="145" rx="4" transform="translate(15 198)" fill="#fff"/>
+          </g>
+        </g>
+      </g>
+      <rect id="Rectangle-15" data-name="Rectangle" width="128" height="148" rx="4" fill="#fff"/>
+      <g id="Light_Lists_Single-line_Body_2_w_right_icon-2" data-name="Light 🌕/ Lists/Single-line/Body 2 w/ right icon" transform="translate(16 12)">
+        <g id="icon_navigation_arrow_drop_down_24px-2" data-name="icon/navigation/arrow_drop_down_24px" transform="translate(80)">
+          <rect id="Boundary-5" data-name="Boundary" width="24" height="24" fill="none"/>
+          <path id="_Color-3" data-name=" ↳Color" d="M0,0,5,5l5-5Z" transform="translate(7 10)"/>
+        </g>
+        <text id="_Subtitle_1-2" data-name="✏️ Subtitle 1" transform="translate(0 17)" fill="rgba(0,0,0,0.87)" font-size="14" font-family="Roboto-Regular, Roboto" letter-spacing="0.018em"><tspan x="0" y="0">Microphone</tspan></text>
+      </g>
+      <g id="Light_Menus_3_States_1._Large_Scroll_Dropdown" data-name="Light 🌕/ Menus/ (3 States) 1. Large Scroll Dropdown" transform="translate(0 44)">
+        <g id="Light_Elevation_00dp-3" data-name="Light 🌕/Elevation/00dp">
+          <g id="Shadow-2" data-name="Shadow">
+            <g transform="matrix(1, 0, 0, 1, -15, -242)" filter="url(#Rectangle-4)" style="mix-blend-mode: multiply;isolation: isolate">
+              <rect id="Rectangle-16" data-name="Rectangle" width="128" height="104" rx="4" transform="translate(15 242)" fill="#fff"/>
+            </g>
+            <g transform="matrix(1, 0, 0, 1, -15, -242)" filter="url(#Rectangle-5)" style="mix-blend-mode: multiply;isolation: isolate">
+              <rect id="Rectangle-17" data-name="Rectangle" width="128" height="104" rx="4" transform="translate(15 242)" fill="#fff"/>
+            </g>
+            <g transform="matrix(1, 0, 0, 1, -15, -242)" filter="url(#Rectangle-6)" style="mix-blend-mode: multiply;isolation: isolate">
+              <rect id="Rectangle-18" data-name="Rectangle" width="128" height="104" rx="4" transform="translate(15 242)" fill="#fff"/>
+            </g>
+          </g>
+        </g>
+        <rect id="Container" width="128" height="102" rx="4" fill="#fff"/>
+        <g id="Repeat_Grid_3" data-name="Repeat Grid 3" transform="translate(0 8)" clip-path="url(#clip-path-2)">
+          <g transform="translate(-60 -318)">
+            <g id="Light_Lists_Single-line_Body_2_w_right_icon-3" data-name="Light 🌕/ Lists/Single-line/Body 2 w/ right icon" transform="translate(60 318)">
+              <rect id="_Elevation" data-name="☁️ Elevation" width="128" height="32" fill="#fff"/>
+              <rect id="_States" data-name="💡States" width="128" height="32" fill="none"/>
+              <text id="_Subtitle_1-3" data-name="✏️ Subtitle 1" transform="translate(16 21)" fill="rgba(0,0,0,0.87)" font-size="14" font-family="Roboto-Regular, Roboto" letter-spacing="0.018em"><tspan x="0" y="0">Gyroscope</tspan></text>
+            </g>
+          </g>
+          <g transform="translate(-60 -286)">
+            <g id="Light_Lists_Single-line_Body_2_w_right_icon-4" data-name="Light 🌕/ Lists/Single-line/Body 2 w/ right icon" transform="translate(60 318)">
+              <rect id="_Elevation-2" data-name="☁️ Elevation" width="128" height="32" fill="#fff"/>
+              <rect id="_States-2" data-name="💡States" width="128" height="32" fill="none"/>
+              <text id="_Subtitle_1-4" data-name="✏️ Subtitle 1" transform="translate(16 21)" fill="rgba(0,0,0,0.87)" font-size="14" font-family="Roboto-Regular, Roboto" letter-spacing="0.018em"><tspan x="0" y="0">Acceleromoter</tspan></text>
+            </g>
+          </g>
+          <g transform="translate(-60 -254)">
+            <g id="Light_Lists_Single-line_Body_2_w_right_icon-5" data-name="Light 🌕/ Lists/Single-line/Body 2 w/ right icon" transform="translate(60 318)">
+              <rect id="_Elevation-3" data-name="☁️ Elevation" width="128" height="32" fill="#fff"/>
+              <rect id="_States-3" data-name="💡States" width="128" height="32" fill="rgba(0,0,0,0.08)"/>
+              <text id="_Subtitle_1-5" data-name="✏️ Subtitle 1" transform="translate(16 21)" fill="rgba(0,0,0,0.87)" font-size="14" font-family="Roboto-Regular, Roboto" letter-spacing="0.018em"><tspan x="0" y="0">Camera</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+    <g id="Light_Text_fields_1._Filled_18_States_" data-name="Light 🌕/ Text fields/1. Filled/ (18 States)" transform="translate(143 135)">
+      <g id="Light_Elevation_00dp-4" data-name="Light 🌕/Elevation/00dp">
+        <rect id="Rectangle-19" data-name="Rectangle" width="6" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+      </g>
+      <path id="_Container_l_Color" data-name="🔲🎨 Container l Color" d="M4,0H154a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(6)" fill="rgba(0,0,0,0.04)"/>
+      <path id="_States-4" data-name="💡States" d="M3,0H3A3,3,0,0,1,6,3V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V3A3,3,0,0,1,3,0Z" fill="none"/>
+      <rect id="Indicator" width="160" height="1" transform="translate(0 55)" fill="rgba(255,255,255,0.6)"/>
+      <text id="_Input_text" data-name="✏️ Input text" transform="translate(16 33)" fill="rgba(0,0,0,0.6)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="0">35 (recommended)</tspan></text>
+    </g>
+    <g id="icon_navigation_close_24px-2" data-name="icon/navigation/close_24px" transform="translate(323 151)">
+      <rect id="Boundary-6" data-name="Boundary" width="24" height="24" fill="none"/>
+      <path id="_Color-4" data-name=" ↳Color" d="M14,1.41,12.59,0,7,5.59,1.41,0,0,1.41,5.59,7,0,12.59,1.41,14,7,8.41,12.59,14,14,12.59,8.41,7Z" transform="translate(5 5)"/>
+    </g>
+    <g id="Light_Text_fields_1._Filled_18_States_2" data-name="Light 🌕/ Text fields/1. Filled/ (18 States)" transform="translate(16 396)">
+      <g id="Light_Elevation_00dp-5" data-name="Light 🌕/Elevation/00dp">
+        <rect id="Rectangle-20" data-name="Rectangle" width="328" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+      </g>
+      <path id="_Container_l_Color-2" data-name="🔲🎨 Container l Color" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="rgba(0,0,0,0.04)"/>
+      <path id="_States-5" data-name="💡States" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="none"/>
+      <rect id="Indicator-2" data-name="Indicator" width="328" height="1" transform="translate(0 55)" fill="rgba(255,255,255,0.6)"/>
+      <text id="_Input_text-2" data-name="✏️ Input text" transform="translate(16 33)" fill="rgba(0,0,0,0.6)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="0">Label 1</tspan></text>
+      <g id="icon_navigation_close_24px-3" data-name="icon/navigation/close_24px" transform="translate(292 16)">
+        <rect id="Boundary-7" data-name="Boundary" width="24" height="24" fill="none"/>
+        <path id="_Color-5" data-name=" ↳Color" d="M14,1.41,12.59,0,7,5.59,1.41,0,0,1.41,5.59,7,0,12.59,1.41,14,7,8.41,12.59,14,14,12.59,8.41,7Z" transform="translate(5 5)"/>
+      </g>
+    </g>
+    <g id="Light_Text_fields_1._Filled_18_States_3" data-name="Light 🌕/ Text fields/1. Filled/ (18 States)" transform="translate(16 526)">
+      <g id="Light_Elevation_00dp-6" data-name="Light 🌕/Elevation/00dp">
+        <rect id="Rectangle-21" data-name="Rectangle" width="328" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+      </g>
+      <path id="_Container_l_Color-3" data-name="🔲🎨 Container l Color" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="rgba(0,0,0,0.04)"/>
+      <path id="_States-6" data-name="💡States" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="none"/>
+      <rect id="Indicator-3" data-name="Indicator" width="328" height="1" transform="translate(0 55)" fill="rgba(255,255,255,0.6)"/>
+      <g id="Trailing_icon" data-name="Trailing icon" transform="translate(292 16)">
+        <rect id="Boundary-8" data-name="Boundary" width="24" height="24" fill="none"/>
+        <g id="icon_content_add_24px" data-name="icon/content/add_24px">
+          <rect id="Boundary-9" data-name="Boundary" width="24" height="24" fill="none"/>
+          <path id="_Color-6" data-name=" ↳Color" d="M14,8H8v6H6V8H0V6H6V0H8V6h6Z" transform="translate(5 5)"/>
+        </g>
+      </g>
+      <text id="_Input_text-3" data-name="✏️ Input text" transform="translate(16 33)" fill="rgba(0,0,0,0.6)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="0">Add another label</tspan></text>
+    </g>
+    <g id="Light_Text_fields_1._Filled_18_States_4" data-name="Light 🌕/ Text fields/1. Filled/ (18 States)" transform="translate(16 461)">
+      <g id="Light_Elevation_00dp-7" data-name="Light 🌕/Elevation/00dp">
+        <rect id="Rectangle-22" data-name="Rectangle" width="328" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+      </g>
+      <path id="_Container_l_Color-4" data-name="🔲🎨 Container l Color" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="rgba(0,0,0,0.04)"/>
+      <path id="_States-7" data-name="💡States" d="M4,0H324a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="none"/>
+      <rect id="Indicator-4" data-name="Indicator" width="328" height="1" transform="translate(0 55)" fill="rgba(255,255,255,0.6)"/>
+      <text id="_Input_text-4" data-name="✏️ Input text" transform="translate(16 33)" fill="rgba(0,0,0,0.6)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="0">Label 2</tspan></text>
+      <g id="icon_navigation_close_24px-4" data-name="icon/navigation/close_24px" transform="translate(292 16)">
+        <rect id="Boundary-10" data-name="Boundary" width="24" height="24" fill="none"/>
+        <path id="_Color-7" data-name=" ↳Color" d="M14,1.41,12.59,0,7,5.59,1.41,0,0,1.41,5.59,7,0,12.59,1.41,14,7,8.41,12.59,14,14,12.59,8.41,7Z" transform="translate(5 5)"/>
+      </g>
+    </g>
+    <g id="Light_Text_fields_1._Filled_18_States_5" data-name="Light 🌕/ Text fields/1. Filled/ (18 States)" transform="translate(148 198)">
+      <g id="Light_Elevation_00dp-8" data-name="Light 🌕/Elevation/00dp">
+        <rect id="Rectangle-23" data-name="Rectangle" height="56" fill="#fff" style="mix-blend-mode: multiply;isolation: isolate"/>
+      </g>
+      <path id="_Container_l_Color-5" data-name="🔲🎨 Container l Color" d="M4,0H154a4,4,0,0,1,4,4V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" fill="rgba(0,0,0,0.04)"/>
+      <path id="_States-8" data-name="💡States" d="M0,0H0A0,0,0,0,1,0,0V56a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V0A0,0,0,0,1,0,0Z" fill="none"/>
+      <rect id="Indicator-5" data-name="Indicator" width="154" height="1" transform="translate(0 55)" fill="rgba(255,255,255,0.6)"/>
+      <text id="_Input_text-5" data-name="✏️ Input text" transform="translate(14 35)" fill="rgba(0,0,0,0.6)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="0">Sample rate</tspan></text>
+    </g>
+    <g id="Trailing_icon-2" data-name="Trailing icon" transform="translate(320 214)">
+      <rect id="Boundary-11" data-name="Boundary" width="24" height="24" fill="none"/>
+      <g id="icon_content_add_24px-2" data-name="icon/content/add_24px">
+        <rect id="Boundary-12" data-name="Boundary" width="24" height="24" fill="none"/>
+        <path id="_Color-8" data-name=" ↳Color" d="M14,8H8v6H6V8H0V6H6V0H8V6h6Z" transform="translate(5 5)"/>
+      </g>
+    </g>
+    <g id="Light_FAB_2._Extended_Hover" data-name="Light 🌕/ FAB / 2. Extended/Hover" transform="translate(172 678)">
+      <g id="Container-2" data-name="Container">
+        <g id="Light_Elevation_00dp-9" data-name="Light 🌕/Elevation/00dp">
+          <g id="Shadow-3" data-name="Shadow" style="mix-blend-mode: multiply;isolation: isolate">
+            <g transform="matrix(1, 0, 0, 1, -172, -678)" filter="url(#Rectangle-7)">
+              <rect id="Rectangle-24" data-name="Rectangle" width="172" height="43" rx="21.5" transform="translate(172 678)" fill="#fff"/>
+            </g>
+            <g transform="matrix(1, 0, 0, 1, -172, -678)" filter="url(#Rectangle-8)">
+              <rect id="Rectangle-25" data-name="Rectangle" width="172" height="43" rx="21.5" transform="translate(172 678)" fill="#fff"/>
+            </g>
+            <g transform="matrix(1, 0, 0, 1, -172, -678)" filter="url(#Rectangle-9)">
+              <rect id="Rectangle-26" data-name="Rectangle" width="172" height="43" rx="21.5" transform="translate(172 678)" fill="#fff"/>
+            </g>
+          </g>
+        </g>
+        <rect id="_FAB_Color" data-name="🎨 FAB Color" width="172" height="43" rx="21.5" fill="#6200ee"/>
+        <g id="State" clip-path="url(#clip-path-3)">
+          <g id="States_Light_Primary_Container" data-name="States/Light 🌕/Primary Container">
+            <rect id="States_Light_Primary_Container_100_Overlay" data-name="States/Light 🌕/Primary Container 100%/Overlay" width="172" height="43" rx="4" fill="rgba(255,255,255,0)"/>
+          </g>
+        </g>
+      </g>
+      <text id="_Label" data-name="↳ ✏️ Label" transform="translate(12 27)" fill="#fff" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500" letter-spacing="0.089em"><tspan x="0" y="0">START RECORDING</tspan></text>
+    </g>
+    <text id="Sample_Rate" data-name="Sample Rate" transform="translate(148 96)" fill="rgba(0,0,0,0.87)" font-size="16" font-family="Roboto-Regular, Roboto" letter-spacing="0.009em"><tspan x="0" y="17">Sample Rate</tspan></text>
+  </g>
+</svg>
