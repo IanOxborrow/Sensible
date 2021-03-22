@@ -46,3 +46,25 @@ Tutor: ANDREA PARSONS
 Shadow team: ARSHUTOSH PAUDEL, JOSHUA KUMMEROW, KISHOR J, KIT YEO, LAWRENCE FLINT, RANJTH RAJ, HARISH KALIYAPERUMAL
 
 User groups: STUDENTS, RESEARCHERS, HOBBYISTS
+
+# FAQ
+
+## What does this app offer that existing solutions don't?
+
+The Sensible project differs from existing smartphone sensor apps in two key ways: Labelling data
+**during** collection, and deliberately seeking to offer maximum sensor coverage. Most apps that allow
+the user to record sensor data do not try to support the widest array of sensors available on the device, and they provide no way for the user to label the data during collection, if at all.
+
+## Who is the app intended to be used by and what is it for?
+
+The app is being created with students in mind, but it is our intention that anyone looking for an easy way to create labelled datasets for machine learning or data analysis would find it suitable for that purpose.
+
+## How does this app ensure user data security?
+
+Data collected from a phone's sensors will be stored locally, accessible only to the owner of the device lest they choose to share it via a third party platform. The app will not transmit
+any collected data without the user's knowledge; as the project is open source, this fact will always
+remain verifiable.
+
+## Which devices is this app compatible with and what sensors are supported?
+
+The app will be compatible with any android or iOS device capable of running a currently supported version of their respective operating systems. The ultimate aim of the app is to provide access to as many sensors as possible on a particular device, hence precisely which sensors are available will vary between devices.
