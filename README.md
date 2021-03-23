@@ -18,6 +18,7 @@
 ## Slack for decision making
 
 https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1
+(Please contact Ryan ASAP if you you don't have access to this link)
 
 ## 30 Second Pitch
 Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not restricted to using existing data which tend to either be unlabelled or suboptimal for certain applications.
