@@ -18,6 +18,7 @@
 ## Slack for decision making
 
 https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1
+
 (Please contact Ryan ASAP if you you don't have access to this link)
 
 ## 30 Second Pitch
