@@ -22,11 +22,15 @@ Or if you would like to see all decisions which have been made you can view our 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here : [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here: [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
 
-## User Story Map
+## Communication
 
-You can see our requirements and our agreed upon MVP in our USM located here: [User Story Map](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
+To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
+
+To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Screen%20Designs/Screen%20Shot%202021-03-21%20at%208.51.51%20pm.png)
+
+To view our communication plan you can visit the following link: [Communication Plan](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Communication%20plan/communication%20plan.pdf)
 
 # FAQ
 
