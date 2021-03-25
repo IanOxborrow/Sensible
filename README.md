@@ -6,6 +6,8 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 
 You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Team%20Charter/Team_Charter.pdf)
 
+Our team charter gives an overview of many documents which are vital to our project's success. Links to each of theses documents mentioned can be found below.
+
 ## Presentation Links
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
@@ -16,13 +18,15 @@ The following links will lead you to each of our audit presentation slides. The 
 
 You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here: [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
 
-## Decision Making
+## Decision Making and reflection
 
 Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Decision%20log/decision_log.md)
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
 (Please contact Ryan ASAP if you don't have access to this slack link)
+
+When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Reflection)
 
 ## Communication
 
@@ -31,6 +35,12 @@ To communicate our understanding of the project requirements to our stakeholders
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Screen%20Designs/Screen%20Shot%202021-03-21%20at%208.51.51%20pm.png)
 
 To view our communication plan you can visit the following link: [Communication Plan](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Communication%20plan/communication%20plan.pdf)
+
+To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Meeting%20Minutes)
+
+## Risk
+
+To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Risk%20register/risk%20register.pdf)
 
 # FAQ
 
