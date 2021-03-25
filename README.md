@@ -1,6 +1,6 @@
 # Sensible Techlauncher
 
-Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not restricted to using existing data which tend to either be unlabelled or suboptimal for certain applications.
+Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not be restricted to using existing applications which tend to either not allow labelling or don't allow the selection of sensors.
 
 ## Team Charter
 
@@ -12,6 +12,10 @@ The following links will lead you to each of our audit presentation slides. The 
 
 [Semester 1 Audit 1 presentation](https://docs.google.com/presentation/d/1SKUfDGYnsQlZBFPRt6k_PIxHJTU7K_f_hiBQ2SD-vyE/edit)
 
+## Statement of Work
+
+You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here: [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
+
 ## Decision Making
 
 Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Decision%20log/decision_log.md)
@@ -19,10 +23,6 @@ Decisions are made in our decision making channel on slack. For an overview for 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
 (Please contact Ryan ASAP if you don't have access to this slack link)
-
-## Statement of Work
-
-You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here: [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
 
 ## Communication
 
