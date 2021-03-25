@@ -1,6 +1,6 @@
 # Sensible Techlauncher
 
-Welcome to our project landing page! From here you should be able to navigate your way through our project documentation. If you would like to take a look at our code, please navigate into the 'Sensible' folder.
+Welcome to our project landing page! From here you can navigate your way through our project documentation. If you would like to take a look at our code, please navigate into the 'Sensible' folder.
 
 ## Team Roles
 
