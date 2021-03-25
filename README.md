@@ -35,7 +35,7 @@ You can find information about our project background, project objectives, stake
 
 You can find information about our plans, procedures and success metrics in our team charter located here: [Team Charter](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Team%20Charter/Team_Charter.pdf)
 
-##User Story Map
+## User Story Map
 
 You can see our requirements and our agreed upon MVP in our USM located here: [User Story Map](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
 
