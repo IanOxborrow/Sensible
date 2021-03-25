@@ -1,0 +1,17 @@
+Monday meeting 22 mar
+1:00
+* Meeting start
+* Eleni may have trouble looking at the document before 1pm if we give it to her on sunday
+* Chirath will be handling this meeting instead f eleni
+
+1:12
+* We are explaining the way that the ui will work to Chirarth
+* Labels should be predefined. If labels are not predefined that means that the user has not designed their experiment properly
+
+1:19
+* each class should be seperate
+* We do not need to add support for two classes being selected at the same time. If the user would like to have two classes active at the same time, then they should add a third class that describes that
+
+1:32
+* Eleni does not sign an ip agreement because her only requirement is that the app is open source and free of charge
+* 
