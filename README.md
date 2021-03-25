@@ -1,39 +1,28 @@
 # Sensible Techlauncher
 
-Welcome to our project landing page! From here you can navigate your way through our project documentation. If you would like to take a look at our code, please navigate into the 'Sensible' folder.
+Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not restricted to using existing data which tend to either be unlabelled or suboptimal for certain applications.
 
-## Team Roles
+## Team Charter
 
-* Ryan Turner (u6040885) Project Manager
-* Madeleine Carden (u5849803) Client Liason 
-* King Ho Cheung (u6181123) Presentation Manager, iOS frontend developer
-* Ian Oxborrow (u6668026) Documentation Manager
-* Chathura Galappaththi (u6947345) Android frontend developer
-* Tristan Smith (u6949592) Backend Developer
-
-\* Team roles are subject to change as the project development progresses
+You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Team%20Charter/Team_Charter.pdf)
 
 ## Presentation Links
 
+The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
+
 [Semester 1 Audit 1 presentation](https://docs.google.com/presentation/d/1SKUfDGYnsQlZBFPRt6k_PIxHJTU7K_f_hiBQ2SD-vyE/edit)
 
-## Slack for Decision Making
+## Decision Making
 
-[Decision Making Channel](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
+Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Decision%20log/decision_log.md)
 
-(Please contact Ryan ASAP if you don't have access to this link)
+Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
-## Project Description
-
-Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not restricted to using existing data which tend to either be unlabelled or suboptimal for certain applications.
+(Please contact Ryan ASAP if you don't have access to this slack link)
 
 ## Statement of Work
 
 You can find information about our project background, project objectives, stakeholders and work breakdown in our statement of work here : [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_SIGNED.pdf)
-
-## Team Charter
-
-You can find information about our plans, procedures and success metrics in our team charter located here: [Team Charter](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Team%20Charter/Team_Charter.pdf)
 
 ## User Story Map
 
