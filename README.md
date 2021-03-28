@@ -56,9 +56,9 @@ You can find each prototype and release of our project here: [Graphing Preview](
 
 Our Design Class Diagram can be found here: [DCD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram.pdf)
 
-Our Data Flow Diagram can be found here: [DFD](LINK)
+Our Data Flow Diagram can be found here: [DFD](https://miro.com/app/board/o9J_lMhNxwo=/?userEmail=u5849803@anu.edu.au&track=true&utm_source=notification&utm_medium=email&utm_campaign=add-to-board&utm_content=go-to-board)
 
-Our Domain Model can be found here: [DM](LINK)
+Our Domain Model can be found here: [DM](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Domain%20Model/Domain%20Model.pdf)
 
 # FAQ
 
