@@ -30,7 +30,7 @@ When making decisions about feedback recieved, we store our reflection and learn
 
 ## Boards for assignment of work
 
-To assign tasks to everyone and show the estimated hours the task needed. [Boards] ()
+To assign tasks to everyone and show the estimated hours the task needed. [Boards] (https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/boards)
 
 ## Communication
 
