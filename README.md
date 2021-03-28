@@ -28,6 +28,10 @@ Or if you would like to see all decisions which have been made you can view our 
 
 When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Reflection)
 
+## Boards for assignment of work
+
+To assign tasks to everyone and show the estimated hours the task needed. [Boards] ()
+
 ## Communication
 
 To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
