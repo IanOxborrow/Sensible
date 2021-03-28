@@ -1,0 +1,16 @@
+Monday 22 March Client Meeting
+1:00
+* Meeting start
+* Eleni may have trouble looking at the document before 1pm if we give it to her on sunday
+* Chirath will be handling this meeting instead of Eleni
+
+1:12
+* We are explaining the way that the UI will work to Chirarth
+* Labels should be predefined. If labels are not predefined that means that the user has not designed their experiment properly
+
+1:19
+* Each label should be separate
+* We do not need to add support for two labels being selected at the same time. If the user would like to have two labels active at the same time, then they should add a third label that describes that
+
+1:32
+* Eleni does not need to sign IP Agreement because her only requirement is that the app is open source and free of charge
