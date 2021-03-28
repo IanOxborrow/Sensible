@@ -41,7 +41,7 @@ To communicate our understanding of the project requirements to our stakeholders
 
 After discussion with our stakeholders, we have created an updated User Story Map which only focuses on the Minimum Viable Product here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
-To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Screen%20Designs/Screen%20Shot%202021-03-21%20at%208.51.51%20pm.png)
+To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Screen%20Designs)
 
 To view our communication plan you can visit the following link: [Communication Plan](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Communication%20plan/communication%20plan.pdf)
 
