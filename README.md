@@ -54,7 +54,7 @@ You can find each prototype and release of our project here: [Graphing Preview](
 
 # System Documentation
 
-Our Design Class Diagram can be found here: [DCD](LINK)
+Our Design Class Diagram can be found here: [DCD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram.pdf)
 
 Our Data Flow Diagram can be found here: [DFD](LINK)
 
