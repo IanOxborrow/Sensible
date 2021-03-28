@@ -27,7 +27,9 @@ Decisions are made in our decision making channel on slack. For an overview for 
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
-(Please contact Ryan ASAP if you don't have access to this slack link)
+If this link doesn't work for you, try to sign in using your slack account [here](https://slack.com/signin#/signin) and select Smartphone Sensors Log App Team Techlauncher from your list of workspaces
+
+(Please contact Ryan ASAP if you still don't have access to this slack channel)
 
 When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Reflection)
 
