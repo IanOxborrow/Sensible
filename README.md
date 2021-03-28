@@ -49,8 +49,16 @@ To keep track of the communication at meetings we have kept minutes of all clien
 To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Risk%20register/risk%20register.pdf)
 
 # Prototypes and Releases
-You can find each prototype and release of our project here:
-[Graphing Preview](LINK)
+
+You can find each prototype and release of our project here: [Graphing Preview](LINK)
+
+# System Documentation
+
+Our Design Class Diagram can be found here: [DCD](LINK)
+
+Our Data Flow Diagram can be found here: [DFD](LINK)
+
+Our Domain Model can be found here: [DM](LINK)
 
 # FAQ
 
