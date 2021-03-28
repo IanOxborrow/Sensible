@@ -1,0 +1,24 @@
+Monday 15 March Client Meeting
+
+1:01
+* Meeting start
+
+1:07
+* Discussion of the user story map
+* The audit marks are not very good but the feedback from our tutor is thorough and can be incorporated 
+* We are running the user story map by Eleni. 
+* Eleni phone call meeting paused
+
+1:18
+* Meeting resumed
+* Eleni would like to see a camera and a microphone incorporated into the mvp
+* Elene has a high priority that the camera and the audio are in there 
+* voice data needs to be stored but not played back
+* The visualisation of the data is a secondary priority its its recording functionality
+* A small suggestion for the labelling is that the labelling is run added in parralel with the data recording
+* Audio has its own sampling rate and there may need to be some configuration for the user to decide
+* Eleni would like a visual report about the progress of
+
+* We should order sensors by their order of difficulty in implementing
+* We need to figure out how to deal with sensors that have different sampling rates
+
