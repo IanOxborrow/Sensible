@@ -55,7 +55,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find each prototype and release of our project here: [Graphing Preview](LINK)
+You can find each prototype and release of our project here: [Graphing Preview](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Graph%20Sample)
 
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Burndown%20Chart/Burndown_Chart_28-03.pdf)
 
