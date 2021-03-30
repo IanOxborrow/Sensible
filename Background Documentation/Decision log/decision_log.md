@@ -34,6 +34,18 @@ This decision log is ordered most recent at the top, to least recent at the bott
 **Result**: React Native <br />
 **Decision by**: Sensible team only <br />
 
+**Decision**: How should we account for our time? <br />
+**Result**: Burndown chart and assigning time to tasks <br />
+**Decision by**: Sensible team only <br />
+
+**Decision**: Should we use the MIT Open Source License Agreement? <br />
+**Result**: Yes <br />
+**Decision by**: Sensible team and client <br />
+
+**Decision**: How should we present Audit 2 <br />
+**Result**: Prezi <br />
+**Decision by**: Sensible team only <br />
+
 
 
 
