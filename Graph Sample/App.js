@@ -38,25 +38,19 @@ class App extends React.Component {
 
   render() {
     const test = () => {
-      let newSource = this.state.dataSource;
-      newSource.push(Math.random());
-
-      let tmpSource = this.state.labelSource;
-      tmpSource.push('a');
-
-      this.setState({
-        dataSource: newSource,
-      });
+      // Update the data and labels
+      this.state.dataSource.push(Math.random());
+      this.state.labelSource.push('a');
+      // Re-render the graph
+      this.setState({});
     };
 
     const test1 = () => {
-      let newSource = this.state.dataSource1;
-      newSource.push(Math.random());
-      newSource.shift();
-
-      this.setState({
-        dataSource1: newSource,
-      });
+      // Update the data
+      this.state.dataSource1.push(Math.random());
+      this.state.dataSource1.shift();
+      // Re-render the graph
+      this.setState({});
     };
 
     data.datasets[0].data = this.state.dataSource.map(value => value);
