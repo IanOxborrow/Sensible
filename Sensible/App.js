@@ -6,6 +6,7 @@
  * @flow strict-local
  */
 
+/*
 import React from 'react';
 import {
   SafeAreaView,
@@ -23,7 +24,16 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+*/
 
+import React from 'react';
+import MainStackNavigator from './src/navigation/MainStackNavigator'
+
+export default function App() {
+  return <MainStackNavigator />
+}
+
+/*
 const App: () => React$Node = () => {
   return (
     <>
@@ -112,3 +122,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+*/
