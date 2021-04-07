@@ -117,12 +117,7 @@ class NewRecordingScreen extends Component {
   constructor(props) {
 
     super(props);
-    /*this.state = {
-        username: '',
-        password: '',
-        email: '',
-        errorStatus: '',
-    }*/
+    
     this.selectedSensors = [{sensorName: 'yeet'}, {sensorName: 'blitfegy'}]
     this.addedLabels = [{labelName: "label1"}, {labelName: "label2"}]
   }
