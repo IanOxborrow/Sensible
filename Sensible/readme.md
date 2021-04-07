@@ -1,3 +1,11 @@
+  Updating instructions  
+  `cd "sensible-techlauncher/Sensible"`  
+  `npm install`
+
+  For macOS users also run  
+  `cd ios`  
+  `pod install`
+
   Run instructions for iOS:
   * `cd "sensible-techlauncher/Sensible" && npx react-native run-ios`  
     \- or -
