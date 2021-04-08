@@ -63,7 +63,7 @@ You can find our Burdown Chart documenting our estimated and actual progress on 
 
 # System Documentation
 
-Our Design Class Diagram can be found here: [DCD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram.pdf)
+Our Design Class Diagram can be found here: [DCD](Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram%20v2.pdf)
 
 Our Data Flow Diagram can be found here: [DFD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Data%20Flow%20Diagram/Data%20Flow%20Diagram.pdf)
 
