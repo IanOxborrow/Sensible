@@ -4,7 +4,7 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 
 ## Team Charter
 
-You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Team%20Charter/Team_Charter.pdf)
+You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter.pdf)
 
 Our team charter gives an overview of many documents which are vital to our project's success. Links to each of theses documents mentioned can be found below.
 
@@ -19,13 +19,13 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Statements%20of%20Work)
 
 ## Decision Making and reflection
 
-Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Decision%20log/decision_log.md)
+Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/decision_log.md)
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
@@ -41,33 +41,33 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
+To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
 
 After discussion with our stakeholders, we have created an updated User Story Map which only focuses on the Minimum Viable Product here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Screen%20Designs)
 
-To view our communication plan you can visit the following link: [Communication Plan](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Communication%20plan/communication%20plan.pdf)
+To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/communication%20plan.pdf)
 
 To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Meeting%20Minutes)
 
 ## Risk
 
-To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Risk%20register/risk%20register.pdf)
+To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register.pdf)
 
 # Prototypes and Releases
 
 You can find each prototype and release of our project here: [Graphing Preview](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Graph%20Sample)
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Burndown%20Chart/Burndown_Chart_28-03.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_28-03.pdf)
 
 # System Documentation
 
-Our Design Class Diagram can be found here: [DCD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram.pdf)
+Our Design Class Diagram can be found here: [DCD](Background%20Documentation/Design%20Class%20Diagram/Design_Class_Diagram.pdf)
 
-Our Data Flow Diagram can be found here: [DFD](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Data%20Flow%20Diagram/Data%20Flow%20Diagram.pdf)
+Our Data Flow Diagram can be found here: [DFD](Background%20Documentation/Data%20Flow%20Diagram/Data%20Flow%20Diagram.pdf)
 
-Our Domain Model can be found here: [DM](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/blob/master/Background%20Documentation/Domain%20Model/Domain%20Model.pdf)
+Our Domain Model can be found here: [DM](Background%20Documentation/Domain%20Model/Domain%20Model.pdf)
 
 # FAQ
 
