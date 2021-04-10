@@ -17,100 +17,6 @@ import {
   Button
 } from 'react-native';
 
-const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
-  
-const sensorListItem = ({ item }) => (
-  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    <Text style={styles.title}>{item.sensorName}</Text>
-    <DropDownPicker
-      items={[
-        {label: 'Acceleromoter', value: 'acceleromoter', hidden: true},
-        {label: 'Gyroscope', value: 'gyroscope' },
-        {label: 'Microphone', value: 'microphone'},
-          /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
-          {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
-          {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
-      ]}
-      defaultValue={'acceleromoter'}
-      containerStyle={{height: 40}}
-      style={{backgroundColor: '#fafafa'}}
-      itemStyle={{
-          justifyContent: 'flex-start'
-      }}
-      dropDownStyle={{backgroundColor: '#fafafa'}}
-      /*onChangeItem={item => this.setState({
-          country: item.value
-      })}*/
-    />
-    <TextInput placeholder="sample rate"/>
-    <Image source={require("../assets/baseline_close_black.png")}/>
-  </View>
-);
-
-//constant item that stays at the bottom of the list. This acts as the add new row in the list
-const sensorListFooter = () => {
-  return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    <Text style={styles.title}>{""}</Text>
-    <DropDownPicker
-      items={[
-        {label: 'Acceleromoter', value: 'acceleromoter', hidden: true},
-        {label: 'Gyroscope', value: 'gyroscope' },
-        {label: 'Microphone', value: 'microphone'},
-          /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
-          {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
-          {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
-      ]}
-      defaultValue={'acceleromoter'}
-      containerStyle={{height: 40}}
-      style={{backgroundColor: '#fafafa'}}
-      itemStyle={{
-          justifyContent: 'flex-start'
-      }}
-      dropDownStyle={{backgroundColor: '#fafafa'}}
-      /*onChangeItem={item => this.setState({
-          country: item.value
-      })}*/
-    />
-    <TextInput placeholder="sample rate"/>
-    <Image source={require("../assets/baseline_add_black.png")}/>
-  </View>
-  );
-};
-
-const labelListItem = ({ item }) => (
-  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    
-    <TextInput placeholder="sample rate"/>
-    <Image source={require("../assets/baseline_close_black.png")}/>
-  </View>
-);
-
-//constant item that stays at the bottom of the list. This acts as the add new row in the list
-const labelListFooter = () => {
-  return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    
-      <TextInput placeholder="sample rate"/>
-      <Image source={require("../assets/baseline_add_black.png")}/>
-    </View>
-  );
-};
-  
-
 
 class NewRecordingScreen extends Component {
 
@@ -118,29 +24,124 @@ class NewRecordingScreen extends Component {
 
     super(props);
     
-    this.selectedSensors = [{sensorName: 'yeet'}, {sensorName: 'blitfegy'}]
-    this.addedLabels = [{labelName: "label1"}, {labelName: "label2"}]
-  }
+    this.state = {
+      currentSensorSelection: "",
+      currentSampleRate: "",
+      currentLabelAddition: "",
+      selectedSensorData: [],
+      selectedSensors: [],
+      addedLabels: []
+    }
 
-  
-
-  signUpClick = () => {
-    console.log("yeet")
-    DATA.push({
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'First Item',
-      })
-
-    console.log(DATA)
-  }
-
-  signInClick = () => {
-      
+    this.usedSensors = {}
   }
 
   componentDidMount = () => {
   
   }
+
+  sensorListHeader = () => {
+
+  }
+
+  sensorListItem = ({ item }) => (
+    <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+      <Text style={styles.title}>{item.sensorName}</Text>
+      
+      <Text>{item.sampleRate}</Text>
+      
+      <Image source={require("../assets/baseline_close_black.png")} style={{marginLeft: 'auto'}}/>
+    </View>
+  );
+
+  //constant item that stays at the bottom of the list. This acts as the add new row in the list
+  sensorListFooter = () => {
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+        <Text style={styles.title}>{""}</Text>
+        <DropDownPicker
+          items={[
+            {label: 'Acceleromoter', value: 'acceleromoter', hidden: false},
+            {label: 'Gyroscope', value: 'gyroscope' },
+            {label: 'Microphone', value: 'microphone'},
+              /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+              {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
+              {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
+          ]}
+          defaultValue={'acceleromoter'}
+          containerStyle={{height: 40, width: 150}}
+          style={{backgroundColor: '#fafafa'}}
+          itemStyle={{
+              justifyContent: 'flex-start'
+          }}
+          dropDownStyle={{backgroundColor: '#fafafa'}}
+          
+          onChangeItem={
+            item => this.setState({currentSensorSelection: item.value})
+          }
+        />
+        <TextInput 
+          placeholder="sample rate" 
+          ref={input => { this.sampleRateInput = input }}
+          onChangeText={
+            text => this.setState({currentSampleRate: text})
+          }
+        />
+
+        <TouchableOpacity 
+          style={{marginLeft: 'auto'}} 
+          onPress={() => {  
+            //update the flatlist with the new information
+            newSensor = {sensorName: this.state.currentSensorSelection, 
+                         sampleRate: this.state.currentSampleRate}
+            this.state.selectedSensorData.push(newSensor)
+            this.setState({selectedSensors: [...this.state.selectedSensorData] })
+            
+            this.sampleRateInput.clear()
+          }} 
+          >
+          <Image source={require("../assets/baseline_add_black.png")} />
+        </TouchableOpacity>
+
+      </View>
+    );
+  };
+
+  labelListItem = ({ item }) => (
+    <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+      
+      <Text>{item.labelName}</Text>
+      <Image source={require("../assets/baseline_close_black.png")} style={{marginLeft: 'auto'}}/>
+    </View>
+  );
+
+  //constant item that stays at the bottom of the list. This acts as the add new row in the list
+  labelListFooter = () => {
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+      
+        <TextInput 
+          placeholder="Label Name"
+          ref={input => { this.labelNameInput = input }}
+          onChangeText={
+            text => this.setState({currentLabelAddition: text})
+          } />
+
+        <TouchableOpacity 
+          style={{marginLeft: 'auto'}} 
+          onPress={() => {  
+            //update the flatlist with the new information
+            newLabel = {labelName: this.state.currentLabelAddition}
+            this.state.addedLabels.push(newLabel)
+            this.setState({addedLabels: [...this.state.addedLabels] })
+            
+            this.labelNameInput.clear()
+          }} >
+          <Image source={require("../assets/baseline_add_black.png")} style={{marginLeft: 'auto'}}/>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   render() {
     return (
@@ -156,34 +157,34 @@ class NewRecordingScreen extends Component {
           <Text numberOfLines={5}>{"pydf"}</Text>
         </Text>
 
-        <View>
+        <View style={{flexDirection: 'row'}}>
           <Text >{"Sensors"}</Text>
           <Text >{"Sample Rate"}</Text>
         </View>
 
-
         <FlatList
-          data={this.selectedSensors}
-          renderItem={sensorListItem}
-          keyExtractor={item => item.sensorName} 
-          ListFooterComponent = {sensorListFooter}/>
+          data={this.state.selectedSensors}
+          renderItem={this.sensorListItem}
+          keyExtractor={item => item} 
+          ListFooterComponent = {this.sensorListFooter}/>
 
         <View>
           <Text >{"Labels"}</Text>
         </View>
 
         <FlatList
-          data={this.addedLabels}
-          renderItem={labelListItem}
+          data={this.state.addedLabels}
+          renderItem={this.labelListItem}
           keyExtractor={item => item.labelName} 
-          ListFooterComponent = {labelListFooter}/>
+          ListFooterComponent = {this.labelListFooter}/>
 
         <FloatingAction
           //{actions={actions}}
           title={"ipydepdfhgi"}
           onPressItem={name => {
             console.log(`selected button: ${name}`);
-          }} />
+          }} 
+        />
 
       </View>
     );
