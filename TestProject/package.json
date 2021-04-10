@@ -10,8 +10,20 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/masked-view": "https://github.com/react-native-masked-view/masked-view#a7a088dfffa9d4b35ee40aa3c5910126d442e90d",
     "react": "17.0.1",
-    "react-native": "0.64.0"
+    "react-native": "0.64.0",
+    "react-native-chart-kit": "^6.11.0",
+    "react-native-dropdown-picker": "^4.0.4",
+    "react-native-floating-action": "^1.21.0",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-img-button": "^1.0.1",
+    "react-native-reanimated": "^2.1.0",
+    "react-native-safe-area-context": "^3.2.0",
+    "react-native-screens": "^3.0.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-vector-icons": "^7.1.0",
+    "react-navigation": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "7.13.14",
