@@ -23,7 +23,7 @@ class NewRecordingScreen extends Component {
   constructor(props) {
 
     super(props);
-    
+    //this.props = props
     this.state = {
       currentSensorSelection: "",
       currentSampleRate: "",
@@ -179,10 +179,9 @@ class NewRecordingScreen extends Component {
           ListFooterComponent = {this.labelListFooter}/>
 
         <FloatingAction
-          //{actions={actions}}
-          title={"ipydepdfhgi"}
-          onPressItem={name => {
-            console.log(`selected button: ${name}`);
+          onPressMain={name => {
+            
+            this.props.navigation.navigate('RecordingScreen')
           }} 
         />
 

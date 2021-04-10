@@ -35,87 +35,105 @@ var DATA = [
   },
 ];
 
-// Funtion to create each item in the list
-function Item({ title, onSelect }) {
+
+class RecordingScreen extends Component {
+
+  constructor(props) {
+
+    super(props);
+    //this.props = props
+    this.state = {
+      
+    }
+  }
+
+  // Funtion to create each item in the list
+  Item({ title, onSelect }) {
     return (
         <View style={styles.listItem} onPress={() => onSelect()}>
             <Text style={styles.listItemText}>{title}</Text>
         </View>
     );
+  }
+
+  render() {
+    return (
+      <View style={[styles.container, {flexDirection: "column"}]}>
+          <View style={styles.heading}>
+              <Text style={styles.headingText}>
+              Page Title
+              </Text>
+          </View>
+  
+          <View style={styles.graphStyling}>
+  
+          </View>
+  
+          <FlatList style={styles.list}
+              data={DATA}
+              renderItem={({item, index}) => (
+                  <TouchableOpacity onPress={() => null}>
+                      <View style={styles.listItem}>
+                          <Text style={styles.listItemText}> Label # </Text>
+                      </View>
+                  </TouchableOpacity>
+              )}
+          />
+  
+          <View>
+              <Button title="Finish" color='#6200F2' onPress={() => this.props.navigation.navigate('HomeScreen')}/>
+              <Button title="Cancel" color='#6200F2' onPress={() => this.props.navigation.navigate('HomeScreen')}/>
+          </View>
+  
+      </View>
+    );
+  }
+
 }
 
-const App: () => React$Node = () => {
-  return (
-    <View style={[styles.container, {flexDirection: "column"}]}>
-        <View style={styles.heading}>
-            <Text style={styles.headingText}>
-            Page Title
-            </Text>
-        </View>
+//const App: () => React$Node = () => {
+  
+//};
 
-        <View style={styles.graphStyling}>
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 0,
+  },
+  heading: {
+    padding: 0,
+    backgroundColor: '#6200F2',
+  },
+  headingText: {
+    color: "white",
+    fontSize: 20,
+    padding:20,
+  },
+  graphStyling: {
+    flex: 1,
+  },
+  list: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 10,
+  },
+  listItem: {
+    borderRadius: 5,
+    height: 80,
+    width: '100%',
+    borderWidth: 2,
+    borderColor: '#d1d1d1',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    marginBottom: '5%'
+  },
+  listItemText: {
+    color: 'black',
+    textAlignVertical: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 10,
+  },
+});
 
-        </View>
-
-        <FlatList style={styles.list}
-            data={DATA}
-            renderItem={({item, index}) => (
-                <TouchableOpacity onPress={() => null}>
-                    <View style={styles.listItem}>
-                        <Text style={styles.listItemText}> Label # </Text>
-                    </View>
-                </TouchableOpacity>
-            )}
-        />
-
-        <View>
-            <Button title="Finish" color='#6200F2' onPress={() => null}/>
-            <Button title="Cancel" color='#6200F2' onPress={() => null}/>
-        </View>
-
-    </View>
-  );
-};
-
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        padding: 0,
-      },
-      heading: {
-        padding: 0,
-        backgroundColor: '#6200F2',
-      },
-      headingText: {
-        color: "white",
-        fontSize: 20,
-        padding:20,
-      },
-      graphStyling: {
-        flex: 1,
-      },
-      list: {
-        flex: 1,
-        padding: 20,
-        paddingTop: 10,
-      },
-      listItem: {
-        borderRadius: 5,
-        height: 80,
-        width: '100%',
-        borderWidth: 2,
-        borderColor: '#d1d1d1',
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        marginBottom: '5%'
-      },
-      listItemText: {
-        color: 'black',
-        textAlignVertical: 'center',
-        fontWeight: 'bold',
-        fontSize: 20,
-        padding: 10,
-      },
-    });
-
-export default App;
+export default RecordingScreen;
