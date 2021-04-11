@@ -41,7 +41,10 @@ class RecordingScreen extends Component {
   constructor(props) {
 
     super(props);
-    //this.props = props
+    
+    console.log(props.route.params.sensors)
+    console.log(props.route.params.labels)
+
     this.state = {
       
     }

@@ -62,19 +62,12 @@ const App: () => React$Node = ({navigation}) => {
       />
 
       <FloatingAction
+
         onPressMain={name => {
           navigation.navigate('NewRecordingScreen')
           console.log('selected button: ${name}');
         }} 
       />
-
-      {/*
-      <TouchableOpacity>
-        <View style={styles.plusButton}>
-            <Button title="+" color='#6200F2' onPress={() => null}/>
-        </View>
-      </TouchableOpacity>*/}
-
     </View>
   );
 };

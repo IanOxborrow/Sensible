@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/HomeScreen'
-import NewRecordingScreen from '../screens/NewRecordingScreen';
+import NewRecordingScreen from '../screens/NewRecordingScreen'
 import RecordingScreen from '../screens/RecordingScreen'
 
 const Stack = createStackNavigator();

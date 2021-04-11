@@ -80,6 +80,7 @@ class NewRecordingScreen extends Component {
             item => this.setState({currentSensorSelection: item.value})
           }
         />
+
         <TextInput 
           placeholder="sample rate" 
           ref={input => { this.sampleRateInput = input }}
@@ -180,8 +181,7 @@ class NewRecordingScreen extends Component {
 
         <FloatingAction
           onPressMain={name => {
-            
-            this.props.navigation.navigate('RecordingScreen')
+            this.props.navigation.navigate('RecordingScreen', {'sensors': [], 'labels': []})
           }} 
         />
 
