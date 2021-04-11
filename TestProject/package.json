@@ -1,5 +1,5 @@
 {
-  "name": "TestProject",
+  "name": "sensible",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "https://github.com/react-native-masked-view/masked-view#a7a088dfffa9d4b35ee40aa3c5910126d442e90d",
+    "@react-navigation/stack": "^5.14.4",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-chart-kit": "^6.11.0",
@@ -26,13 +27,13 @@
     "react-navigation": "^4.4.4"
   },
   "devDependencies": {
-    "@babel/core": "7.13.14",
-    "@babel/runtime": "7.13.10",
-    "@react-native-community/eslint-config": "2.0.0",
-    "babel-jest": "26.6.3",
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.6.3",
     "eslint": "7.14.0",
-    "jest": "26.6.3",
-    "metro-react-native-babel-preset": "0.64.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.64.0",
     "react-test-renderer": "17.0.1"
   },
   "jest": {
