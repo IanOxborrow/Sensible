@@ -63,7 +63,6 @@ class NewRecordingScreen extends Component {
             this.usedSensors[item.sensorName] = false
 
             //remove the sensor from the sensordata array
-            console.log('befroe' + this.state.selectedSensorData)
             for (var i in this.state.selectedSensorData) {
               var sensorData = this.state.selectedSensorData[i]
               if (item.sensorName == sensorData['sensorName']){
@@ -72,9 +71,7 @@ class NewRecordingScreen extends Component {
               }
             }
 
-            console.log('after' + this.state.selectedSensorData)
-          
-            //
+            //update the listview
             this.setState({selectedSensors: [...this.state.selectedSensorData] })
             
             //set the new default vaule to be the first non hidden value
@@ -175,7 +172,27 @@ class NewRecordingScreen extends Component {
     <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
       
       <Text>{item.labelName}</Text>
-      <Image source={require("../assets/baseline_close_black.png")} style={{marginLeft: 'auto'}}/>
+
+      <TouchableOpacity 
+          style={{marginLeft: 'auto'}} 
+          onPress={() => {  
+            console.log('waspressed' + item.labelName)
+            //use the label name to identify which row was pressed to work out which data to remove
+
+            //remove the selected label from the list
+            for (var i in this.state.addedLabels) {
+              if (item.labelName == this.state.addedLabels[i]['labelName']){
+                this.state.addedLabels.splice(i,1);
+                break;
+              }
+            }
+
+            this.setState({addedLabels: [...this.state.addedLabels] })
+
+          }}>
+            
+            <Image source={require("../assets/baseline_close_black.png")} style={{marginLeft: 'auto'}}/>
+        </TouchableOpacity>
     </View>
   );
 
@@ -195,7 +212,15 @@ class NewRecordingScreen extends Component {
           style={{marginLeft: 'auto'}} 
           onPress={() => {  
             
+            //return if a duplicate has been found
+            for (i in this.state.addedLabels) {
+              if (this.state.addedLabels[i]['labelName'] == this.state.currentLabelAddition) {
+                return
+              }
+            }
+
             //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
+            // and make sure that the label name is not in the addedLabels already
             if (this.state.currentLabelAddition != "") {
 
               newLabel = {labelName: this.state.currentLabelAddition}
@@ -205,6 +230,7 @@ class NewRecordingScreen extends Component {
               this.labelNameInput.clear()
             }
           }} >
+
           <Image source={require("../assets/baseline_add_black.png")} style={{marginLeft: 'auto'}}/>
         </TouchableOpacity>
       </View>
