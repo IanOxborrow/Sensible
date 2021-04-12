@@ -42,11 +42,13 @@ class RecordingScreen extends Component {
 
     super(props);
     
+    sensors = props.route.params.sensors
+    labels = props.route.params.labels
     console.log(props.route.params.sensors)
     console.log(props.route.params.labels)
 
     this.state = {
-      
+         
     }
   }
 
@@ -73,11 +75,12 @@ class RecordingScreen extends Component {
           </View>
   
           <FlatList style={styles.list}
-              data={DATA}
+              data={labels}
+              keyExtractor={item => item.labelName} 
               renderItem={({item, index}) => (
                   <TouchableOpacity onPress={() => null}>
                       <View style={styles.listItem}>
-                          <Text style={styles.listItemText}> Label # </Text>
+                          <Text style={styles.listItemText}> {item.labelName} </Text>
                       </View>
                   </TouchableOpacity>
               )}

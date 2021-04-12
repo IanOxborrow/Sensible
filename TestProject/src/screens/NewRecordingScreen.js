@@ -274,7 +274,7 @@ class NewRecordingScreen extends Component {
 
         <FloatingAction
           onPressMain={name => {
-            this.props.navigation.navigate('RecordingScreen', {'sensors': [], 'labels': []})
+            this.props.navigation.navigate('RecordingScreen', {'sensors': this.state.selectedSensors, 'labels': this.state.addedLabels})
           }} 
         />
 
