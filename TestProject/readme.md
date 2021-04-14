@@ -1,7 +1,7 @@
 ###  Updating instructions  
-  `cd "sensible-techlauncher/Sensible"` 
-  `npm install`
-  If problems occur during `npm install` try running `npm install @react-native-community/masked-view`
+  `cd "sensible-techlauncher/Sensible"`  
+  `npm install`  
+  If problems occur during `npm install` try running `npm install @react-native-community/masked-view`  
 
   For macOS users also run  
   `cd ios`  
