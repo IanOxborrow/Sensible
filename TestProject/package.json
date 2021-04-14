@@ -10,7 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-community/masked-view": "https://github.com/react-native-masked-view/masked-view#a7a088dfffa9d4b35ee40aa3c5910126d442e90d",
     "@react-navigation/stack": "^5.14.4",
     "react": "17.0.1",
     "react-native": "0.64.0",
