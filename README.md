@@ -83,9 +83,12 @@ The app is being created with students in mind, but it is our intention that any
 
 ## How does this app ensure user data security?
 
-Data collected from a phone's sensors will be stored locally, accessible only to the owner of the device lest they choose to share it via a third party platform. The app will not transmit
-any collected data without the user's knowledge; as the project is open source, this fact will always
+Data collected from a phone's sensors will be stored locally, accessible only to the owner of the device lest they choose to share it via a third party platform. The app will not transmit any collected data without the user's knowledge; as the project is open source, this fact will always
 remain verifiable.
+
+Local storage is very difficult to break into from outside applications (as long as it's the right type of local storage, which we will of course ensure) and it would be very difficult for a potential attacker to be able to steal any user's personal information.
+
+Additionally, we classify most of the data collected using the app as non-sensitive, but for the sensors that do potentially record sensitive data (such as the video, voice, and location sensors), we will include a warning and an indicator that this is the case.
 
 ## Which devices is this app compatible with and what sensors are supported?
 
