@@ -81,6 +81,14 @@ the user to record sensor data do not try to support the widest array of sensors
 
 The app is being created with students in mind, but it is our intention that anyone looking for an easy way to create labelled datasets for machine learning or data analysis would find it suitable for that purpose.
 
+Some possible use cases are as follows:
+ - Machine learning students who need labelled data to train their models
+ - Statistics students in need of large quantities of data they can control
+ - Anyone wishing to access the data that the sensors on their phone can provide
+ - A way to practice collection of data for the purpose of honing experiment skills  
+
+This kind of technology is widely used by all types of reasearchers and research students.
+
 ## How does this app ensure user data security?
 
 Data collected from a phone's sensors will be stored locally, accessible only to the owner of the device lest they choose to share it via a third party platform. The app will not transmit any collected data without the user's knowledge; as the project is open source, this fact will always
