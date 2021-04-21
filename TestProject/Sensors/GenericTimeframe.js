@@ -39,7 +39,7 @@ export default class GenericTimeframe extends SensorTimeframe
     /**
      * Add a sample to the current timeframe. This should only be called on the latest timeframe.
      *
-     * @param sample The sample to add
+     * @param sample The sample to add to the timeframe
      */
     addSample(sample)
     {
@@ -51,8 +51,18 @@ export default class GenericTimeframe extends SensorTimeframe
         // Move the pointer and increment the size
         this.dataSize++;
         this.dataPointer = GenericTimeframe.moveCircularPointer(1, this.dataPointer, this.dataSize, this.data.length);
-        // For now update the last sample
-        // else this.data[this.data.length - 1] = sample;
+    }
+
+    /**
+     * Add multiple samples to the timeframe at once. This should only be called on the latest timeframe.
+     * @param samples An array of samples to add to the timeframe
+     */
+    addSamples(samples)
+    {
+        for (let i = 0; i < samples.length; i++)
+        {
+            this.addSample(samples[i]);
+        }
     }
 
     /***
