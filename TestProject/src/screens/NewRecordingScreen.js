@@ -242,14 +242,11 @@ class NewRecordingScreen extends Component {
       <View style={{flex: 1}}>
         <StatusBar barStyle="dark-content" />
 
-        <Text style={styles.baseText}>
-          <Text style={styles.titleText}>
-            {"dydyepdypedpe"}
-            {"\n"}
-            {"\n"}
-          </Text>
-          <Text numberOfLines={5}>{"pydf"}</Text>
-        </Text>
+        <View style={styles.heading}>
+            <Text style={styles.headingText}>
+                New Recording
+            </Text>
+        </View>
 
         <View style={{flexDirection: 'row'}}>
           <Text >{"Sensors"}</Text>
@@ -284,7 +281,17 @@ class NewRecordingScreen extends Component {
 }
 
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  heading: {
+    padding: 0,
+    backgroundColor: '#6200F2',
+  },
+  headingText: {
+    color: "white",
+    fontSize: 20,
+    padding:20,
+  },
+})
 
 //export default StackNav
 

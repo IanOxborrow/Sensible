@@ -11,10 +11,12 @@ import {
   StyleSheet,
   View,
   Text,
+  Dimensions,
   Button,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import {LineChart} from 'react-native-chart-kit';
 
 var DATA = [
   {
@@ -35,6 +37,20 @@ var DATA = [
   },
 ];
 
+const data = {
+  labels: [],
+  datasets: [
+    {
+      data: [],
+    },
+  ],
+};
+
+const chartConfig = {
+  backgroundColor: '#e26a00',
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+};
+
 
 class RecordingScreen extends Component {
 
@@ -48,7 +64,8 @@ class RecordingScreen extends Component {
     console.log(props.route.params.labels)
 
     this.state = {
-         
+        dataSource: [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()],
+        labelSource: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
     }
   }
 
@@ -62,17 +79,41 @@ class RecordingScreen extends Component {
   }
 
   render() {
+    const test = () => {
+      // Update the data
+      this.state.dataSource.push(Math.random());
+      this.state.dataSource.shift();
+      // Re-render the graph
+      this.setState({});
+    };
+
+    data.datasets[0].data = this.state.dataSource.map(value => value);
+    data.labels = this.state.labelSource.map(value => value);
+
     return (
       <View style={[styles.container, {flexDirection: "column"}]}>
           <View style={styles.heading}>
               <Text style={styles.headingText}>
-              Page Title
+              Recording #
               </Text>
           </View>
   
           <View style={styles.graphStyling}>
-  
+            <LineChart
+              data={data}
+              width={Dimensions.get('window').width - 10} // from react-native
+              height={220}
+              yAxisLabel={'$'}
+              chartConfig={chartConfig}
+              bezier
+              style={{
+                 marginVertical: 5,
+                 marginHorizontal: 5,
+              }}
+            />
           </View>
+          <Button onPress={test} title={'Add data point'} color='#6200F2'/>
+
   
           <FlatList style={styles.list}
               data={labels}
@@ -97,10 +138,6 @@ class RecordingScreen extends Component {
 
 }
 
-//const App: () => React$Node = () => {
-  
-//};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -116,7 +153,7 @@ const styles = StyleSheet.create({
     padding:20,
   },
   graphStyling: {
-    flex: 1,
+    flex: 1.5,
   },
   list: {
     flex: 1,
