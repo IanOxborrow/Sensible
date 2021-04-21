@@ -18,9 +18,11 @@
     "react-native-floating-action": "^1.21.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-img-button": "^1.0.1",
+    "react-native-microphone-stream": "git://github.com/chadsmith/react-native-microphone-stream.git",
     "react-native-reanimated": "^2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.0.0",
+    "react-native-sensors": "^7.2.0",
     "react-native-svg": "^12.1.0",
     "react-native-vector-icons": "^7.1.0",
     "react-navigation": "^4.4.4"
