@@ -136,6 +136,6 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     getLatestSample()
     {
-        return this.size === 0 ? null : this.data[GenericTimeframe.moveCircularPointer(-1, this.dataPointer, this.dataSize, this.data.length)];
+        return this.dataSize === 0 ? null : this.data[GenericTimeframe.moveCircularPointer(-1, this.dataPointer, this.dataSize, this.data.length)];
     }
 }

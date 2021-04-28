@@ -86,25 +86,28 @@ class RecordingScreen extends Component
 
     render()
     {
-        const test = () => {
-            let maxPoints = 10;
-            // Add a new point
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER);
-            // console.log(sample.getLatestSample()); // TODO: Figure out why this isn't getting the correct data
-            this.state.dataSource.push(sample.getLatestSample().x); // TODO: Figure out how to display 3 axis
-            this.state.labelSource.push(this.state.counter.toString());
-            // Remove the first point
+        const updateGraphData = () => {
+            let maxPoints = 100;
+            // Add a new point to the end
+            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            this.state.labelSource.push("");
+            // Remove the first point (from the front)
             if (this.state.dataSource.length > maxPoints)
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
             }
+            // Update the counter (MAY BE REDUNDANT)
             this.state.counter++;
-            // Re-render the graph
+        };
+
+        const updateGraphUI = () => {
             this.setState({});
         };
 
-        // setInterval(test, 10000); // TODO: Uncomment this to access live data
+        setInterval(updateGraphData, 100);
+        setInterval(updateGraphUI, 5000);
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
