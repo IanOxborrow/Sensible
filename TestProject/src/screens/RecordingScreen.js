@@ -90,8 +90,7 @@ class RecordingScreen extends Component
             let maxPoints = 10;
             // Add a new point
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER);
-            console.log(sample.getLatestSample()); // TODO: Figure out why this isn't getting the correct data
-            // console.log (sample);
+            // console.log(sample.getLatestSample()); // TODO: Figure out why this isn't getting the correct data
             this.state.dataSource.push(sample.getLatestSample().x); // TODO: Figure out how to display 3 axis
             this.state.labelSource.push(this.state.counter.toString());
             // Remove the first point
@@ -105,7 +104,7 @@ class RecordingScreen extends Component
             this.setState({});
         };
 
-        setInterval(test, 1);
+        // setInterval(test, 10000); // TODO: Uncomment this to access live data
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
