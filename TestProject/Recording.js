@@ -19,8 +19,8 @@ export default class Recording
     addSensor(type)
     {
         // TODO : Set this to the number of data points that is displayed on the graph
-        const pointsOnGraph = 10; // The number of points that is stored in the graph
-        const timeframeBufferSize = 20;
+        const pointsOnGraph = 500; // The number of points that is stored in the graph
+        const timeframeBufferSize = 50;
         switch (type)
         {
             case SensorType.ACCELEROMETER:
