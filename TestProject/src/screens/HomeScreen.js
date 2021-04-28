@@ -65,7 +65,7 @@ const App: () => React$Node = ({navigation}) => {
 
       <FAB
         style={styles.fab}
-        icon='plus'
+        icon={require('../assets/baseline_add_black.png')}
         onPress={name => {
           navigation.navigate('NewRecordingScreen')
           console.log('selected button: ${name}');
