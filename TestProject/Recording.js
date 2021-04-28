@@ -17,9 +17,10 @@ export default class Recording {
      */
     addSensor(type) {
         // TODO : Set this to the number of data points that is displayed on the graph
-        const pointsOnGraph = 10; // The number of points that is stored in the graph
-        const timeframeBufferSize = 20;
-        switch (type) {
+        const pointsOnGraph = 500; // The number of points that is stored in the graph
+        const timeframeBufferSize = 50;
+        switch (type)
+        {
             case SensorType.ACCELEROMETER:
                 // Create the timeframe array for the accelerometer (with an initial timeframe)
                 this.graphableData[type] = [new GenericTimeframe(pointsOnGraph, timeframeBufferSize)];
