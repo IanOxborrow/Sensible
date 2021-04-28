@@ -27,7 +27,7 @@ export default class Recording {
                 this.enabledSensors[type] = new Accelerometer(this.graphableData[type], this.sampleRate);
                 break;
             case SensorType.MICROPHONE:
-                console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
+                // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
 
                 // request microphone permission
                 const requestMicPermission = async () => {

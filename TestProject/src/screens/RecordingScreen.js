@@ -16,7 +16,9 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import {LineChart} from 'react-native-chart-kit';
+import {SensorType} from "../../Sensors";
 
 var DATA = [
   {
@@ -57,16 +59,17 @@ class RecordingScreen extends Component {
   constructor(props) {
 
     super(props);
-    
-    sensors = props.route.params.sensors
-    labels = props.route.params.labels
-    console.log(props.route.params.sensors)
-    console.log(props.route.params.labels)
+
+    sensors = props.route.params.sensors;
+    labels = props.route.params.labels;
+    console.log(props.route.params.sensors);
+    console.log(props.route.params.labels);
 
     this.state = {
         dataSource: [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()],
         labelSource: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-    }
+    };
+
   }
 
   // Funtion to create each item in the list
@@ -97,7 +100,7 @@ class RecordingScreen extends Component {
               Recording #
               </Text>
           </View>
-  
+
           <View style={styles.graphStyling}>
             <LineChart
               data={data}
@@ -114,10 +117,10 @@ class RecordingScreen extends Component {
           </View>
           <Button onPress={test} title={'Add data point'} color='#6200F2'/>
 
-  
+
           <FlatList style={styles.list}
               data={labels}
-              keyExtractor={item => item.labelName} 
+              keyExtractor={item => item.labelName}
               renderItem={({item, index}) => (
                   <TouchableOpacity onPress={() => null}>
                       <View style={styles.listItem}>
@@ -126,12 +129,12 @@ class RecordingScreen extends Component {
                   </TouchableOpacity>
               )}
           />
-  
+
           <View>
               <Button title="Finish" color='#6200F2' onPress={() => this.props.navigation.navigate('HomeScreen')}/>
               <Button title="Cancel" color='#6200F2' onPress={() => this.props.navigation.navigate('HomeScreen')}/>
           </View>
-  
+
       </View>
     );
   }

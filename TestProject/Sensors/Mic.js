@@ -7,9 +7,15 @@ export default class Mic extends Sensor
     constructor(dataStore, sampleRate = 0)
     {
         super(dataStore);
-        const micStream = MicStream.addListener(data => {
-            dataStore.addSamples(data);
+
+        function storeData(data) {
+            this.dataStore[this.dataStore.length - 1].addSamples(data);
+        }
+
+        const micStream = MicStream.addListener((data) => {
+            storeData(data);
         });
+
         MicStream.init({
             bufferSize: 4096,
             sampleRate: 44100,
