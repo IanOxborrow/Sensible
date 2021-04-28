@@ -8,6 +8,8 @@
 
 import React, { Component } from 'react';
 import { FloatingAction } from "react-native-floating-action";
+import FAB from '../react-native-paper-src/components/FAB/FAB'
+
 import {
   StyleSheet,
   View,
@@ -61,9 +63,10 @@ const App: () => React$Node = ({navigation}) => {
         )}
       />
 
-      <FloatingAction
-
-        onPressMain={name => {
+      <FAB
+        style={styles.fab}
+        icon='plus'
+        onPress={name => {
           navigation.navigate('NewRecordingScreen')
           console.log('selected button: ${name}');
         }} 
@@ -118,6 +121,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom:20,
     right:20,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 15,
+    bottom: 15,
   },
 });
 

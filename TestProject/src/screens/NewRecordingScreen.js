@@ -5,6 +5,9 @@ import { FloatingAction } from "react-native-floating-action";
 //import { FAB } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import FAB from '../react-native-paper-src/components/FAB/FAB'
+
 import {
   StyleSheet,
   View,
@@ -269,12 +272,13 @@ class NewRecordingScreen extends Component {
           keyExtractor={item => item.labelName} 
           ListFooterComponent = {this.labelListFooter}/>
 
-        <FloatingAction
-          onPressMain={name => {
-            this.props.navigation.navigate('RecordingScreen', {'sensors': this.state.selectedSensors, 'labels': this.state.addedLabels})
-          }} 
-        />
-
+        <FAB
+            style={styles.fab}
+            label="Start Recording"
+            onPress={name => {
+              this.props.navigation.navigate('RecordingScreen', {'sensors': this.state.selectedSensors, 'labels': this.state.addedLabels})
+            }} 
+          />
       </View>
     );
   }
@@ -282,6 +286,7 @@ class NewRecordingScreen extends Component {
 
 
 const styles = StyleSheet.create({
+
   heading: {
     padding: 0,
     backgroundColor: '#6200F2',
@@ -290,6 +295,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     padding:20,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 15,
+    bottom: 15,
   },
 })
 
