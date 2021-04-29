@@ -9,7 +9,7 @@
 
 import React, { Component } from 'react';
 import App from '../../App';
-import { SensorType } from '../../Sensors';
+import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import {
     StyleSheet,
