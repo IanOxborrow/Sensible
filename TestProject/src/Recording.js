@@ -8,6 +8,7 @@ export default class Recording {
         this.enabledSensors = {};
         this.graphableData = {};
         this.logicalTime = 0;
+        this.labels = [];
     }
 
     /**
@@ -64,6 +65,15 @@ export default class Recording {
             default:
                 throw new Error(this.constructor.name + '.addSensor: Received an unrecognised sensor type with id=' + type);
         }
+    }
+
+    /**
+     * Create a new label which can later be added to a timeframe.
+     * @param name The name of the label
+     */
+    createLabel(name)
+    {
+        // Code
     }
 
     /**

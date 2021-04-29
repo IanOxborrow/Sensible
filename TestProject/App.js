@@ -29,8 +29,8 @@ import {
 
 import React from "react";
 import { Text } from "react-native";
-import { SensorType } from "./Sensors";
-import Recording from "./Recording";
+import { SensorType } from "./src/Sensors";
+import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 
 export default class App extends React.Component
