@@ -5,6 +5,9 @@ import { FloatingAction } from "react-native-floating-action";
 //import { FAB } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import FAB from '../react-native-paper-src/components/FAB/FAB'
+
 import {
   StyleSheet,
   View,
@@ -242,14 +245,11 @@ class NewRecordingScreen extends Component {
       <View style={{flex: 1}}>
         <StatusBar barStyle="dark-content" />
 
-        <Text style={styles.baseText}>
-          <Text style={styles.titleText}>
-            {"dydyepdypedpe"}
-            {"\n"}
-            {"\n"}
-          </Text>
-          <Text numberOfLines={5}>{"pydf"}</Text>
-        </Text>
+        <View style={styles.heading}>
+            <Text style={styles.headingText}>
+                New Recording
+            </Text>
+        </View>
 
         <View style={{flexDirection: 'row'}}>
           <Text >{"Sensors"}</Text>
@@ -272,19 +272,37 @@ class NewRecordingScreen extends Component {
           keyExtractor={item => item.labelName} 
           ListFooterComponent = {this.labelListFooter}/>
 
-        <FloatingAction
-          onPressMain={name => {
-            this.props.navigation.navigate('RecordingScreen', {'sensors': this.state.selectedSensors, 'labels': this.state.addedLabels})
-          }} 
-        />
-
+        <FAB
+            style={styles.fab}
+            label="Start Recording"
+            onPress={name => {
+              this.props.navigation.navigate('RecordingScreen', {'sensors': this.state.selectedSensors, 'labels': this.state.addedLabels})
+            }} 
+          />
       </View>
     );
   }
 }
 
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  heading: {
+    padding: 0,
+    backgroundColor: '#6200F2',
+  },
+  headingText: {
+    color: "white",
+    fontSize: 20,
+    padding:20,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 15,
+    bottom: 15,
+  },
+})
 
 //export default StackNav
 
