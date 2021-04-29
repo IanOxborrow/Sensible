@@ -71,7 +71,14 @@ class RecordingScreen extends Component
             counter: 0,
             dataSource: [0],
             labelSource: ['0'],
+            currentLabel: null,
         };
+
+        // Ensure the recording class has been initialised
+        if (App.recording == null)
+        {
+            throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");
+        }
     }
 
     // Funtion to create each item in the list
@@ -82,6 +89,17 @@ class RecordingScreen extends Component
                 <Text style={styles.listItemText}>{title}</Text>
             </View>
         );
+    }
+
+    setLabel(label)
+    {
+        if (label.labelName === this.state.currentLabel)
+        {
+            return;
+        }
+        // Update the label
+        App.recording.setLabel(label.labelName);
+        this.state.currentLabel = label.labelName;
     }
 
     render()
@@ -103,7 +121,12 @@ class RecordingScreen extends Component
         };
 
         const updateGraphUI = () => {
-            this.setState({});
+            // this.setState({}); // TODO: Figure out the difference between this and the line below
+            let updates = {
+                dataSource: [...this.state.dataSource],
+                labelSource: [...this.state.labelSource],
+            };
+            // this.setState(updates); TODO: Update the graph
         };
 
         setInterval(updateGraphData, 100);
@@ -140,7 +163,7 @@ class RecordingScreen extends Component
                           data={labels}
                           keyExtractor={item => item.labelName}
                           renderItem={({ item, index }) => (
-                              <TouchableOpacity onPress={() => null}>
+                              <TouchableOpacity onPress={() => this.setLabel(item)}>
                                   <View style={styles.listItem}>
                                       <Text style={styles.listItemText}> {item.labelName} </Text>
                                   </View>
