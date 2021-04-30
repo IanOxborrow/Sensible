@@ -29,12 +29,14 @@ import {
 
 import React from "react";
 import { Text } from "react-native";
-import { SensorType } from "./Sensors";
-import Recording from "./Recording";
+import { SensorType } from "./src/Sensors";
+import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 
 export default class App extends React.Component
 {
+    static recording;
+
     constructor(props)
     {
         super(props);
@@ -42,50 +44,14 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-        /**
-         * TODO: Move the below code into the recording.addSensor class is possible.
-         * const requestMicPermission = async () => {
-         *   try
-         *   {
-         *     const granted = await PermissionsAndroid.request(
-         *       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-         *       {
-         *         title: "Microphone Permission",
-         *         message:
-         *           "This app needs access to your microphone " +
-         *           "in order to collect microphone data",
-         *         buttonNeutral: "Ask Me Later",
-         *         buttonNegative: "Cancel",
-         *         buttonPositive: "OK"
-         *       }
-         *     );
-         *     if (granted === PermissionsAndroid.RESULTS.GRANTED)
-         *     {
-         *       console.log("You can use the microphone");
-         *     } else
-         *     {
-         *       console.log("Microphone permission denied");
-         *     }
-         *   } catch (err)
-         *   {
-         *     console.warn(err);
-         *   }
-         * };
-         */
 
-        this.recording = new Recording();
-        this.recording.addSensor(SensorType.ACCELEROMETER);
+
+        App.recording = new Recording();
+        App.recording.addSensor(SensorType.ACCELEROMETER);
         // setInterval(() => this.updateDisplay(), 1);
 
-        this.recording.addSensor(SensorType.MICROPHONE);
+        App.recording.addSensor(SensorType.MICROPHONE);
 
-        /**
-         * TODO: Move the below code into the recording.addSensor class.
-         * let micRecording = new Recording();
-         * let mic = new Mic(micRecording);
-         * requestMicPermission();
-         * mic.enable();
-         */
 
         setInterval(function () {
             // console.log(recording.graphableData);

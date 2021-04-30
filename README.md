@@ -2,6 +2,15 @@
 
 Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not be restricted to using existing applications which tend to either not allow labelling or don't allow the selection of sensors.
 
+## Team Roles
+
+Madeleine Carden (u5849803)                 Client liason, documentation  
+Ryan Turner (u6040885)                      Teal Leader, documentation, communication with shadow team   
+King Ho Cheung (u6181123)                   Frontend app development, presentation developer, 
+Ian Oxborrow (u6668026)                     Frontend app development, screen designs, meeting minutes  
+Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development 
+Tristan Smith (u6949592)                    Backend app development, Sensor research, model development   
+
 ## Team Charter
 
 You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter.pdf)
