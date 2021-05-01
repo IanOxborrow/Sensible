@@ -93,6 +93,7 @@ class RecordingScreen extends Component
 
     setLabel(label)
     {
+        console.log("CLICKED LABEL");
         if (label.labelName === this.state.currentLabel)
         {
             return;
@@ -104,33 +105,30 @@ class RecordingScreen extends Component
 
     render()
     {
+
         const updateGraphData = () => {
-            let maxPoints = 100;
+            let maxPoints = 20;
             // Add a new point to the end
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            this.state.labelSource.push("");
             // Remove the first point (from the front)
             if (this.state.dataSource.length > maxPoints)
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
             }
+            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            this.state.labelSource.push("");
             // Update the counter (MAY BE REDUNDANT)
             this.state.counter++;
         };
 
         const updateGraphUI = () => {
-            // this.setState({}); // TODO: Figure out the difference between this and the line below
-            let updates = {
-                dataSource: [...this.state.dataSource],
-                labelSource: [...this.state.labelSource],
-            };
-            // this.setState(updates); TODO: Update the graph
+            this.forceUpdate();
         };
 
-        setInterval(updateGraphData, 100);
-        setInterval(updateGraphUI, 5000);
+        // these get called with every update
+        updateGraphData();
+        setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
