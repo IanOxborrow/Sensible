@@ -78,7 +78,7 @@ class RecordingScreen extends Component
         // Ensure the recording class has been initialised
         if (App.recording == null)
         {
-            throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");
+            throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
         }
     }
 
@@ -105,11 +105,13 @@ class RecordingScreen extends Component
 
     render()
     {
+
         const updateGraphData = () => {
-            let maxPoints = 100;
-            // Add a new point to the end
+            let maxPoints = 20;
+            // Add a new point
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)
             {
@@ -119,29 +121,27 @@ class RecordingScreen extends Component
             }
             else
             {
-                this.state.labelSource.push("");
+                this.state.labelSource.push('');
             }
+
             // Remove the first point (from the front)
             if (this.state.dataSource.length > maxPoints)
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
             }
+
             // Update the counter (MAY BE REDUNDANT)
             this.state.counter++;
         };
 
         const updateGraphUI = () => {
-            // this.setState({}); // TODO: Figure out the difference between this and the line below
-            let updates = {
-                dataSource: [...this.state.dataSource],
-                labelSource: [...this.state.labelSource],
-            };
-            this.setState(updates); // TODO: Update the graph
+            this.forceUpdate();
         };
 
-        setInterval(updateGraphData, 100);
-        setInterval(updateGraphUI, 5000);
+        // these get called with every update
+        updateGraphData();
+        setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
@@ -167,7 +167,6 @@ class RecordingScreen extends Component
                         withDots={false}
                         withVerticalLines={false}
                         withHorizontalLines={false}
-                        paddingLeft={"50"}
                         bezier
                     />
                 </View>
