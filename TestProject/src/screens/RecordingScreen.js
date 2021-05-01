@@ -68,7 +68,8 @@ class RecordingScreen extends Component
         console.log(props.route.params.labels);
 
         this.state = {
-            counter: 0,
+            startTime: new Date(),
+            lastUpdateTime: new Date(),
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
@@ -109,7 +110,17 @@ class RecordingScreen extends Component
             // Add a new point to the end
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            this.state.labelSource.push("");
+            let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
+            if (timeElapsed >= 1)
+            {
+                this.state.lastUpdateTime = new Date();
+                let label = Math.round((new Date() - this.state.startTime) / 1000);
+                this.state.labelSource.push(label.toString());
+            }
+            else
+            {
+                this.state.labelSource.push("");
+            }
             // Remove the first point (from the front)
             if (this.state.dataSource.length > maxPoints)
             {
@@ -126,7 +137,7 @@ class RecordingScreen extends Component
                 dataSource: [...this.state.dataSource],
                 labelSource: [...this.state.labelSource],
             };
-            // this.setState(updates); TODO: Update the graph
+            this.setState(updates); // TODO: Update the graph
         };
 
         setInterval(updateGraphData, 100);
@@ -148,13 +159,16 @@ class RecordingScreen extends Component
                         data={data}
                         width={Dimensions.get('window').width - 10} // from react-native
                         height={220}
-                        yAxisLabel={'$'}
                         chartConfig={chartConfig}
-                        bezier
                         style={{
                             marginVertical: 5,
                             marginHorizontal: 5,
                         }}
+                        withDots={false}
+                        withVerticalLines={false}
+                        withHorizontalLines={false}
+                        paddingLeft={"50"}
+                        bezier
                     />
                 </View>
 

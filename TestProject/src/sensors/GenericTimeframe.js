@@ -9,6 +9,7 @@ export default class GenericTimeframe extends SensorTimeframe
      *                    of data points shown in the graph.
      * @param bufferSize The number of samples to store before it is saved to the file all at once. This is used to
      *                   prevent samples being saved one at a time which adds a lot of extra overhead
+     * @param label      The label of the current timeframe (optional)
      */
     constructor(initialSize, bufferSize, label = null)
     {
