@@ -109,8 +109,16 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
+            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+
+            if (sample == null)
+            {
+                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+            }
+
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            // this.state.dataSource.push(sample);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)

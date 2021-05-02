@@ -95,6 +95,13 @@ export default class Recording {
      * @return The latest timeframe for the specified sensor
      */
     getSensorData(type) {
+        // Throw an error if the sensor hasn't been initialised
+        if (this.graphableData[type] == null)
+        {
+            throw new Error("Recording.getSensorData: Attempted to get sensor data for type-" + type +
+                " but it has not been initialised correctly if at all.");
+        }
+
         let sensorData = this.graphableData[type];
         return sensorData[sensorData.length - 1];
     }
