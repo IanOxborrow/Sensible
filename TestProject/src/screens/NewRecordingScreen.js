@@ -6,6 +6,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
+
+//TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
 
@@ -110,7 +112,7 @@ class NewRecordingScreen extends Component
                         this.setState({ selectedSensors: [...this.state.selectedSensorData] });
 
                         //set the new default vaule to be the first non hidden value
-                        for (key in this.usedSensors)
+                        for (var key in this.usedSensors)
                         {
                             if (!this.usedSensors[key])
                             {
@@ -132,6 +134,8 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
+        console.log(this.state.sensors)
+
         return (
             <View style={styles.sensorListFooter} >
                 <DropDownPicker
@@ -300,8 +304,8 @@ class NewRecordingScreen extends Component
                 <StatusBar barStyle="dark-content" />
 
                 <Appbar.Header>
-                    <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
                     <Appbar.Content title="New Recording Screen" />
+                    <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
                 <View style={styles.content}>
@@ -318,7 +322,7 @@ class NewRecordingScreen extends Component
                         keyExtractor={item => item.sensorName}
                         ListFooterComponent={this.sensorListFooter} />
 
-                    <View style={{paddingBottom: 10}}>
+                    <View style={{paddingBottom: 10, fontSize: 20}}>
                         <Text>{"Labels"}</Text>
                     </View>
 

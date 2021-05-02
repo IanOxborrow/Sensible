@@ -11,6 +11,9 @@ import React, { Component } from 'react';
 import App from '../../App';
 import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
+import Appbar from '../react-native-paper-src/components/Appbar'
+import ToggleButton from '../react-native-paper-src/components/ToggleButton'
+
 import {
     StyleSheet,
     View,
@@ -67,13 +70,22 @@ class RecordingScreen extends Component
         console.log(props.route.params.sensors);
         console.log(props.route.params.labels);
 
+
         this.state = {
             startTime: new Date(),
             lastUpdateTime: new Date(),
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
+            sensors: props.route.params.sensors,
+            labels: props.route.params.labels,
+            sensorNames: []
         };
+
+        for (const [key, value] of Object.entries(this.state.sensors)) {
+            console.log("loopy", key, value);
+            this.state.sensorNames.push(value['sensorName'])
+        }
 
         // Ensure the recording class has been initialised
         if (App.recording == null)
@@ -107,8 +119,9 @@ class RecordingScreen extends Component
         console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
     }
 
-    render()
-    {
+    //function changeDisplayedOnGraph()
+
+    render() {
 
         const updateGraphData = () => {
             let maxPoints = 20;
@@ -158,13 +171,34 @@ class RecordingScreen extends Component
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
 
+        //console.log("names " + this.state.sensorNames)
+
+        let iconDictionary = {
+            'acceleromoter': require('../assets/acceleromotor_icon.png'),
+            'camera': require('../assets/camera_icon.png'),
+            'gyroscope': require('../assets/gyroscope_icon.png'),
+            'microphone': require('../assets/microphone_icon.png')
+        }
+
+        let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
+            return <ToggleButton
+                key={i}
+                icon={iconDictionary[sensorName]}
+                value={sensorName}
+                onPress={() => {console.log("pressed", sensorName)}}
+            />
+        }) 
+        //status={status}
+        
+        console.log(sensorButtonIcons)
+
         return (
+        
             <View style={[styles.container, { flexDirection: 'column' }]}>
-                <View style={styles.heading}>
-                    <Text style={styles.headingText}>
-                        Recording #
-                    </Text>
-                </View>
+                
+                <Appbar.Header>
+                    <Appbar.Content title="Recording #" />
+                </Appbar.Header>
 
                 <View style={styles.graphStyling}>
                     <LineChart
@@ -182,18 +216,21 @@ class RecordingScreen extends Component
                         bezier
                     />
                 </View>
-
+                
+                <View style={{flexDirection: "row", paddingBottom: 10 }}>
+                    {sensorButtonIcons}
+                </View>
 
                 <FlatList style={styles.list}
-                          data={labels}
-                          keyExtractor={item => item.labelName}
-                          renderItem={({ item, index }) => (
-                              <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                  <View style={styles.listItem}>
-                                      <Text style={styles.listItemText}> {item.labelName} </Text>
-                                  </View>
-                              </TouchableOpacity>
-                          )}
+                    data={labels}
+                    keyExtractor={item => item.labelName}
+                    renderItem={({ item, index }) => (
+                        <TouchableOpacity onPress={() => this.setLabel(item)}>
+                            <View style={styles.listItem}>
+                                <Text style={styles.listItemText}> {item.labelName} </Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
                 />
 
                 <View>
