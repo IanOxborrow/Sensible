@@ -118,7 +118,7 @@ class RecordingScreen extends Component
             }
 
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            // this.state.dataSource.push(sample);
+            //this.state.dataSource.push(sample);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)

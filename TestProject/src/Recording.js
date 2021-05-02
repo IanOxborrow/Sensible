@@ -59,7 +59,7 @@ export default class Recording {
                 requestMicPermission();
 
                 this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                this.enabledSensors[type] = new Mic(this.graphableData[type], this.sampleRate);
+                this.enabledSensors[type] = new Mic(this.graphableData[type], this.sampleRate);;
 
                 break;
             default:
