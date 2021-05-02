@@ -6,6 +6,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
+//import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
 
 import App from "../../App";
@@ -69,13 +70,16 @@ class NewRecordingScreen extends Component
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
                 defaultValue={item.sensorName}
-                containerStyle={{ height: 40, width: 150, backgroundColor: "#FFFFFF" }}
+                containerStyle={{ height: 0, width: 150, backgroundColor: "#FFFFFF" }}
                 style={styles.dropdown}
                 itemStyle={{
                     justifyContent: "flex-start",
                     backgroundColor: "#FFFFFF",
                 }}
                 dropDownStyle={{ backgroundColor: "#FFFFFF"}}
+                dropDownContainerStyle={{
+                    backgroundColor: "#000000"
+                }}
 
                 />
             <View style={[styles.listComponent, {marginLeft: 20}]}>
@@ -147,7 +151,7 @@ class NewRecordingScreen extends Component
                     defaultValue={"acceleromoter"}
                     controller={instance => this.sensorPicker = instance}
 
-                    containerStyle={{ height: 40, width: 180, backgroundColor: "#FFFFFF" }}
+                    containerStyle={{ height: 50, width: 180, backgroundColor: "#FFFFFF" }}
                     style={styles.dropdown}
                     itemStyle={{
                         justifyContent: "flex-start",
@@ -178,7 +182,7 @@ class NewRecordingScreen extends Component
                             //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
                             if (this.state.currentSensorSelection != "empty" && this.state.currentSampleRate != "")
                             {
-                                newSensor = {
+                                var newSensor = {
                                     sensorName: this.state.currentSensorSelection,
                                     sampleRate: this.state.currentSampleRate,
                                 };
@@ -190,7 +194,7 @@ class NewRecordingScreen extends Component
                                 this.setState({ selectedSensors: [...this.state.selectedSensorData] });
 
                                 //set the new default vaule to be the first non hidden value
-                                for (key in this.usedSensors)
+                                for (var key in this.usedSensors)
                                 {
                                     if (!this.usedSensors[key])
                                     {
@@ -262,7 +266,7 @@ class NewRecordingScreen extends Component
                     onPress={() => {
 
                         //return if a duplicate has been found
-                        for (i in this.state.addedLabels)
+                        for (var i in this.state.addedLabels)
                         {
                             if (this.state.addedLabels[i]["labelName"] == this.state.currentLabelAddition)
                             {
@@ -275,7 +279,7 @@ class NewRecordingScreen extends Component
                         if (this.state.currentLabelAddition != "")
                         {
 
-                            newLabel = { labelName: this.state.currentLabelAddition };
+                            var newLabel = { labelName: this.state.currentLabelAddition };
                             this.state.addedLabels.push(newLabel);
                             this.setState({ addedLabels: [...this.state.addedLabels] });
 
@@ -296,7 +300,7 @@ class NewRecordingScreen extends Component
                 <StatusBar barStyle="dark-content" />
 
                 <Appbar.Header>
-                    <Appbar.BackAction onPress={{}} />
+                    <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
                     <Appbar.Content title="New Recording Screen" />
                 </Appbar.Header>
 
