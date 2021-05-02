@@ -94,13 +94,17 @@ class RecordingScreen extends Component
 
     setLabel(label)
     {
-        if (label.labelName === this.state.currentLabel)
+        let newLabel = null;
+        // Update the label if a different button is pressed
+        if (label.labelName !== this.state.currentLabel)
         {
-            return;
+            newLabel = label.labelName;
         }
         // Update the label
-        App.recording.setLabel(label.labelName);
-        this.state.currentLabel = label.labelName;
+        App.recording.setLabel(newLabel);
+        this.state.currentLabel = newLabel;
+        // Output a debug message
+        console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
     }
 
     render()
