@@ -9,6 +9,7 @@
 import React, { Component } from 'react';
 import { FloatingAction } from "react-native-floating-action";
 import FAB from '../react-native-paper-src/components/FAB/FAB'
+import Appbar from '../react-native-paper-src/components/Appbar'
 
 import {
   StyleSheet,
@@ -47,11 +48,10 @@ function Item({ title, onSelect }) {
 const App: () => React$Node = ({navigation}) => {
   return (
     <View style={[styles.container, {flexDirection: "column"}]}>
-      <View style={styles.heading}>
-        <Text style={styles.headingText}>
-        Sensible
-        </Text>
-      </View>
+     
+      <Appbar.Header>
+        <Appbar.Content title="Sensible" />
+      </Appbar.Header>
 
       <FlatList style={styles.list}
         data={DATA}

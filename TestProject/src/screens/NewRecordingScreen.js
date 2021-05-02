@@ -1,17 +1,16 @@
 /* eslint-disable prettier/prettier */
 import "react-native-gesture-handler";
 import React, { Component, useState, useRef } from "react";
-//import { IconButton, Colors } from 'react-native-paper';
 import { FloatingAction } from "react-native-floating-action";
-//import { FAB } from 'react-native-paper';
 import DropDownPicker from "react-native-dropdown-picker";
-//import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
+import Appbar from '../react-native-paper-src/components/Appbar'
+
 
 import App from "../../App";
 import {
+    BackHandler,
     StyleSheet,
     View,
     Text,
@@ -296,11 +295,10 @@ class NewRecordingScreen extends Component
             <View style={styles.container}>
                 <StatusBar barStyle="dark-content" />
 
-                <View style={styles.heading}>
-                    <Text style={styles.headingText}>
-                        New Recording
-                    </Text>
-                </View>
+                <Appbar.Header>
+                    <Appbar.BackAction onPress={{}} />
+                    <Appbar.Content title="New Recording Screen" />
+                </Appbar.Header>
 
                 <View style={styles.content}>
 
