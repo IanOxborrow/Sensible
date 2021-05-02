@@ -79,13 +79,24 @@ class RecordingScreen extends Component
             currentLabel: null,
             sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: []
+            sensorNames: [],
+            checkedStatus: []
         };
 
         for (const [key, value] of Object.entries(this.state.sensors)) {
             console.log("loopy", key, value);
             this.state.sensorNames.push(value['sensorName'])
+            this.state.checkedStatus[value['sensorName']] = 'unchecked'
+            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
         }
+
+        console.log(this.state.sensorNames[0])
+        console.log(this.state.checkedStatus)
+        console.log(this.state.checkedStatus[this.state.sensorNames[0]])
+        //set the checked status of the first sensor to be true
+        this.state.checkedStatus[this.state.sensorNames[0]] = 'checked'
+
+        console.log(this.state.checkedStatus[this.state.sensorNames[0]])
 
         // Ensure the recording class has been initialised
         if (App.recording == null)
@@ -120,6 +131,18 @@ class RecordingScreen extends Component
     }
 
     //function changeDisplayedOnGraph()
+
+    toggleGraphDisplay(pressedButton) {
+        
+        this.state.checkedStatus[pressedButton] = 'checked'
+
+        for (const [key, value] of Object.entries(this.state.checkedStatus)) {
+
+            if (key != pressedButton)
+                this.state.checkedStatus[key] = 'unchecked'
+        }
+        
+    }
 
     render() {
 
@@ -180,12 +203,15 @@ class RecordingScreen extends Component
             'microphone': require('../assets/microphone_icon.png')
         }
 
+        console.log(this.state.checkedStatus)
+
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
                 key={i}
                 icon={iconDictionary[sensorName]}
                 value={sensorName}
-                onPress={() => {console.log("pressed", sensorName)}}
+                status={this.state.checkedStatus[sensorName]}
+                onPress={() => {this.toggleGraphDisplay(sensorName)}}
             />
         }) 
         //status={status}
@@ -200,46 +226,49 @@ class RecordingScreen extends Component
                     <Appbar.Content title="Recording #" />
                 </Appbar.Header>
 
-                <View style={styles.graphStyling}>
-                    <LineChart
-                        data={data}
-                        width={Dimensions.get('window').width - 10} // from react-native
-                        height={220}
-                        chartConfig={chartConfig}
-                        style={{
-                            marginVertical: 5,
-                            marginHorizontal: 5,
-                        }}
-                        withDots={false}
-                        withVerticalLines={false}
-                        withHorizontalLines={false}
-                        bezier
+                <View style={styles.content}>
+
+
+                    <View style={styles.graphStyling}>
+                        <LineChart
+                            data={data}
+                            width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                            height={220}
+                            chartConfig={chartConfig}
+                            style={{
+                                marginVertical: 0,
+                                marginHorizontal: 0,
+                            }}
+                            withDots={false}
+                            withVerticalLines={false}
+                            withHorizontalLines={false}
+                            bezier
+                        />
+                    </View>
+                    
+                    <View style={{flexDirection: "row", paddingBottom: 10 }}>
+                        {sensorButtonIcons}
+                    </View>
+
+                    <FlatList style={styles.list}
+                        data={labels}
+                        keyExtractor={item => item.labelName}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity onPress={() => this.setLabel(item)}>
+                                <View elevation={5} style={styles.listItem}>
+                                    <Text style={styles.listItemText}> {item.labelName} </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     />
-                </View>
-                
-                <View style={{flexDirection: "row", paddingBottom: 10 }}>
-                    {sensorButtonIcons}
-                </View>
 
-                <FlatList style={styles.list}
-                    data={labels}
-                    keyExtractor={item => item.labelName}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => this.setLabel(item)}>
-                            <View style={styles.listItem}>
-                                <Text style={styles.listItemText}> {item.labelName} </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                />
-
-                <View>
-                    <Button title="Finish" color="#6200F2"
-                            onPress={() => this.props.navigation.navigate('HomeScreen')} />
-                    <Button title="Cancel" color="#6200F2"
-                            onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                    <View>
+                        <Button title="Finish" color="#6200F2"
+                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                        <Button title="Cancel" color="#6200F2"
+                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                    </View>
                 </View>
-
             </View>
         );
     }
@@ -251,40 +280,49 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 0,
     },
+    content: {
+        flex: 1,
+        padding: 10
+    },
     heading: {
         padding: 0,
         backgroundColor: '#6200F2',
     },
     headingText: {
-        color: 'white',
+        color: '#FFFFFF',
         fontSize: 20,
         padding: 20,
     },
     graphStyling: {
-        flex: 1.5,
+        flex: 0,
     },
     list: {
         flex: 1,
-        padding: 20,
         paddingTop: 10,
     },
     listItem: {
         borderRadius: 5,
         height: 80,
-        width: '100%',
-        borderWidth: 2,
-        borderColor: '#d1d1d1',
-        backgroundColor: 'white',
+        backgroundColor: '#FFFFFF',
+        marginTop: '5%',
+        marginLeft: 10,
+        marginRight: 10,
         justifyContent: 'center',
-        marginBottom: '5%',
-    },
-    listItemText: {
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 2,
+          height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0
+      },
+      listItemText: {
         color: 'black',
         textAlignVertical: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         padding: 10,
-    },
+      },
 });
 
 export default RecordingScreen;
