@@ -68,10 +68,18 @@ class RecordingScreen extends Component
         console.log(props.route.params.labels);
 
         this.state = {
-            counter: 0,
+            startTime: new Date(),
+            lastUpdateTime: new Date(),
             dataSource: [0],
             labelSource: ['0'],
+            currentLabel: null,
         };
+
+        // Ensure the recording class has been initialised
+        if (App.recording == null)
+        {
+            throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
+        }
     }
 
     // Funtion to create each item in the list
@@ -84,30 +92,68 @@ class RecordingScreen extends Component
         );
     }
 
+    setLabel(label)
+    {
+        let newLabel = null;
+        // Update the label if a different button is pressed
+        if (label.labelName !== this.state.currentLabel)
+        {
+            newLabel = label.labelName;
+        }
+        // Update the label
+        App.recording.setLabel(newLabel);
+        this.state.currentLabel = newLabel;
+        // Output a debug message
+        console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
+    }
+
     render()
     {
+
         const updateGraphData = () => {
-            let maxPoints = 100;
-            // Add a new point to the end
+            let maxPoints = 20;
+            // Add a new point
+            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+
+            if (sample == null)
+            {
+                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+            }
+
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            this.state.labelSource.push("");
+            // this.state.dataSource.push(sample);
+            // Add the corresponding x-value
+            let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
+            if (timeElapsed >= 1)
+            {
+                this.state.lastUpdateTime = new Date();
+                let label = Math.round((new Date() - this.state.startTime) / 1000);
+                this.state.labelSource.push(label.toString());
+            }
+            else
+            {
+                this.state.labelSource.push('');
+            }
+
             // Remove the first point (from the front)
             if (this.state.dataSource.length > maxPoints)
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
             }
+
             // Update the counter (MAY BE REDUNDANT)
             this.state.counter++;
         };
 
         const updateGraphUI = () => {
-            this.setState({});
+            this.forceUpdate();
         };
 
-        setInterval(updateGraphData, 100);
-        setInterval(updateGraphUI, 5000);
+        // these get called with every update
+        updateGraphData();
+        setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
@@ -125,13 +171,15 @@ class RecordingScreen extends Component
                         data={data}
                         width={Dimensions.get('window').width - 10} // from react-native
                         height={220}
-                        yAxisLabel={'$'}
                         chartConfig={chartConfig}
-                        bezier
                         style={{
                             marginVertical: 5,
                             marginHorizontal: 5,
                         }}
+                        withDots={false}
+                        withVerticalLines={false}
+                        withHorizontalLines={false}
+                        bezier
                     />
                 </View>
 
@@ -140,7 +188,7 @@ class RecordingScreen extends Component
                           data={labels}
                           keyExtractor={item => item.labelName}
                           renderItem={({ item, index }) => (
-                              <TouchableOpacity onPress={() => null}>
+                              <TouchableOpacity onPress={() => this.setLabel(item)}>
                                   <View style={styles.listItem}>
                                       <Text style={styles.listItemText}> {item.labelName} </Text>
                                   </View>

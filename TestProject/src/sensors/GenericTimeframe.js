@@ -3,16 +3,18 @@ import SensorTimeframe from './SensorTimeframe';
 
 export default class GenericTimeframe extends SensorTimeframe
 {
+    static warning = false; // TODO: Remove this later, it is only used to prevent the saveToCsv function from throwing a warning repeatedly
     /**
      * @param initialSize The maximum number of data points stored in the timeframe. This should be the same as the number
      *                    of data points shown in the graph.
      * @param bufferSize The number of samples to store before it is saved to the file all at once. This is used to
      *                   prevent samples being saved one at a time which adds a lot of extra overhead
+     * @param label      The label of the current timeframe (optional)
      */
-    constructor(initialSize, bufferSize)
+    constructor(initialSize, bufferSize, label = null)
     {
         super(initialSize, bufferSize);
-        this.warning = false; // TODO: Remove this later, it is only used to prevent the saveToCsv function from throwing a warning repeatedly
+        this.label = label;
     }
 
     /**
@@ -123,10 +125,10 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     saveToCsv(samples)
     {
-        if (!this.warning)
+        if (!GenericTimeframe.warning)
         {
             console.warn('GenericTimeframe.saveToCsv: Method has not been implemented. No data will be saved.');
-            this.warning = true;
+            GenericTimeframe.warning = true;
         }
     }
 
