@@ -17,6 +17,7 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  StatusBar
 } from 'react-native';
 
 var DATA = [
