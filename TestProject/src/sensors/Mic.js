@@ -9,6 +9,7 @@ export default class Mic extends Sensor
         super(dataStore);
 
         function storeData(data) {
+            console.log("Just added a new sample");
             this.dataStore[this.dataStore.length - 1].addSamples(data);
         }
 

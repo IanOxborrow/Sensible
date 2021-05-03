@@ -35,7 +35,7 @@ import MainStackNavigator from './src/navigation/MainStackNavigator'
 
 export default class App extends React.Component
 {
-    static recording;
+    static recording = null;
 
     constructor(props)
     {
