@@ -1,15 +1,19 @@
 /* eslint-disable prettier/prettier */
 import "react-native-gesture-handler";
 import React, { Component, useState, useRef } from "react";
-//import { IconButton, Colors } from 'react-native-paper';
 import { FloatingAction } from "react-native-floating-action";
-//import { FAB } from 'react-native-paper';
 import DropDownPicker from "react-native-dropdown-picker";
-//import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import FAB from "../react-native-paper-src/components/FAB/FAB";
+import IconButton from "../react-native-paper-src/components/Button"
+import Appbar from '../react-native-paper-src/components/Appbar'
+
+//TODO reimplement the text inputs with this one to keep the app thematicaly consistant
+//import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
+
+
 import App from "../../App";
 import {
+    BackHandler,
     StyleSheet,
     View,
     Text,
@@ -18,9 +22,8 @@ import {
     TouchableOpacity,
     StatusBar,
     FlatList,
-    Button,
 } from "react-native";
-
+import Icon from "react-native-vector-icons"
 
 class NewRecordingScreen extends Component
 {
@@ -59,65 +62,91 @@ class NewRecordingScreen extends Component
     };
 
     sensorListItem = ({ item }) => (
-        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-            <Text style={styles.title}>{item.sensorName}</Text>
+        <View style={styles.sensorListItem}>
+            <DropDownPicker
+                items={[
+                    { label: item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1), value: item.sensorName }
+                    /*    icon: () => <Image source={require("../assets/" + item.sensorName + "_icon.png")} style={styles.pickerIcon} /> }*/
+                    /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+                    {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
+                    {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
+                ]}
+                defaultValue={item.sensorName}
+                containerStyle={{ height: 0, width: 150, backgroundColor: "#FFFFFF" }}
+                style={styles.dropdown}
+                itemStyle={{
+                    justifyContent: "flex-start",
+                    backgroundColor: "#FFFFFF",
+                }}
+                dropDownStyle={{ backgroundColor: "#FFFFFF"}}
+                dropDownContainerStyle={{
+                    backgroundColor: "#000000"
+                }}
 
-            <Text>{item.sampleRate}</Text>
+                />
+            <View style={[styles.listComponent, {marginLeft: 20}]}>
 
-            <TouchableOpacity
-                style={{ marginLeft: "auto" }}
-                onPress={() => {
-                    console.log("waspressed" + item.sensorName);
-                    //use the sensor name to identify which row was pressed to work out which data to remove
+                <Text>{item.sampleRate}</Text>
 
-                    //make the sensor as not being used
-                    this.usedSensors[item.sensorName] = false;
+                <TouchableOpacity
+                    style={{ marginLeft: "auto" }}
+                    onPress={() => {
+                        console.log("waspressed" + item.sensorName);
+                        //use the sensor name to identify which row was pressed to work out which data to remove
 
-                    //remove the sensor from the sensordata array
-                    for (var i in this.state.selectedSensorData)
-                    {
-                        var sensorData = this.state.selectedSensorData[i];
-                        if (item.sensorName == sensorData["sensorName"])
+                        //make the sensor as not being used
+                        this.usedSensors[item.sensorName] = false;
+
+                        //remove the sensor from the sensordata array
+                        for (var i in this.state.selectedSensorData)
                         {
-                            this.state.selectedSensorData.splice(i, 1);
-                            break;
+                            var sensorData = this.state.selectedSensorData[i];
+                            if (item.sensorName == sensorData["sensorName"])
+                            {
+                                this.state.selectedSensorData.splice(i, 1);
+                                break;
+                            }
                         }
-                    }
 
-                    //update the listview
-                    this.setState({ selectedSensors: [...this.state.selectedSensorData] });
+                        //update the listview
+                        this.setState({ selectedSensors: [...this.state.selectedSensorData] });
 
-                    //set the new default vaule to be the first non hidden value
-                    for (key in this.usedSensors)
-                    {
-                        if (!this.usedSensors[key])
+                        //set the new default vaule to be the first non hidden value
+                        for (var key in this.usedSensors)
                         {
-                            this.sensorPicker.selectItem(key);
-                            break;
+                            if (!this.usedSensors[key])
+                            {
+                                this.sensorPicker.selectItem(key);
+                                break;
+                            }
+
+                            //if all the sensors have been selected, set the curret selection to the 'empty' value
+                            this.sensorPicker.selectItem("empty");
                         }
 
-                        //if all the sensors have been selected, set the curret selection to the 'empty' value
-                        this.sensorPicker.selectItem("empty");
-                    }
+                    }}>
 
-                }}>
-
-                <Image source={require("../assets/baseline_close_black.png")} style={{ marginLeft: "auto" }} />
-            </TouchableOpacity>
+                    <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}  />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
+        console.log(this.state.sensors)
+
         return (
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                <Text style={styles.title}>{""}</Text>
+            <View style={styles.sensorListFooter} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
-                        { label: "Acceleromoter", value: "acceleromoter", hidden: this.usedSensors["acceleromoter"] },
-                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"] },
-                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"] },
+                        { label: "Acceleromoter", value: "acceleromoter", hidden: this.usedSensors["acceleromoter"], 
+                            icon:  () => <Image source={require("../assets/acceleromotor_icon.png")} style={styles.pickerIcon} />},
+                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
+                        icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
+                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
+                        icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
                         { label: "", value: "empty", hidden: true },
                         /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
@@ -126,72 +155,73 @@ class NewRecordingScreen extends Component
                     defaultValue={"acceleromoter"}
                     controller={instance => this.sensorPicker = instance}
 
-                    containerStyle={{ height: 40, width: 150 }}
-                    style={{ backgroundColor: "#fafafa" }}
+                    containerStyle={{ height: 50, width: 180, backgroundColor: "#FFFFFF" }}
+                    style={styles.dropdown}
                     itemStyle={{
                         justifyContent: "flex-start",
+                        backgroundColor: "#FFFFFF",
                     }}
-                    dropDownStyle={{ backgroundColor: "#fafafa" }}
+                    dropDownStyle={{ backgroundColor: "#FFFFFF"}}
 
                     onChangeItem={
                         item => this.setState({ currentSensorSelection: item.value })
                     }
                 />
+                <View style={[styles.listComponent, {marginLeft: 20}]}>
+                    <TextInput
+                        placeholder="sample rate"
+                        style={{}}
+                        ref={input => {
+                            this.sampleRateInput = input;
+                        }}
+                        onChangeText={
+                            text => this.setState({ currentSampleRate: text })
+                        }
+                    />
 
-                <TextInput
-                    placeholder="sample rate"
-                    ref={input => {
-                        this.sampleRateInput = input;
-                    }}
-                    onChangeText={
-                        text => this.setState({ currentSampleRate: text })
-                    }
-                />
+                    <TouchableOpacity
+                        style={{ marginLeft: "auto" }}
+                        onPress={() => {
 
-                <TouchableOpacity
-                    style={{ marginLeft: "auto" }}
-                    onPress={() => {
-
-                        //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
-                        if (this.state.currentSensorSelection != "empty" && this.state.currentSampleRate != "")
-                        {
-                            newSensor = {
-                                sensorName: this.state.currentSensorSelection,
-                                sampleRate: this.state.currentSampleRate,
-                            };
-
-                            //add the selected sensor to a dictioany to mark that it has been selected
-                            this.usedSensors[this.state.currentSensorSelection] = true;
-
-                            this.state.selectedSensorData.push(newSensor);
-                            this.setState({ selectedSensors: [...this.state.selectedSensorData] });
-
-                            //set the new default vaule to be the first non hidden value
-                            for (key in this.usedSensors)
+                            //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
+                            if (this.state.currentSensorSelection != "empty" && this.state.currentSampleRate != "")
                             {
-                                if (!this.usedSensors[key])
+                                var newSensor = {
+                                    sensorName: this.state.currentSensorSelection,
+                                    sampleRate: this.state.currentSampleRate,
+                                };
+
+                                //add the selected sensor to a dictioany to mark that it has been selected
+                                this.usedSensors[this.state.currentSensorSelection] = true;
+
+                                this.state.selectedSensorData.push(newSensor);
+                                this.setState({ selectedSensors: [...this.state.selectedSensorData] });
+
+                                //set the new default vaule to be the first non hidden value
+                                for (var key in this.usedSensors)
                                 {
-                                    this.sensorPicker.selectItem(key);
-                                    break;
+                                    if (!this.usedSensors[key])
+                                    {
+                                        this.sensorPicker.selectItem(key);
+                                        break;
+                                    }
+
+                                    //if all the sensors have been selected, set the curret selection to the 'empty' value
+                                    this.sensorPicker.selectItem("empty");
                                 }
 
-                                //if all the sensors have been selected, set the curret selection to the 'empty' value
-                                this.sensorPicker.selectItem("empty");
+                                this.sampleRateInput.clear();
                             }
-
-                            this.sampleRateInput.clear();
-                        }
-                    }}
-                >
-                    <Image source={require("../assets/baseline_add_black.png")} />
-                </TouchableOpacity>
-
+                        }} >
+                        <Image source={require("../assets/baseline_add_black.png") } style={styles.iconButon}  />
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     };
 
     labelListItem = ({ item }) => (
-        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+        <View style={styles.labelListItem}>
 
             <Text>{item.labelName}</Text>
 
@@ -215,7 +245,7 @@ class NewRecordingScreen extends Component
 
                 }}>
 
-                <Image source={require("../assets/baseline_close_black.png")} style={{ marginLeft: "auto" }} />
+                <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}  />
             </TouchableOpacity>
         </View>
     );
@@ -223,10 +253,11 @@ class NewRecordingScreen extends Component
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     labelListFooter = () => {
         return (
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+            <View style={styles.labelListFooter}>
 
                 <TextInput
                     placeholder="Label Name"
+                    styles={{fontSize: 40}}
                     ref={input => {
                         this.labelNameInput = input;
                     }}
@@ -235,11 +266,11 @@ class NewRecordingScreen extends Component
                     } />
 
                 <TouchableOpacity
-                    style={{ marginLeft: "auto" }}
+                    style={{ marginLeft: "auto"}}
                     onPress={() => {
 
                         //return if a duplicate has been found
-                        for (i in this.state.addedLabels)
+                        for (var i in this.state.addedLabels)
                         {
                             if (this.state.addedLabels[i]["labelName"] == this.state.currentLabelAddition)
                             {
@@ -252,7 +283,7 @@ class NewRecordingScreen extends Component
                         if (this.state.currentLabelAddition != "")
                         {
 
-                            newLabel = { labelName: this.state.currentLabelAddition };
+                            var newLabel = { labelName: this.state.currentLabelAddition };
                             this.state.addedLabels.push(newLabel);
                             this.setState({ addedLabels: [...this.state.addedLabels] });
 
@@ -260,7 +291,7 @@ class NewRecordingScreen extends Component
                         }
                     }}>
 
-                    <Image source={require("../assets/baseline_add_black.png")} style={{ marginLeft: "auto" }} />
+                    <Image source={require("../assets/baseline_add_black.png")} style={styles.iconButon} />
                 </TouchableOpacity>
             </View>
         );
@@ -269,54 +300,64 @@ class NewRecordingScreen extends Component
     render()
     {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <StatusBar barStyle="dark-content" />
 
-                <View style={styles.heading}>
-                    <Text style={styles.headingText}>
-                        New Recording
-                    </Text>
+                <Appbar.Header>
+                    <Appbar.Content title="New Recording Screen" />
+                    <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
+                </Appbar.Header>
+
+                <View style={styles.content}>
+
+                    
+                    <View style={{ flexDirection: "row", paddingBottom: 10 }}>
+                        <Text>{"Sensors"}</Text>
+                        <Text>{"Sample Rate"}</Text>
+                    </View>
+
+                    <FlatList
+                        data={this.state.selectedSensors}
+                        renderItem={this.sensorListItem}
+                        keyExtractor={item => item.sensorName}
+                        ListFooterComponent={this.sensorListFooter} />
+
+                    <View style={{paddingBottom: 10, fontSize: 20}}>
+                        <Text>{"Labels"}</Text>
+                    </View>
+
+                    <FlatList
+                        data={this.state.addedLabels}
+                        renderItem={this.labelListItem}
+                        keyExtractor={item => item.labelName}
+                        ListFooterComponent={this.labelListFooter} />
+
+                    <FAB
+                        style={styles.fab}
+                        label="Start Recording"
+                        onPress={name => {
+                            this.props.navigation.navigate("RecordingScreen", {
+                                "sensors": this.state.selectedSensors,
+                                "labels": this.state.addedLabels,
+                            });
+                        }}
+                    />
                 </View>
-
-                <View style={{ flexDirection: "row" }}>
-                    <Text>{"Sensors"}</Text>
-                    <Text>{"Sample Rate"}</Text>
-                </View>
-
-                <FlatList
-                    data={this.state.selectedSensors}
-                    renderItem={this.sensorListItem}
-                    keyExtractor={item => item.sensorName}
-                    ListFooterComponent={this.sensorListFooter} />
-
-                <View>
-                    <Text>{"Labels"}</Text>
-                </View>
-
-                <FlatList
-                    data={this.state.addedLabels}
-                    renderItem={this.labelListItem}
-                    keyExtractor={item => item.labelName}
-                    ListFooterComponent={this.labelListFooter} />
-
-                <FAB
-                    style={styles.fab}
-                    label="Start Recording"
-                    onPress={name => {
-                        this.props.navigation.navigate("RecordingScreen", {
-                            "sensors": this.state.selectedSensors,
-                            "labels": this.state.addedLabels,
-                        });
-                    }}
-                />
             </View>
         );
     }
 }
 
-
 const styles = StyleSheet.create({
-
+    container: {
+        flex: 1,
+        padding: 0,
+        backgroundColor: "#FFFFFF"
+    },
+    content: {
+        flex: 1,
+        padding: 20
+    },
     heading: {
         padding: 0,
         backgroundColor: "#6200F2",
@@ -326,12 +367,65 @@ const styles = StyleSheet.create({
         fontSize: 20,
         padding: 20,
     },
+    dropdown: {
+        backgroundColor: "#FFFFFF",
+    },
     fab: {
         position: "absolute",
         margin: 16,
         right: 15,
         bottom: 15,
     },
+    listComponent: {
+        flexDirection: "row", 
+        alignItems: "center", 
+        flex: 1,
+        padding: 10,
+        backgroundColor: "#f4f4f4"
+
+    },
+    sensorListItem: {
+        flex: 1,
+        flexDirection: "row", 
+        alignItems: "center", 
+        marginBottom: 10,
+    },
+    sensorListFooter: {
+        flex: 1,
+        flexDirection: "row", 
+        alignItems: "center", 
+        marginBottom: 10,
+    },
+    labelListItem: {
+        flex: 1,
+        flexDirection: "row", 
+        alignItems: "center", 
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: "#f4f4f4"
+    },
+    labelListFooter: {
+        flex: 1,
+        flexDirection: "row", 
+        alignItems: "center", 
+        padding: 10,
+        alignItems: 'stretch',
+        backgroundColor: "#f4f4f4"
+        
+    },
+
+    iconButon: {
+        marginLeft: "auto", 
+        margin: 5,
+        width: 30, 
+        height: 30
+    },
+
+    pickerIcon: { 
+        width: 24, 
+        height: 24
+    }
+    
 });
 
 //export default StackNav
