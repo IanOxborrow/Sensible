@@ -1,0 +1,34 @@
+
+
+# Sprint Meeting
+Date: Wednesday 27th March, 2021
+Time: 10:00 - 11:20
+Location: Zoom Meeting
+Members attended: Ryan Turner (u6040885), Madeleine Carden (u5849803),Ian Oxborrow (u6668026), King Ho Cheung (u6181123), Chathura Galappaththi (@u6947345), Tristan Smith (u6949592)
+
+
+10:03
+* Meeting start
+* Trisistian is explaining that reconstructing the audio data into something that can be played is more effort
+
+10:11
+* chathura has troubles with his version of the project
+* The docker container idea may end up being difficult to implement because it is difficult to put the emulator inside of the container. The iOS version would also not be able to go inside of the container
+
+10:19
+* Implementing permissions across devices is made a priority
+* We need to prioritise the presentation of the app fro Hannah this Monday to improve her impression for the audit
+
+* we need to prioritise the presentation oft he app for our presentation to the client on Monday
+
+* there is an issue with the lag in the graph that needs to be storted out
+
+
+* tasks being assigned
+* Tristan has said that he will add his own tasks
+
+11:13
+* Tristan and chathura have left
+
+11:20
+* Meeting finish
