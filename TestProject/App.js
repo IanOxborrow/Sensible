@@ -29,13 +29,13 @@ import {
 
 import React from "react";
 import { Text } from "react-native";
-import { SensorType } from "./Sensors";
-import Recording from "./Recording";
+import { SensorType } from "./src/Sensors";
+import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 
 export default class App extends React.Component
 {
-    static recording;
+    static recording = null;
 
     constructor(props)
     {
@@ -53,10 +53,10 @@ export default class App extends React.Component
         App.recording.addSensor(SensorType.MICROPHONE);
 
 
-        setInterval(function () {
-            // console.log(recording.graphableData);
-            // console.log(micRecording.graphableData.length);
-        }, 100);
+        // setInterval(function () {
+        //     // console.log(recording.graphableData);
+        //     console.log (App.recording.getSensorData(SensorType.MICROPHONE));
+        // }, 100);
 
         // mic.disable();
     }
