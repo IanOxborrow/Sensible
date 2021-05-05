@@ -133,7 +133,7 @@ class RecordingScreen extends Component
     //function changeDisplayedOnGraph()
 
     toggleGraphDisplay(pressedButton) {
-        
+
         this.state.checkedStatus[pressedButton] = 'checked'
 
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
@@ -141,7 +141,7 @@ class RecordingScreen extends Component
             if (key != pressedButton)
                 this.state.checkedStatus[key] = 'unchecked'
         }
-        
+
     }
 
     render() {
@@ -203,7 +203,7 @@ class RecordingScreen extends Component
             'microphone': require('../assets/microphone_icon.png')
         }
 
-        console.log(this.state.checkedStatus)
+        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
@@ -213,13 +213,13 @@ class RecordingScreen extends Component
                 status={this.state.checkedStatus[sensorName]}
                 onPress={() => {this.toggleGraphDisplay(sensorName)}}
             />
-        }) 
+        })
         //status={status}
-        
-        console.log(sensorButtonIcons)
+
+        // console.log(sensorButtonIcons)
 
         return (
-        
+
             <View style={[styles.container, { flexDirection: 'column' }]}>
                 
                 <Appbar.Header>
@@ -245,7 +245,7 @@ class RecordingScreen extends Component
                             bezier
                         />
                     </View>
-                    
+
                     <View style={{flexDirection: "row", paddingBottom: 10 }}>
                         {sensorButtonIcons}
                     </View>
