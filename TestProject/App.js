@@ -53,10 +53,10 @@ export default class App extends React.Component
         App.recording.addSensor(SensorType.MICROPHONE);
 
 
-        setInterval(function () {
-            // console.log(recording.graphableData);
-            // console.log(micRecording.graphableData.length);
-        }, 100);
+        // setInterval(function () {
+        //     // console.log(recording.graphableData);
+        //     console.log (App.recording.getSensorData(SensorType.MICROPHONE));
+        // }, 100);
 
         // mic.disable();
     }
