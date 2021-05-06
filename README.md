@@ -6,9 +6,9 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 
 Madeleine Carden (u5849803)                 Client liason, documentation  
 Ryan Turner (u6040885)                      Teal Leader, documentation, communication with shadow team   
-King Ho Cheung (u6181123)                   Frontend app development, presentation developer, 
+King Ho Cheung (u6181123)                   Frontend app development, presentation developer  
 Ian Oxborrow (u6668026)                     Frontend app development, screen designs, meeting minutes  
-Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development 
+Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development  
 Tristan Smith (u6949592)                    Backend app development, Sensor research, model development   
 
 ## Team Charter
@@ -21,6 +21,7 @@ Our team charter gives an overview of many documents which are vital to our proj
 
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
+[Semester 1 Audit 3 presentation](link)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
 
@@ -50,9 +51,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
-
-After discussion with our stakeholders, we have created an updated User Story Map which only focuses on the Minimum Viable Product here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
+To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Screen%20Designs)
 
@@ -66,9 +65,9 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find each prototype and release of our project here: [Graphing Preview](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Graph%20Sample)
+You can find a video demonstrating our current working product here: [Sensible Demo](link)
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_28-03.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](link)
 
 # System Documentation
 
