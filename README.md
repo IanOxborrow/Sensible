@@ -5,7 +5,7 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 ## Team Roles
 
 Madeleine Carden (u5849803)                 Client liason, documentation  
-Ryan Turner (u6040885)                      Teal Leader, documentation, communication with shadow team   
+Ryan Turner (u6040885)                      Team Leader, documentation, communication with shadow team   
 King Ho Cheung (u6181123)                   Frontend app development, presentation developer  
 Ian Oxborrow (u6668026)                     Frontend app development, screen designs, meeting minutes  
 Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development  
