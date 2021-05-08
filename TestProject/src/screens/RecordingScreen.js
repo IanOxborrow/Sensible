@@ -135,7 +135,9 @@ class RecordingScreen extends Component
             // Add a new point
             // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             // let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+            console.log(sample);
 
             if (sample == null)
             {
