@@ -48,8 +48,7 @@ export default class App extends React.Component
 
         App.recording = new Recording();
         App.recording.addSensor(SensorType.ACCELEROMETER);
-        // setInterval(() => this.updateDisplay(), 1);
-
+        App.recording.addSensor(SensorType.GYROSCOPE);
         App.recording.addSensor(SensorType.MICROPHONE);
 
 

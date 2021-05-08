@@ -24,25 +24,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-var DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'Label Name 1',
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Label Name 2',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Label Name 3',
-    },
-    {
-        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
-        title: 'Label Name 4',
-    },
-];
-
 const data = {
     labels: [],
     datasets: [
@@ -134,13 +115,16 @@ class RecordingScreen extends Component
 
     toggleGraphDisplay(pressedButton) {
 
-        this.state.checkedStatus[pressedButton] = 'checked'
+        this.state.checkedStatus[pressedButton] = 'checked';
 
+        // TODO next sprint: This can be optimised to simply uncheck the last button and check the new button
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
             if (key != pressedButton)
                 this.state.checkedStatus[key] = 'unchecked'
         }
+
+        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
 
     }
 
@@ -150,13 +134,15 @@ class RecordingScreen extends Component
             let maxPoints = 20;
             // Add a new point
             // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
 
             if (sample == null)
             {
                 throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
             }
 
+            // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
             //this.state.dataSource.push(sample);
             // Add the corresponding x-value
@@ -221,7 +207,7 @@ class RecordingScreen extends Component
         return (
 
             <View style={[styles.container, { flexDirection: 'column' }]}>
-                
+
                 <Appbar.Header>
                     <Appbar.Content title="Recording #" />
                 </Appbar.Header>

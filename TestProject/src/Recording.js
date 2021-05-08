@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {Accelerometer, SensorType, GenericTimeframe, Mic} from './Sensors';
+import { Accelerometer, SensorType, GenericTimeframe, Mic, Gyroscope } from "./Sensors";
 import Label from "./sensors/Label"
 import {PermissionsAndroid} from "react-native";
 
@@ -27,6 +27,12 @@ export default class Recording {
                 this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
                 // Create a new accelerometer instance to track and enable it
                 this.enabledSensors[type] = new Accelerometer(this.graphableData[type], this.sampleRate);
+                break;
+            case SensorType.GYROSCOPE:
+                // Create the timeframe array for the gyroscope (with an initial timeframe)
+                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
+                // Create a new gyroscope instance to track and enable it
+                this.enabledSensors[type] = new Gyroscope(this.graphableData[type], this.sampleRate);
                 break;
             case SensorType.MICROPHONE:
                 // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');

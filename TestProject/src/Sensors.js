@@ -2,6 +2,8 @@
 export {default as GenericTimeframe} from './sensors/GenericTimeframe';
 export {default as Accelerometer} from './sensors/Accelerometer';
 export {default as AccelerometerSample} from './sensors/AccelerometerSample';
+export {default as Gyroscope} from './sensors/Gyroscope';
+export {default as GyroscopeSample} from './sensors/GyroscopeSample';
 export {default as Mic} from './sensors/Mic';
 export const SensorType = {
     ACCELEROMETER: 0,
