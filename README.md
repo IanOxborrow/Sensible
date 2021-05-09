@@ -22,7 +22,7 @@ Our team charter gives an overview of many documents which are vital to our proj
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
 
-[Semester 1 Audit 3 presentation](link)
+[Semester 1 Audit 3 presentation](https://prezi.com/view/cKJAmTEcKYXGDH3sH9L9/)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
 
