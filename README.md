@@ -31,7 +31,7 @@ The following links will lead you to each of our audit presentation slides. The 
 
 You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
 
-If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Statements%20of%20Work)
+If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
 ## Decision Making and reflection
 
@@ -43,7 +43,7 @@ If this link doesn't work for you, try to sign in using your slack account [here
 
 (Please contact Ryan ASAP if you are having trouble accessing this slack channel)
 
-When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Reflection)
+When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](Background%20Documentation/Reflection)
 
 ## Boards for assignment of work
 
@@ -55,11 +55,11 @@ To communicate to possible investors of the project, we have created a promotion
 
 To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
-To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Screen%20Designs)
+To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
 To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/communication%20plan.pdf)
 
-To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Meeting%20Minutes)
+To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](Background%20Documentation/Meeting%20Minutes)
 
 ## Risk
 
@@ -69,7 +69,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 You can find a video demonstrating our current working product here: [Sensible Demo](link)
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](link)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
 # System Documentation
 
