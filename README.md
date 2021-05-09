@@ -36,7 +36,7 @@ If you would like to view previous revisions of our Statement of Work they can b
 
 ## Decision Making and reflection
 
-Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/decision_log.md)
+Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%Documentation/Decision%log/Decision%log.pdf)
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
