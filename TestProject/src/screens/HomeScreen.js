@@ -48,7 +48,7 @@ function Item({ title, onSelect }) {
 const App: () => React$Node = ({navigation}) => {
   return (
     <View style={[styles.container, {flexDirection: "column"}]}>
-     
+    
       <Appbar.Header>
         <Appbar.Content title="Sensible" />
       </Appbar.Header>
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
+    color: '#FFFFFF',
     margin: 16,
     right: 15,
     bottom: 15,

@@ -33,7 +33,7 @@ class NewRecordingScreen extends Component
         super(props);
         //this.props = props
         this.state = {
-            currentSensorSelection: "acceleromoter",
+            currentSensorSelection: "accelerometer",
             currentSampleRate: "",
             currentLabelAddition: "",
             selectedSensorData: [],
@@ -41,9 +41,10 @@ class NewRecordingScreen extends Component
             addedLabels: [],
         };
 
+
         this.sensorPicker;
 
-        this.usedSensors = { "acceleromoter": false, "gyroscope": false, "microphone": false };
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false };
 
         // Ensure the recording class has been initialised
         if (App.recording == null)
@@ -72,13 +73,13 @@ class NewRecordingScreen extends Component
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
                 defaultValue={item.sensorName}
-                containerStyle={{ height: 0, width: 150, backgroundColor: "#FFFFFF" }}
+                containerStyle={{width: 150, backgroundColor: "#FFFFFF" }}
                 style={styles.dropdown}
                 itemStyle={{
                     justifyContent: "flex-start",
                     backgroundColor: "#FFFFFF",
                 }}
-                dropDownStyle={{ backgroundColor: "#FFFFFF"}}
+                dropDownStyle={{ height: 100, backgroundColor: "#FFFFFF"}}
                 dropDownContainerStyle={{
                     backgroundColor: "#000000"
                 }}
@@ -91,6 +92,7 @@ class NewRecordingScreen extends Component
                 <TouchableOpacity
                     style={{ marginLeft: "auto" }}
                     onPress={() => {
+                        
                         console.log("waspressed" + item.sensorName);
                         //use the sensor name to identify which row was pressed to work out which data to remove
 
@@ -134,15 +136,15 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log(this.state.sensors)
+        console.log("sensor state " + this.state.sensors)
 
         return (
             <View style={styles.sensorListFooter} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
-                        { label: "Acceleromoter", value: "acceleromoter", hidden: this.usedSensors["acceleromoter"], 
-                            icon:  () => <Image source={require("../assets/acceleromotor_icon.png")} style={styles.pickerIcon} />},
+                        { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"], 
+                            icon:  () => <Image source={require("../assets/accelerometer_icon.png")} style={styles.pickerIcon} />},
                         { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
                         icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
                         { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
@@ -152,7 +154,7 @@ class NewRecordingScreen extends Component
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                         {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                     ]}
-                    defaultValue={"acceleromoter"}
+                    defaultValue={"accelerometer"}
                     controller={instance => this.sensorPicker = instance}
 
                     containerStyle={{ height: 50, width: 180, backgroundColor: "#FFFFFF" }}
@@ -161,7 +163,7 @@ class NewRecordingScreen extends Component
                         justifyContent: "flex-start",
                         backgroundColor: "#FFFFFF",
                     }}
-                    dropDownStyle={{ backgroundColor: "#FFFFFF"}}
+                    dropDownStyle={{backgroundColor: "#FFFFFF"}}
 
                     onChangeItem={
                         item => this.setState({ currentSensorSelection: item.value })
@@ -316,6 +318,7 @@ class NewRecordingScreen extends Component
                         <Text>{"Sample Rate"}</Text>
                     </View>
 
+
                     <FlatList
                         data={this.state.selectedSensors}
                         renderItem={this.sensorListItem}
@@ -392,7 +395,9 @@ const styles = StyleSheet.create({
     },
     sensorListFooter: {
         flex: 1,
+        alignSelf:'baseline',
         flexDirection: "row", 
+        flexWrap: 'wrap',
         alignItems: "center", 
         marginBottom: 10,
     },
