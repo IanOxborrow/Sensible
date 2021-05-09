@@ -20,7 +20,8 @@ Our team charter gives an overview of many documents which are vital to our proj
 ## Presentation Links
 
 
-The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
+The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
+
 [Semester 1 Audit 3 presentation](link)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
@@ -29,7 +30,7 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1_SIGNED.pdf)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
@@ -67,7 +68,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find a video demonstrating our current working product here: [Sensible Demo](link)
+You can find a video demonstrating our current working product here: [Sensible Demo](Background%Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
