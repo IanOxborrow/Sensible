@@ -13,6 +13,7 @@ import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar'
 import ToggleButton from '../react-native-paper-src/components/ToggleButton'
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 import {
     StyleSheet,
@@ -128,6 +129,12 @@ class RecordingScreen extends Component
 
     }
 
+    // Displays a toast when a button is long pressed
+    displayToast(buttonName) {
+        // Making the toast (delicious)
+        this.toast.show('Sensor: ' + buttonName, 2000);
+    }
+
     render() {
 
         const updateGraphData = () => {
@@ -200,6 +207,8 @@ class RecordingScreen extends Component
                 value={sensorName}
                 status={this.state.checkedStatus[sensorName]}
                 onPress={() => {this.toggleGraphDisplay(sensorName)}}
+                onLongPress={() => {this.displayToast(sensorName)}}
+                delayPressIn={500}
             />
         })
         //status={status}
@@ -257,6 +266,15 @@ class RecordingScreen extends Component
                                 onPress={() => this.props.navigation.navigate('HomeScreen')} />
                     </View>
                 </View>
+                <Toast ref={(toast) => this.toast = toast}
+                    position='top'
+                    positionValue={70}
+                    style={{backgroundColor:'white'}}
+                    textStyle={{color:'black'}}
+                    opacity={0.8}
+                    // fadeInDuration={1000} Not sure these work, computer's a bit laggy
+                    // fadeOutDuration={1000}
+                />
             </View>
         );
     }
