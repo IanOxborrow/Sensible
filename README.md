@@ -64,7 +64,7 @@ To keep track of the communication at meetings we have kept minutes of all clien
 
 ## Risk
 
-To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register.pdf)
+To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register%20(Updated).pdf)
 
 # Prototypes and Releases
 
