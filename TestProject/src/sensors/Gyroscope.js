@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
-import { AccelerometerSample } from '../Sensors';
-import { accelerometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import { GyroscopeSample } from '../Sensors';
+import { gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
 
-export default class Accelerometer extends Sensor
+export default class Gyroscope extends Sensor
 {
     constructor(dataStore, sampleRate = null)
     {
@@ -17,25 +17,25 @@ export default class Accelerometer extends Sensor
 
     /**
      * Push a sample to the most recent SensorTimeframe in the Recording class. This function should only be
-     * called by the react-native-sensors module which provides data from the accelerometer
+     * called by the react-native-sensors module which provides data from the gyroscope
      *
-     * @param x Acceleration in the x axis
-     * @param y Acceleration in the y axis
-     * @param z Acceleration in the z axis
+     * @param x Angular velocity in the x axis
+     * @param y Angular velocity in the y axis
+     * @param z Angular velocity in the z axis
      */
     pushSample(x, y, z)
     {
         if (this.isEnabled)
         {
             const latestTimeframe = this.dataStore[this.dataStore.length - 1];
-            const sample = new AccelerometerSample(x, y, z);
+            const sample = new GyroscopeSample(x, y, z);
             latestTimeframe.addSample(sample);
         }
     }
 
     /**
-     * Enable the accelerometer
-     * @param sampleRate The rate at which accelerometer data should be sampled
+     * Enable the gyroscope
+     * @param sampleRate The rate at which gyroscope data should be sampled
      */
     enable(sampleRate)
     {
@@ -48,14 +48,14 @@ export default class Accelerometer extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = accelerometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
             this.updateSampleRate(sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
     }
 
     /***
-     * Disable the accelerometer
+     * Disable the gyroscope
      */
     disable()
     {
@@ -72,7 +72,7 @@ export default class Accelerometer extends Sensor
 
     /***
      * Update the sampling rate (the sensor must already be enabled for this function to be effective).
-     * @param sampleRate The new rate at which the accelerometer data should be sampled (in Hz)
+     * @param sampleRate The new rate at which the gyroscope data should be sampled (in Hz)
      */
     updateSampleRate(sampleRate)
     {
@@ -85,9 +85,9 @@ export default class Accelerometer extends Sensor
         else if (!this.isEnabled)
         {
             throw new Error(this.constructor.name + '.updateSampleRate: Cannot update sample rate whilst the ' +
-              'sensor is disabled');
+                'sensor is disabled');
         }
 
-        setUpdateIntervalForType(SensorTypes.accelerometer, this.frequencyToPeriod(sampleRate) * 1000);
+        setUpdateIntervalForType(SensorTypes.gyroscope, this.frequencyToPeriod(sampleRate) * 1000);
     }
 }
