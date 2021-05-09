@@ -13,6 +13,7 @@ import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar'
 import ToggleButton from '../react-native-paper-src/components/ToggleButton'
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 import {
     StyleSheet,
@@ -23,25 +24,6 @@ import {
     FlatList,
     TouchableOpacity,
 } from 'react-native';
-
-var DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'Label Name 1',
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Label Name 2',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Label Name 3',
-    },
-    {
-        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
-        title: 'Label Name 4',
-    },
-];
 
 const data = {
     labels: [],
@@ -134,14 +116,23 @@ class RecordingScreen extends Component
 
     toggleGraphDisplay(pressedButton) {
 
-        this.state.checkedStatus[pressedButton] = 'checked'
+        this.state.checkedStatus[pressedButton] = 'checked';
 
+        // TODO next sprint: This can be optimised to simply uncheck the last button and check the new button
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
             if (key != pressedButton)
                 this.state.checkedStatus[key] = 'unchecked'
         }
 
+        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
+
+    }
+
+    // Displays a toast when a button is long pressed
+    displayToast(buttonName) {
+        // Making the toast (delicious)
+        this.toast.show('Sensor: ' + buttonName, 2000);
     }
 
     render() {
@@ -151,12 +142,16 @@ class RecordingScreen extends Component
             // Add a new point
             // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
 
             if (sample == null)
             {
                 throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
             }
 
+            // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
             //this.state.dataSource.push(sample);
             // Add the corresponding x-value
@@ -197,7 +192,7 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'acceleromoter': require('../assets/acceleromotor_icon.png'),
+            'accelerometer': require('../assets/acceleromotor_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
@@ -212,6 +207,8 @@ class RecordingScreen extends Component
                 value={sensorName}
                 status={this.state.checkedStatus[sensorName]}
                 onPress={() => {this.toggleGraphDisplay(sensorName)}}
+                onLongPress={() => {this.displayToast(sensorName)}}
+                delayPressIn={500}
             />
         })
         //status={status}
@@ -221,7 +218,7 @@ class RecordingScreen extends Component
         return (
 
             <View style={[styles.container, { flexDirection: 'column' }]}>
-                
+
                 <Appbar.Header>
                     <Appbar.Content title="Recording #" />
                 </Appbar.Header>
@@ -269,6 +266,15 @@ class RecordingScreen extends Component
                                 onPress={() => this.props.navigation.navigate('HomeScreen')} />
                     </View>
                 </View>
+                <Toast ref={(toast) => this.toast = toast}
+                    position='top'
+                    positionValue={70}
+                    style={{backgroundColor:'white'}}
+                    textStyle={{color:'black'}}
+                    opacity={0.8}
+                    // fadeInDuration={1000} Not sure these work, computer's a bit laggy
+                    // fadeOutDuration={1000}
+                />
             </View>
         );
     }

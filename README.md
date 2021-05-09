@@ -5,10 +5,10 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 ## Team Roles
 
 Madeleine Carden (u5849803)                 Client liason, documentation  
-Ryan Turner (u6040885)                      Teal Leader, documentation, communication with shadow team   
-King Ho Cheung (u6181123)                   Frontend app development, presentation developer, 
+Ryan Turner (u6040885)                      Team Leader, documentation, communication with shadow team   
+King Ho Cheung (u6181123)                   Frontend app development, presentation developer  
 Ian Oxborrow (u6668026)                     Frontend app development, screen designs, meeting minutes  
-Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development 
+Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development  
 Tristan Smith (u6949592)                    Backend app development, Sensor research, model development   
 
 ## Team Charter
@@ -20,7 +20,9 @@ Our team charter gives an overview of many documents which are vital to our proj
 ## Presentation Links
 
 
-The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
+The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
+
+[Semester 1 Audit 3 presentation](link)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
 
@@ -28,13 +30,13 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1_SIGNED.pdf)
 
-If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Statements%20of%20Work)
+If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
 ## Decision Making and reflection
 
-Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/decision_log.md)
+Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/Decision%20log.pdf)
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
@@ -42,7 +44,7 @@ If this link doesn't work for you, try to sign in using your slack account [here
 
 (Please contact Ryan ASAP if you are having trouble accessing this slack channel)
 
-When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Reflection)
+When making decisions about feedback recieved, we store our reflection and learning in feedback tables here: [Reflection Tables](Background%20Documentation/Reflection)
 
 ## Boards for assignment of work
 
@@ -50,25 +52,25 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate our understanding of the project requirements to our stakeholders we have created a user story map here: [User Story Map](Background%20Documentation/User%20Story%20Map/User_Story_Map.pdf)
+To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
-After discussion with our stakeholders, we have created an updated User Story Map which only focuses on the Minimum Viable Product here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
+To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
-To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Screen%20Designs)
+To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
 To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/communication%20plan.pdf)
 
-To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Background%20Documentation/Meeting%20Minutes)
+To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](Background%20Documentation/Meeting%20Minutes)
 
 ## Risk
 
-To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register.pdf)
+To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register%20(Updated).pdf)
 
 # Prototypes and Releases
 
-You can find each prototype and release of our project here: [Graphing Preview](https://gitlab.cecs.anu.edu.au/u6668026/sensible-techlauncher/-/tree/master/Graph%20Sample)
+You can find a video demonstrating our current working product here: [Sensible Demo](link)
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_28-03.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
 # System Documentation
 
