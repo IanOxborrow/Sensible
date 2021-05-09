@@ -20,7 +20,8 @@ Our team charter gives an overview of many documents which are vital to our proj
 ## Presentation Links
 
 
-The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.
+The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
+
 [Semester 1 Audit 3 presentation](link)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
@@ -29,13 +30,13 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1_SIGNED.pdf)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
 ## Decision Making and reflection
 
-Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/decision_log.md)
+Decisions are made in our decision making channel on slack. For an overview for the major project decisions you can browse our decision log: [Decision Log](Background%20Documentation/Decision%20log/Decision%20log.pdf)
 
 Or if you would like to see all decisions which have been made you can view our slack channel: [Decision Making Channel - Slack](https://app.slack.com/client/T01P49EES2F/C01QUENBY9E/thread/C01QUENBY9E-1615180806.003200?force_cold_boot=1)
 
@@ -51,7 +52,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](link)
+To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
 To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
@@ -63,7 +64,7 @@ To keep track of the communication at meetings we have kept minutes of all clien
 
 ## Risk
 
-To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register.pdf)
+To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register%20(Updated).pdf)
 
 # Prototypes and Releases
 
