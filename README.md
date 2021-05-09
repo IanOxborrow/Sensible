@@ -68,8 +68,6 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find a video demonstrating our current working product here: [Sensible Demo](link)
-
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
 # System Documentation
