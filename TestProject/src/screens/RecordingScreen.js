@@ -192,7 +192,7 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'acceleromoter': require('../assets/acceleromotor_icon.png'),
+            'accelerometer': require('../assets/acceleromotor_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
