@@ -52,7 +52,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](link)
+To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
 To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
 
@@ -68,7 +68,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find a video demonstrating our current working product here: [Sensible Demo](Background%Documentation/Assessment/21-S1-2-C_Sensible.docx)
+You can find a video demonstrating our current working product here: [Sensible Demo](link)
 
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
