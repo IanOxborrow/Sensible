@@ -33,7 +33,7 @@ class NewRecordingScreen extends Component
         super(props);
         //this.props = props
         this.state = {
-            currentSensorSelection: "acceleromoter",
+            currentSensorSelection: "accelerometer",
             currentSampleRate: "",
             currentLabelAddition: "",
             selectedSensorData: [],
@@ -43,7 +43,7 @@ class NewRecordingScreen extends Component
 
         this.sensorPicker;
 
-        this.usedSensors = { "acceleromoter": false, "gyroscope": false, "microphone": false };
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false };
 
         // Ensure the recording class has been initialised
         if (App.recording == null)
@@ -54,7 +54,7 @@ class NewRecordingScreen extends Component
 
     componentDidMount = () => {
         //make sure that the accelorometer is the default item in the picker view
-        //this.sensorPicker.selectItem('acceleromoter');
+        //this.sensorPicker.selectItem('accelerometer');
     };
 
     sensorListHeader = () => {
@@ -67,7 +67,7 @@ class NewRecordingScreen extends Component
                 items={[
                     { label: item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1), value: item.sensorName }
                     /*    icon: () => <Image source={require("../assets/" + item.sensorName + "_icon.png")} style={styles.pickerIcon} /> }*/
-                    /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+                    /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                     {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
@@ -141,18 +141,18 @@ class NewRecordingScreen extends Component
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
-                        { label: "Acceleromoter", value: "acceleromoter", hidden: this.usedSensors["acceleromoter"], 
+                        { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"],
                             icon:  () => <Image source={require("../assets/acceleromotor_icon.png")} style={styles.pickerIcon} />},
-                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
+                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"],
                         icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
+                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"],
                         icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
                         { label: "", value: "empty", hidden: true },
-                        /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+                        /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                         {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                     ]}
-                    defaultValue={"acceleromoter"}
+                    defaultValue={"accelerometer"}
                     controller={instance => this.sensorPicker = instance}
 
                     containerStyle={{ height: 50, width: 180, backgroundColor: "#FFFFFF" }}
@@ -310,7 +310,7 @@ class NewRecordingScreen extends Component
 
                 <View style={styles.content}>
 
-                    
+
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
                         <Text>{"Sensors"}</Text>
                         <Text>{"Sample Rate"}</Text>
@@ -377,8 +377,8 @@ const styles = StyleSheet.create({
         bottom: 15,
     },
     listComponent: {
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         flex: 1,
         padding: 10,
         backgroundColor: "#f4f4f4"
@@ -386,46 +386,46 @@ const styles = StyleSheet.create({
     },
     sensorListItem: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
     sensorListFooter: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
     labelListItem: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         marginBottom: 10,
         backgroundColor: "#f4f4f4"
     },
     labelListFooter: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         alignItems: 'stretch',
         backgroundColor: "#f4f4f4"
-        
+
     },
 
     iconButon: {
-        marginLeft: "auto", 
+        marginLeft: "auto",
         margin: 5,
-        width: 30, 
+        width: 30,
         height: 30
     },
 
-    pickerIcon: { 
-        width: 24, 
+    pickerIcon: {
+        width: 24,
         height: 24
     }
-    
+
 });
 
 //export default StackNav

@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
-import { AccelerometerSample } from '../Sensors';
-import { accelerometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import { BarometerSample } from '../Sensors';
+import { barometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
 
-export default class Accelerometer extends Sensor
+export default class Barometer extends Sensor
 {
     constructor(dataStore, sampleRate = null)
     {
@@ -17,28 +17,28 @@ export default class Accelerometer extends Sensor
 
     /**
      * Push a sample to the most recent SensorTimeframe in the Recording class. This function should only be
-     * called by the react-native-sensors module which provides data from the accelerometer
+     * called by the react-native-sensors module which provides data from the barometer
      *
-     * @param x Acceleration in the x axis
-     * @param y Acceleration in the y axis
-     * @param z Acceleration in the z axis
+     * @param pressure Atmospheric pressure
      */
-    pushSample(x, y, z)
+    pushSample(pressure)
     {
         if (this.isEnabled)
         {
             const latestTimeframe = this.dataStore[this.dataStore.length - 1];
-            const sample = new AccelerometerSample(x, y, z);
+            const sample = new BarometerSample(pressure);
             latestTimeframe.addSample(sample);
         }
     }
 
     /**
-     * Enable the accelerometer
-     * @param sampleRate The rate at which accelerometer data should be sampled
+     * Enable the barometer
+     * @param sampleRate The rate at which barometer data should be sampled
      */
     enable(sampleRate)
     {
+        console.warn(this.constructor.name + '.enable: A sample rate cannot be set for the barometer');
+
         if (!this.isEnabled)
         {
             if (sampleRate === 0)
@@ -47,15 +47,14 @@ export default class Accelerometer extends Sensor
                     '. Sample rates must be strictly positive');
             }
 
+            this.subscription = barometer.subscribe(({ pressure, timestamp }) => this.pushSample(pressure));
             this.isEnabled = true;
-            this.subscription = accelerometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
-            this.updateSampleRate(sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
     }
 
     /***
-     * Disable the accelerometer
+     * Disable the barometer
      */
     disable()
     {
@@ -72,22 +71,11 @@ export default class Accelerometer extends Sensor
 
     /***
      * Update the sampling rate (the sensor must already be enabled for this function to be effective).
-     * @param sampleRate The new rate at which the accelerometer data should be sampled (in Hz)
+     * @param sampleRate The new rate at which the barometer data should be sampled (in Hz)
      */
     updateSampleRate(sampleRate)
     {
-        // Check that no invalid values are passed in
-        if (sampleRate < 0)
-        {
-            throw new Error(this.constructor.name + '.updateSampleRate: Received an invalid sample rate of ' +
-                sampleRate + '. Sample rates must be positive');
-        }
-        else if (!this.isEnabled)
-        {
-            throw new Error(this.constructor.name + '.updateSampleRate: Cannot update sample rate whilst the ' +
-              'sensor is disabled');
-        }
-
-        setUpdateIntervalForType(SensorTypes.accelerometer, this.frequencyToPeriod(sampleRate) * 1000);
+        throw new Error(this.constructor.name + '.updateSampleRate: A custom sampling rate cannot be set for the ' +
+            'barometer');
     }
 }

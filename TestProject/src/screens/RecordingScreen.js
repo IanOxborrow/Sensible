@@ -141,8 +141,10 @@ class RecordingScreen extends Component
             let maxPoints = 20;
             // Add a new point
             // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
 
             if (sample == null)
             {
@@ -190,7 +192,7 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'acceleromoter': require('../assets/acceleromotor_icon.png'),
+            'accelerometer': require('../assets/acceleromotor_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
