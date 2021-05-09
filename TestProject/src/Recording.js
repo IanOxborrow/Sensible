@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { Accelerometer, SensorType, GenericTimeframe, Mic, Gyroscope, Magnetometer, Barometer } from "./Sensors";
 import Label from "./sensors/Label"
-import {PermissionsAndroid} from "react-native";
+import {PermissionsAndroid, Platform} from "react-native";
+import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
 
 export default class Recording {
     constructor() {
@@ -51,26 +52,33 @@ export default class Recording {
 
                 // request microphone permission
                 const requestMicPermission = async () => {
-                    try {
-                        const granted = await PermissionsAndroid.request(
-                            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                            {
-                                title: "Microphone Permission",
-                                message:
-                                    "This app needs access to your microphone " +
-                                    "in order to collect microphone data",
-                                buttonNeutral: "Ask Me Later",
-                                buttonNegative: "Cancel",
-                                buttonPositive: "OK"
-                            }
-                        );
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                            console.log("You can use the microphone");
-                        } else {
-                            console.log("Microphone permission denied");
+                    if (Platform.OS === 'ios') {
+                        const granted = await check(PERMISSIONS.IOS.MICROPHONE);
+                        if (granted == RESULTS.GRANTED) {
+                            console.log("iOS - You can use the microphone")
                         }
-                    } catch (err) {
-                        console.warn(err);
+                    } else {
+                        try {
+                            const granted = await PermissionsAndroid.request(
+                                PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                                {
+                                    title: "Microphone Permission",
+                                    message:
+                                        "This app needs access to your microphone " +
+                                        "in order to collect microphone data",
+                                    buttonNeutral: "Ask Me Later",
+                                    buttonNegative: "Cancel",
+                                    buttonPositive: "OK"
+                                }
+                            );
+                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                console.log("You can use the microphone");
+                            } else {
+                                console.log("Microphone permission denied");
+                            }
+                        } catch (err) {
+                            console.warn(err);
+                        }
                     }
                 };
 

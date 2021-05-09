@@ -12,6 +12,10 @@ target 'TestProject' do
     :hermes_enabled => false
   )
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
+
   target 'TestProjectTests' do
     inherit! :complete
     # Pods for testing
