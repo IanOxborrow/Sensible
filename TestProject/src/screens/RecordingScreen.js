@@ -227,7 +227,7 @@ class RecordingScreen extends Component
 
 
                     <View style={styles.graphStyling}>
-                        <Text style={styles.yLabel}>m/s^2</Text>
+                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
                         <LineChart
                             data={data}
                             width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
@@ -243,7 +243,7 @@ class RecordingScreen extends Component
                             bezier
                         />
                     </View>
-                    <Text style={styles.xLabel}>Seconds Passed</Text>
+                    <Text style={styles.xLabel}>Time (Seconds)</Text>
 
                     <View style={{flexDirection: "row", paddingBottom: 10 }}>
                         {sensorButtonIcons}
