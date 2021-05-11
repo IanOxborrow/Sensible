@@ -79,8 +79,10 @@ class NewRecordingScreen extends Component
                     justifyContent: "flex-start",
                     backgroundColor: "#FFFFFF",
                 }}
-                dropDownStyle={{ height: 100, backgroundColor: "#FFFFFF"}}
+                dropDownStyle={{ backgroundColor: "#FFFFFF"}}
                 dropDownContainerStyle={{
+                    
+                    position: 'absolute',
                     backgroundColor: "#000000"
                 }}
 
@@ -139,7 +141,7 @@ class NewRecordingScreen extends Component
         console.log("sensor state " + this.state.sensors)
 
         return (
-            <View style={styles.sensorListFooter} >
+            <View style={[styles.sensorListFooter, {alignSelf:'baseline'}]} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
@@ -164,7 +166,7 @@ class NewRecordingScreen extends Component
                         backgroundColor: "#FFFFFF",
                     }}
                     dropDownStyle={{backgroundColor: "#FFFFFF"}}
-
+                
                     onChangeItem={
                         item => this.setState({ currentSensorSelection: item.value })
                     }
@@ -311,15 +313,14 @@ class NewRecordingScreen extends Component
                 </Appbar.Header>
 
                 <View style={styles.content}>
-
                     
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
                         <Text>{"Sensors"}</Text>
                         <Text>{"Sample Rate"}</Text>
                     </View>
 
-
                     <FlatList
+                        
                         data={this.state.selectedSensors}
                         renderItem={this.sensorListItem}
                         keyExtractor={item => item.sensorName}
@@ -394,10 +395,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     sensorListFooter: {
-        flex: 1,
-        alignSelf:'baseline',
+        
         flexDirection: "row", 
-        flexWrap: 'wrap',
+        
         alignItems: "center", 
         marginBottom: 10,
     },
