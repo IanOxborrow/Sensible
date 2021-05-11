@@ -218,9 +218,10 @@ class RecordingScreen extends Component
 
 
                     <View style={styles.graphStyling}>
+                        <Text style={styles.yLabel}>m/s^2</Text>
                         <LineChart
                             data={data}
-                            width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                            width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                             height={220}
                             chartConfig={chartConfig}
                             style={{
@@ -233,6 +234,7 @@ class RecordingScreen extends Component
                             bezier
                         />
                     </View>
+                    <Text style={styles.xLabel}>Seconds Passed</Text>
 
                     <View style={{flexDirection: "row", paddingBottom: 10 }}>
                         {sensorButtonIcons}
@@ -264,6 +266,14 @@ class RecordingScreen extends Component
 }
 
 const styles = StyleSheet.create({
+    yLabel: {
+        transform: [{rotate: "-90deg"}],
+        fontWeight: "bold",
+    },
+    xLabel: {
+        fontWeight: "bold",
+        textAlign: "center",
+    },
     container: {
         flex: 1,
         padding: 0,
@@ -282,7 +292,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     graphStyling: {
-        flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
     },
     list: {
         flex: 1,
