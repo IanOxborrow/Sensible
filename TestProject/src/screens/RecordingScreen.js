@@ -25,6 +25,25 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
+var DATA = [
+    {
+        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        title: 'Label Name 1',
+    },
+    {
+        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        title: 'Label Name 2',
+    },
+    {
+        id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        title: 'Label Name 3',
+    },
+    {
+        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
+        title: 'Label Name 4',
+    },
+];
+
 const data = {
     labels: [],
     datasets: [
@@ -118,7 +137,6 @@ class RecordingScreen extends Component
 
         this.state.checkedStatus[pressedButton] = 'checked';
 
-        // TODO next sprint: This can be optimised to simply uncheck the last button and check the new button
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
             if (key != pressedButton)

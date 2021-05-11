@@ -8,7 +8,7 @@ const DefaultTheme: Theme = {
   roundness: 4,
   colors: {
     primary: '#6200ee',
-    accent: '#03dac4',
+    accent: '#6200ee',//accent: '#03dac4',
     background: '#f6f6f6',
     surface: white,
     error: '#B00020',

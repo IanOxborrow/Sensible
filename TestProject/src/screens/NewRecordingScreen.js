@@ -80,6 +80,8 @@ class NewRecordingScreen extends Component
                 }}
                 dropDownStyle={{ backgroundColor: "#FFFFFF"}}
                 dropDownContainerStyle={{
+
+                    position: 'absolute',
                     backgroundColor: "#000000"
                 }}
 
@@ -91,6 +93,7 @@ class NewRecordingScreen extends Component
                 <TouchableOpacity
                     style={{ marginLeft: "auto" }}
                     onPress={() => {
+
                         console.log("waspressed" + item.sensorName);
                         //use the sensor name to identify which row was pressed to work out which data to remove
 
@@ -134,10 +137,10 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log(this.state.sensors)
+        console.log("sensor state " + this.state.sensors)
 
         return (
-            <View style={styles.sensorListFooter} >
+            <View style={[styles.sensorListFooter, {alignSelf:'baseline'}]} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
@@ -161,7 +164,7 @@ class NewRecordingScreen extends Component
                         justifyContent: "flex-start",
                         backgroundColor: "#FFFFFF",
                     }}
-                    dropDownStyle={{ backgroundColor: "#FFFFFF"}}
+                    dropDownStyle={{backgroundColor: "#FFFFFF"}}
 
                     onChangeItem={
                         item => this.setState({ currentSensorSelection: item.value })
@@ -309,6 +312,7 @@ class NewRecordingScreen extends Component
                 </Appbar.Header>
 
                 <View style={styles.content}>
+
 
 
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
