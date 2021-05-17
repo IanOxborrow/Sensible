@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, { Component } from 'react';
 import { FloatingAction } from "react-native-floating-action";
 import FAB from '../react-native-paper-src/components/FAB/FAB'
@@ -21,20 +13,9 @@ import {
   StatusBar
 } from 'react-native';
 
-var DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'Recording Name 1',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Recording Name 2',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Recording Name 3',
-  },
-];
+const DATA = {
+    recordings: [],
+};
 
 // Funtion to create each item in the list
 function Item({ title, onSelect }) {
@@ -45,36 +26,49 @@ function Item({ title, onSelect }) {
     );
 }
 
-const App: () => React$Node = ({navigation}) => {
-  return (
-    <View style={[styles.container, {flexDirection: "column"}]}>
-     
-      <Appbar.Header>
-        <Appbar.Content title="Sensible" />
-      </Appbar.Header>
+export default class App extends Component {
+    constructor(props){
+        super(props);
+        if (props.route.params?.recordingNumber){
+            recordingNumber = props.route.params.recordingNumber;
+            data.recordings.push(recordingNumber);
+            console.log("Data carried over: " + recordingNumber);
+        }
+    }
+    render() {
+      //const {recordingInfo} = route.params;
+      return (
+        <View style={[styles.container, {flexDirection: "column"}]}>
 
-      <FlatList style={styles.list}
-        data={DATA}
-        renderItem={({item, index}) => (
-          <TouchableOpacity onPress={() => null}>
-            <View elevation={5} style={styles.listItem}>
-              <Text style={styles.listItemText}> Recording # </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+          <Appbar.Header>
+            <Appbar.Content title="Sensible" />
+          </Appbar.Header>
 
-      <FAB
-        style={styles.fab}
-        icon={require('../assets/baseline_add_black.png')}
-        onPress={name => {
-          navigation.navigate('NewRecordingScreen')
-          console.log('selected button: ${name}');
-        }} 
-      />
-    </View>
-  );
-};
+          <FlatList style={styles.list}
+            data={DATA}
+            renderItem={({item, index}) => (
+              <TouchableOpacity onPress={() => null}>
+                <View elevation={5} style={styles.listItem}>
+                  <Text style={styles.listItemText}> Recording # </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+
+          <FAB
+            style={styles.fab}
+            icon={require('../assets/baseline_add_black.png')}
+            onPress={name => {
+              console.log("array size: " + DATA.size);
+              this.props.navigation.navigate("NewRecordingScreen", {
+                "recordingNumber": 1,
+              });
+            }}
+          />
+        </View>
+      );
+    }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -115,5 +109,3 @@ const styles = StyleSheet.create({
     bottom: 15,
   },
 });
-
-export default App;

@@ -46,7 +46,8 @@ class RecordingScreen extends Component
     constructor(props)
     {
         super(props);
-
+        recordingNumber = props.route.params.recordingNumber;
+        console.log("recording number" + recordingNumber);
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
         console.log(props.route.params.sensors);
@@ -261,7 +262,10 @@ class RecordingScreen extends Component
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                            onPress={() => this.props.navigation.navigate('HomeScreen', {
+                                "recordingInfo": this.state.sensorName,
+                                "recordingNumber": recordingNumber,
+                          })} />
                         <Button title="Cancel" color="#6200F2"
                                 onPress={() => this.props.navigation.navigate('HomeScreen')} />
                     </View>

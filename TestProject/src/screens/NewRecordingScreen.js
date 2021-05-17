@@ -32,6 +32,8 @@ class NewRecordingScreen extends Component
     {
         super(props);
         //this.props = props
+        recordingNumber = props.route.params.recordingNumber;
+        console.log("recording number" + recordingNumber);
         this.state = {
             currentSensorSelection: "accelerometer",
             currentSampleRate: "",
@@ -339,6 +341,7 @@ class NewRecordingScreen extends Component
                             this.props.navigation.navigate("RecordingScreen", {
                                 "sensors": this.state.selectedSensors,
                                 "labels": this.state.addedLabels,
+                                "recordingNumber": recordingNumber,
                             });
                         }}
                     />
