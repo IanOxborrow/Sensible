@@ -1,20 +1,24 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
+import SensorSample from "./SensorSample";
+import { getSensorFileName } from "../Sensors";
+import { appendFile } from "react-native-fs";
 
 export default class GenericTimeframe extends SensorTimeframe
 {
-    static warning = false; // TODO: Remove this later, it is only used to prevent the saveToCsv function from throwing a warning repeatedly
     /**
-     * @param initialSize The maximum number of data points stored in the timeframe. This should be the same as the number
-     *                    of data points shown in the graph.
-     * @param bufferSize The number of samples to store before it is saved to the file all at once. This is used to
-     *                   prevent samples being saved one at a time which adds a lot of extra overhead
-     * @param label      The label of the current timeframe (optional)
+     * @param recording     A reference to the recording class that this timeframe is stored under
+     * @param initialSize   The number of samples to store before auto-saving to file
+     * @param bufferSize    The number of samples to push to file at once
+     * @param type          The type of data stored in the timeframe eg. SensorTypes.ACCELEROMETER
+     * @param label         The initial label of the current timeframe (optional)
      */
-    constructor(initialSize, bufferSize, label = null)
+    constructor(recording, initialSize, bufferSize, type, label = null)
     {
-        super(initialSize, bufferSize);
+        super(recording, initialSize, bufferSize);
+        this.type = type;
         this.label = label;
+        this.filePath = this.recording.folderPath + getSensorFileName(this.type);
     }
 
     /**
@@ -29,13 +33,19 @@ export default class GenericTimeframe extends SensorTimeframe
     static moveCircularPointer(shiftCount, currentIndex, elementCount, size)
     {
         if (Math.abs(shiftCount) > elementCount)
-            {throw new Error('GenericTimeframe.moveCircularPointer: Attempted to shift the pointer ' + shiftCount +
-              ' space(s) but the array is only ' + elementCount + ' element(s) long');}
+        {
+            throw new Error('GenericTimeframe.moveCircularPointer: Attempted to shift the pointer ' + shiftCount +
+              ' space(s) but the array is only ' + elementCount + ' element(s) long');
+        }
 
         if (shiftCount > 0)
-            {return currentIndex + shiftCount < size ? currentIndex + shiftCount : currentIndex + shiftCount - size;}
+        {
+            return currentIndex + shiftCount < size ? currentIndex + shiftCount : currentIndex + shiftCount - size;
+        }
         else
-            {return currentIndex + shiftCount > -1 ? currentIndex + shiftCount : currentIndex + shiftCount + size;}
+        {
+            return currentIndex + shiftCount > -1 ? currentIndex + shiftCount : currentIndex + shiftCount + size;
+        }
     }
 
     /**
@@ -45,6 +55,12 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     addSample(sample)
     {
+        // Make sure that the data is wrapped in a sample class
+        if (!(sample instanceof SensorSample))
+        {
+            throw new Error(this.constructor.name + '.addSample: Received an unwrapped sample.');
+        }
+
         // Pop the first sample and shift the array if at capacity
         if (this.dataSize === this.data.length) {this.popAndSave(1);}
 
@@ -58,12 +74,23 @@ export default class GenericTimeframe extends SensorTimeframe
     /**
      * Add multiple samples to the timeframe at once. This should only be called on the latest timeframe.
      * @param samples An array of samples to add to the timeframe
+     * @param wrapper A reference to a wrapper class (eg. MicSample, AccelerometerSample). This is only needed
+     *                if the data is not pre-wrapped in a Sample class
      */
-    addSamples(samples)
+    addSamples(samples, wrapper = null)
     {
+        // Make sure that the data is wrapped in a sample class
+        if (!(samples[0] instanceof SensorSample) && wrapper == null)
+        {
+            throw new Error(this.constructor.name + '.addSamples: Received an unwrapped sample with no reference to ' +
+                'a wrapper. Either pass in wrapped data or pass in a reference to the wrapper class.');
+        }
+
         for (let i = 0; i < samples.length; i++)
         {
-            this.addSample(samples[i]);
+            const sample = wrapper == null ? samples[i] : new wrapper(samples[i]);
+            // Wrap the sample if needed and add it to this timeframe
+            this.addSample(sample);
         }
     }
 
@@ -125,10 +152,9 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     saveToCsv(samples)
     {
-        if (!GenericTimeframe.warning)
+        for (let i = 0; i < samples.length; i++)
         {
-            console.warn('GenericTimeframe.saveToCsv: Method has not been implemented. No data will be saved.');
-            GenericTimeframe.warning = true;
+            appendFile(this.filePath, samples[0].getData().toString() + ',' + this.label + '\n', 'utf8');
         }
     }
 

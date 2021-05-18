@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import MicStream from 'react-native-microphone-stream';
+import { MicSample } from "../Sensors";
 
 export default class Mic extends Sensor
 {
@@ -12,7 +13,7 @@ export default class Mic extends Sensor
 
         function storeData(data) {
             // console.log("Just added a new sample");
-            dataStore[dataStore.length - 1].addSamples(data);
+            dataStore[dataStore.length - 1].addSamples(data, MicSample);
         }
 
         const micStream = MicStream.addListener((data) => {

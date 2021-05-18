@@ -46,6 +46,7 @@ class NewRecordingScreen extends Component
         this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false };
 
         // Ensure the recording class has been initialised
+        // TODO: Change this to check whether a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");

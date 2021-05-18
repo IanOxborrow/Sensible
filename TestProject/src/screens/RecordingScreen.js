@@ -100,6 +100,7 @@ class RecordingScreen extends Component
         console.log(this.state.checkedStatus[this.state.sensorNames[0]])
 
         // Ensure the recording class has been initialised
+        // TODO: Change this to check if a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
@@ -125,6 +126,7 @@ class RecordingScreen extends Component
             newLabel = label.labelName;
         }
         // Update the label
+        // TODO: Change this to use the current `Recording` instance
         App.recording.setLabel(newLabel);
         this.state.currentLabel = newLabel;
         // Output a debug message
@@ -158,6 +160,7 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
+            // TODO: Change these to get data from the current `Recording` instance
             // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
             // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
