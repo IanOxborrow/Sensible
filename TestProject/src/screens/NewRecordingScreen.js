@@ -55,7 +55,7 @@ class NewRecordingScreen extends Component
 
     componentDidMount = () => {
         //make sure that the accelorometer is the default item in the picker view
-        //this.sensorPicker.selectItem('acceleromoter');
+        //this.sensorPicker.selectItem('accelerometer');
     };
 
     sensorListHeader = () => {
@@ -68,7 +68,7 @@ class NewRecordingScreen extends Component
                 items={[
                     { label: item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1), value: item.sensorName }
                     /*    icon: () => <Image source={require("../assets/" + item.sensorName + "_icon.png")} style={styles.pickerIcon} /> }*/
-                    /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+                    /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                     {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
@@ -138,7 +138,7 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log("sensor state " + this.state.sensors)
+        console.log("sensor state " + this.usedSensors)
 
         return (
             <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
@@ -148,11 +148,11 @@ class NewRecordingScreen extends Component
                         { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"], 
                             icon:  () => <Image source={require("../assets/accelerometer_icon.png")} style={styles.pickerIcon} />},
                         { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
-                        icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
+                            icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
                         { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
-                        icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
+                            icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
                         { label: "", value: "empty", hidden: true },
-                        /*{label: 'Acceleromoter', value: 'acceleromoter', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
+                        /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                         {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                     ]}
@@ -313,7 +313,6 @@ class NewRecordingScreen extends Component
                 </Appbar.Header>
 
                 <View style={styles.content}>
-                    
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
                         <Text>{"Sensors"}</Text>
                         <Text>{"Sample Rate"}</Text>
@@ -430,7 +429,8 @@ const styles = StyleSheet.create({
         width: 24, 
         height: 24
     }
-    
+
+
 });
 
 //export default StackNav
