@@ -1,5 +1,10 @@
 /* eslint-disable prettier/prettier */
+<<<<<<< HEAD
 import {Accelerometer, SensorType, GenericTimeframe, Mic} from './Sensors';
+=======
+import { Accelerometer, SensorType, GenericTimeframe, Mic, Gyroscope, Magnetometer, Barometer } from "./Sensors";
+import Label from "./sensors/Label"
+>>>>>>> 9bff0cf7720bce6b9c79993bf964a55bcfc2c3e7
 import {PermissionsAndroid} from "react-native";
 
 export default class Recording {
@@ -28,6 +33,27 @@ export default class Recording {
                 // Create a new accelerometer instance to track and enable it
                 this.enabledSensors[type] = new Accelerometer(this.graphableData[type], this.sampleRate);
                 break;
+<<<<<<< HEAD
+=======
+            case SensorType.GYROSCOPE:
+                // Create the timeframe array for the gyroscope (with an initial timeframe)
+                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
+                // Create a new gyroscope instance to track and enable it
+                this.enabledSensors[type] = new Gyroscope(this.graphableData[type], this.sampleRate);
+                break;
+            case SensorType.MAGNETOMETER:
+                // Create the timeframe array for the magnetometer (with an initial timeframe)
+                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
+                // Create a new magnetometer instance to track and enable it
+                this.enabledSensors[type] = new Magnetometer(this.graphableData[type], this.sampleRate);
+                break;
+            case SensorType.BAROMETER:
+                // Create the timeframe array for the magnetometer (with an initial timeframe)
+                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
+                // Create a new barometer instance to track and enable it
+                this.enabledSensors[type] = new Barometer(this.graphableData[type], this.sampleRate);
+                break;
+>>>>>>> 9bff0cf7720bce6b9c79993bf964a55bcfc2c3e7
             case SensorType.MICROPHONE:
                 // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
 

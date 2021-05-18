@@ -87,9 +87,20 @@ class RecordingScreen extends Component
     render()
     {
         const updateGraphData = () => {
-            let maxPoints = 100;
-            // Add a new point to the end
+            let maxPoints = 20;
+            // Add a new point
+            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
             let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+
+            if (sample == null)
+            {
+                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+            }
+
+            // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
             this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
             this.state.labelSource.push("");
             // Remove the first point (from the front)
@@ -112,6 +123,31 @@ class RecordingScreen extends Component
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
 
+        //console.log("names " + this.state.sensorNames)
+
+        let iconDictionary = {
+            'accelerometer': require('../assets/acceleromotor_icon.png'),
+            'camera': require('../assets/camera_icon.png'),
+            'gyroscope': require('../assets/gyroscope_icon.png'),
+            'microphone': require('../assets/microphone_icon.png')
+        }
+
+        // console.log(this.state.checkedStatus)
+
+        let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
+            return <ToggleButton
+                key={i}
+                icon={iconDictionary[sensorName]}
+                value={sensorName}
+                status={this.state.checkedStatus[sensorName]}
+                onPress={() => {this.toggleGraphDisplay(sensorName)}}
+                onLongPress={() => {this.displayToast(sensorName)}}
+                delayPressIn={500}
+            />
+        })
+        //status={status}
+
+        // console.log(sensorButtonIcons)
         return (
             <View style={[styles.container, { flexDirection: 'column' }]}>
                 <View style={styles.heading}>
