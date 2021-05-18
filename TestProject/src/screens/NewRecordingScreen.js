@@ -141,7 +141,7 @@ class NewRecordingScreen extends Component
         console.log("sensor state " + this.state.sensors)
 
         return (
-            <View style={[styles.sensorListFooter, {alignSelf:'baseline'}]} >
+            <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[

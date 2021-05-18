@@ -203,7 +203,7 @@ class RecordingScreen extends Component
             'microphone': require('../assets/microphone_icon.png')
         }
 
-        console.log(this.state.checkedStatus)
+        //console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
