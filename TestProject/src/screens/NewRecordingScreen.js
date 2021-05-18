@@ -1,13 +1,17 @@
-import 'react-native-gesture-handler';
-import React, { Component, useState, useRef} from 'react';
-//import { IconButton, Colors } from 'react-native-paper';
+/* eslint-disable prettier/prettier */
+import "react-native-gesture-handler";
+import React, { Component, useState, useRef } from "react";
 import { FloatingAction } from "react-native-floating-action";
-//import { FAB } from 'react-native-paper';
-import DropDownPicker from 'react-native-dropdown-picker';
-//import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DropDownPicker from "react-native-dropdown-picker";
+import FAB from "../react-native-paper-src/components/FAB/FAB";
+import IconButton from "../react-native-paper-src/components/Button"
+import Appbar from '../react-native-paper-src/components/Appbar'
 
-import FAB from '../react-native-paper-src/components/FAB/FAB'
+//TODO reimplement the text inputs with this one to keep the app thematicaly consistant
+//import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
+
+import App from "../../App";
 import {
     BackHandler,
     StyleSheet,
@@ -126,83 +130,8 @@ class NewRecordingScreen extends Component
                 </TouchableOpacity>
             </View>
         </View>
->>>>>>> 9bff0cf7720bce6b9c79993bf964a55bcfc2c3e7
     );
-  };
 
-  labelListItem = ({ item }) => (
-    <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-      
-      <Text>{item.labelName}</Text>
-
-      <TouchableOpacity 
-          style={{marginLeft: 'auto'}} 
-          onPress={() => {  
-            console.log('waspressed' + item.labelName)
-            //use the label name to identify which row was pressed to work out which data to remove
-
-            //remove the selected label from the list
-            for (var i in this.state.addedLabels) {
-              if (item.labelName == this.state.addedLabels[i]['labelName']){
-                this.state.addedLabels.splice(i,1);
-                break;
-              }
-            }
-
-            this.setState({addedLabels: [...this.state.addedLabels] })
-
-          }}>
-            
-            <Image source={require("../assets/baseline_close_black.png")} style={{marginLeft: 'auto'}}/>
-        </TouchableOpacity>
-    </View>
-  );
-
-  //constant item that stays at the bottom of the list. This acts as the add new row in the list
-  labelListFooter = () => {
-    return (
-      <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-      
-        <TextInput 
-          placeholder="Label Name"
-          ref={input => { this.labelNameInput = input }}
-          onChangeText={
-            text => this.setState({currentLabelAddition: text})
-          } />
-
-        <TouchableOpacity 
-          style={{marginLeft: 'auto'}} 
-          onPress={() => {  
-            
-            //return if a duplicate has been found
-            for (i in this.state.addedLabels) {
-              if (this.state.addedLabels[i]['labelName'] == this.state.currentLabelAddition) {
-                return
-              }
-            }
-
-            //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
-            // and make sure that the label name is not in the addedLabels already
-            if (this.state.currentLabelAddition != "") {
-
-              newLabel = {labelName: this.state.currentLabelAddition}
-              this.state.addedLabels.push(newLabel)
-              this.setState({addedLabels: [...this.state.addedLabels] })
-              
-              this.labelNameInput.clear()
-            }
-          }} >
-
-          <Image source={require("../assets/baseline_add_black.png")} style={{marginLeft: 'auto'}}/>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  render() {
-    return (
-      <View style={{flex: 1}}>
-        <StatusBar barStyle="dark-content" />
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
         console.log(this.state.sensors)
@@ -319,6 +248,7 @@ class NewRecordingScreen extends Component
                 <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}  />
             </TouchableOpacity>
         </View>
+    );
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     labelListFooter = () => {
@@ -417,7 +347,6 @@ class NewRecordingScreen extends Component
         );
     }
 }
-
 
 const styles = StyleSheet.create({
     container: {
