@@ -27,7 +27,7 @@ import App from '../App';
 export default class Recording {
     constructor() {
         this.name = 'Recording1';
-        // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/';
+        // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/'; // TODO: Figure out why content is not being save here!
         this.folderPath = App.SAVE_FILE_PATH;
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
