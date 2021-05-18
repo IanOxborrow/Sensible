@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 export default class NotImplementedError extends Error
 {
     constructor(message)

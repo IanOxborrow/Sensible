@@ -35,7 +35,7 @@ import MainStackNavigator from './src/navigation/MainStackNavigator'
 
 export default class App extends React.Component
 {
-    static recording = null;
+    static recording;
 
     constructor(props)
     {
@@ -48,14 +48,15 @@ export default class App extends React.Component
 
         App.recording = new Recording();
         App.recording.addSensor(SensorType.ACCELEROMETER);
-        App.recording.addSensor(SensorType.GYROSCOPE);
+        // setInterval(() => this.updateDisplay(), 1);
+
         App.recording.addSensor(SensorType.MICROPHONE);
 
 
-        // setInterval(function () {
-        //     // console.log(recording.graphableData);
-        //     console.log (App.recording.getSensorData(SensorType.MICROPHONE));
-        // }, 100);
+        setInterval(function () {
+            // console.log(recording.graphableData);
+            // console.log(micRecording.graphableData.length);
+        }, 100);
 
         // mic.disable();
     }

@@ -1,13 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Accelerometer, SensorType, GenericTimeframe, Mic, Gyroscope } from "./Sensors";
-import Label from "./sensors/Label"
+import {Accelerometer, SensorType, GenericTimeframe, Mic} from './Sensors';
 import {PermissionsAndroid} from "react-native";
 
 export default class Recording {
     constructor() {
         this.sampleRate = 40000; // in Hz
-        this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
-        this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
         this.enabledSensors = {};
         this.graphableData = {};
         this.logicalTime = 0;
@@ -20,19 +17,16 @@ export default class Recording {
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
     addSensor(type) {
+        // TODO : Set this to the number of data points that is displayed on the graph
+        const pointsOnGraph = 500; // The number of points that is stored in the graph
+        const timeframeBufferSize = 50;
         switch (type)
         {
             case SensorType.ACCELEROMETER:
                 // Create the timeframe array for the accelerometer (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
+                this.graphableData[type] = [new GenericTimeframe(pointsOnGraph, timeframeBufferSize)];
                 // Create a new accelerometer instance to track and enable it
                 this.enabledSensors[type] = new Accelerometer(this.graphableData[type], this.sampleRate);
-                break;
-            case SensorType.GYROSCOPE:
-                // Create the timeframe array for the gyroscope (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                // Create a new gyroscope instance to track and enable it
-                this.enabledSensors[type] = new Gyroscope(this.graphableData[type], this.sampleRate);
                 break;
             case SensorType.MICROPHONE:
                 // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
@@ -64,8 +58,8 @@ export default class Recording {
 
                 requestMicPermission();
 
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                this.enabledSensors[type] = new Mic(this.graphableData[type], this.sampleRate);;
+                this.graphableData[type] = [new GenericTimeframe(pointsOnGraph, timeframeBufferSize)];
+                this.enabledSensors[type] = new Mic(this.graphableData[type], this.sampleRate);
 
                 break;
             default:
@@ -74,25 +68,12 @@ export default class Recording {
     }
 
     /**
-     * Set the label for all incoming data from hereon
+     * Create a new label which can later be added to a timeframe.
      * @param name The name of the label
      */
-    setLabel(name)
+    createLabel(name)
     {
-        // Finalise the old label
-        if (this.labels.length > 0 && this.labels[this.labels.length - 1].endTime == null)
-        {
-            this.labels[this.labels.length - 1].endTime = Date.now();
-        }
-        // Create the new label
-        let label = new Label(name, Date.now());
-        this.labels.push(label);
-        // Create a new timeframe for each sensor
-        for (const value of Object.values(this.graphableData))
-        {
-            value.push(new GenericTimeframe(this.timeframeSize, this.bufferSize, label));
-        }
-        // TODO: Asynchronously save all data from the previous timeframe to file
+        // Code
     }
 
     /**
@@ -101,13 +82,6 @@ export default class Recording {
      * @return The latest timeframe for the specified sensor
      */
     getSensorData(type) {
-        // Throw an error if the sensor hasn't been initialised
-        if (this.graphableData[type] == null)
-        {
-            throw new Error("Recording.getSensorData: Attempted to get sensor data for type-" + type +
-                " but it has not been initialised correctly if at all.");
-        }
-
         let sensorData = this.graphableData[type];
         return sensorData[sensorData.length - 1];
     }

@@ -4,15 +4,12 @@ import MicStream from 'react-native-microphone-stream';
 
 export default class Mic extends Sensor
 {
-    constructor(dataStore, sampleRate = null)
+    constructor(dataStore, sampleRate = 0)
     {
         super(dataStore);
 
-        // console.log(this.dataStore);
-
         function storeData(data) {
-            // console.log("Just added a new sample");
-            dataStore[dataStore.length - 1].addSamples(data);
+            this.dataStore[this.dataStore.length - 1].addSamples(data);
         }
 
         const micStream = MicStream.addListener((data) => {
@@ -25,8 +22,6 @@ export default class Mic extends Sensor
             bitsPerChannel: 16,
             channelsPerFrame: 1,
         });
-
-        this.enable(null);
     }
 
     enable(sampleRate)
