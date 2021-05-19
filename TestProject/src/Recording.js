@@ -28,7 +28,7 @@ export default class Recording {
     constructor() {
         this.name = 'Recording1';
         // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/'; // TODO: Figure out why content is not being save here!
-        this.folderPath = App.SAVE_FILE_PATH;
+        this.folderPath = App.SAVE_FILE_PATH + this.name + "_";
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
@@ -39,11 +39,11 @@ export default class Recording {
 
         // Create a folder for the current instance
         // TODO: Don't go to any other screen until this has been done
-        mkdir(this.folderPath)
-            .then(suc => { console.log('Successfully created ' + this.folderPath); })
-            .catch(err => {
-                throw new Error(this.constructor.name + '.constructor: Failed to create the recording directory');
-            });
+        // mkdir(this.folderPath)
+        //     .then(suc => { console.log('Successfully created ' + this.folderPath); })
+        //     .catch(err => {
+        //         throw new Error(this.constructor.name + '.constructor: Failed to create the recording directory');
+        //     });
 
         // Delete the existing metadata file and create a new one
         const infoFilePath = this.folderPath + 'info.txt';
@@ -93,7 +93,7 @@ export default class Recording {
                 // Create a file to store the data
                 writeFile(sensorFile, '', 'utf8')
                     .then(() => {
-                        console.log('Successfully created ' + this.folderPath + sensorClass.prototype.constructor.name + '.csv');
+                        console.log('Successfully created ' + sensorFile);
                     }) // TODO: Don't go to any other screen until this has been done
                     .catch(() => {
                         throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create sensor file');
