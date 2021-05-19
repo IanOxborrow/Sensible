@@ -81,7 +81,8 @@ class RecordingScreen extends Component
             sensors: props.route.params.sensors,
             labels: props.route.params.labels,
             sensorNames: [],
-            checkedStatus: []
+            checkedStatus: [],
+            currentSensor: ""
         };
 
         for (const [key, value] of Object.entries(this.state.sensors)) {
@@ -98,6 +99,10 @@ class RecordingScreen extends Component
         this.state.checkedStatus[this.state.sensorNames[0]] = 'checked'
 
         console.log(this.state.checkedStatus[this.state.sensorNames[0]])
+
+        this.state.currentSensor = this.state.sensorNames[0]
+
+        console.log('default sensor ' + this.state.currentSensor)
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check if a `Recording` instance has been passed in
@@ -135,17 +140,18 @@ class RecordingScreen extends Component
 
     //function changeDisplayedOnGraph()
 
-    toggleGraphDisplay(pressedButton) {
+    toggleGraphDisplay(pressedButtonName) {
 
-        this.state.checkedStatus[pressedButton] = 'checked';
+        this.state.currentSensor = pressedButtonName
+        this.state.checkedStatus[pressedButtonName] = 'checked';
+
+        //this.state.dataSource = [0]
 
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
-            if (key != pressedButton)
+            if (key != pressedButtonName)
                 this.state.checkedStatus[key] = 'unchecked'
         }
-
-        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
 
     }
 
@@ -160,12 +166,26 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            // TODO: Change these to get data from the current `Recording` instance
-            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+            var sample = null
+
+            switch (this.state.currentSensor) {
+                case "microphone":
+                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    break
+                case "accelerometer":
+                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    break
+                case "gyroscope":
+                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    break
+                case "magnetometer":
+                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    break
+                case "barometer":
+                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    break
+                
+            }
 
             if (sample == null)
             {
@@ -213,13 +233,12 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'accelerometer': require('../assets/acceleromotor_icon.png'),
+
+            'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
         }
-
-        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton

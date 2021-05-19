@@ -138,19 +138,19 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log("sensor state " + this.state.sensors)
+        console.log("sensor state " + this.usedSensors)
 
         return (
-            <View style={[styles.sensorListFooter, {alignSelf:'baseline'}]} >
+            <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
-                        { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"],
-                            icon:  () => <Image source={require("../assets/acceleromotor_icon.png")} style={styles.pickerIcon} />},
-                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"],
-                        icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"],
-                        icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
+                        { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"], 
+                            icon:  () => <Image source={require("../assets/accelerometer_icon.png")} style={styles.pickerIcon} />},
+                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
+                            icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
+                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
+                            icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
                         { label: "", value: "empty", hidden: true },
                         /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
@@ -313,9 +313,6 @@ class NewRecordingScreen extends Component
                 </Appbar.Header>
 
                 <View style={styles.content}>
-
-
-
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
                         <Text>{"Sensors"}</Text>
                         <Text>{"Sample Rate"}</Text>
@@ -382,8 +379,8 @@ const styles = StyleSheet.create({
         bottom: 15,
     },
     listComponent: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         flex: 1,
         padding: 10,
         backgroundColor: "#f4f4f4"
@@ -391,45 +388,47 @@ const styles = StyleSheet.create({
     },
     sensorListItem: {
         flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         marginBottom: 10,
     },
     sensorListFooter: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
+        
+        flexDirection: "row", 
+        
+        alignItems: "center", 
         marginBottom: 10,
     },
     labelListItem: {
         flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         padding: 10,
         marginBottom: 10,
         backgroundColor: "#f4f4f4"
     },
     labelListFooter: {
         flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         padding: 10,
         alignItems: 'stretch',
         backgroundColor: "#f4f4f4"
-
+        
     },
 
     iconButon: {
-        marginLeft: "auto",
+        marginLeft: "auto", 
         margin: 5,
-        width: 30,
+        width: 30, 
         height: 30
     },
 
-    pickerIcon: {
-        width: 24,
+    pickerIcon: { 
+        width: 24, 
         height: 24
     }
+
 
 });
 
