@@ -25,6 +25,25 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
+var DATA = [
+    {
+        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        title: 'Label Name 1',
+    },
+    {
+        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        title: 'Label Name 2',
+    },
+    {
+        id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        title: 'Label Name 3',
+    },
+    {
+        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
+        title: 'Label Name 4',
+    },
+];
+
 const data = {
     labels: [],
     datasets: [
@@ -62,7 +81,8 @@ class RecordingScreen extends Component
             sensors: props.route.params.sensors,
             labels: props.route.params.labels,
             sensorNames: [],
-            checkedStatus: []
+            checkedStatus: [],
+            currentSensor: ""
         };
 
         for (const [key, value] of Object.entries(this.state.sensors)) {
@@ -80,7 +100,12 @@ class RecordingScreen extends Component
 
         console.log(this.state.checkedStatus[this.state.sensorNames[0]])
 
+        this.state.currentSensor = this.state.sensorNames[0]
+
+        console.log('default sensor ' + this.state.currentSensor)
+
         // Ensure the recording class has been initialised
+        // TODO: Change this to check if a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
@@ -106,6 +131,7 @@ class RecordingScreen extends Component
             newLabel = label.labelName;
         }
         // Update the label
+        // TODO: Change this to use the current `Recording` instance
         App.recording.setLabel(newLabel);
         this.state.currentLabel = newLabel;
         // Output a debug message
@@ -114,18 +140,18 @@ class RecordingScreen extends Component
 
     //function changeDisplayedOnGraph()
 
-    toggleGraphDisplay(pressedButton) {
+    toggleGraphDisplay(pressedButtonName) {
 
-        this.state.checkedStatus[pressedButton] = 'checked';
+        this.state.currentSensor = pressedButtonName
+        this.state.checkedStatus[pressedButtonName] = 'checked';
 
-        // TODO next sprint: This can be optimised to simply uncheck the last button and check the new button
+        //this.state.dataSource = [0]
+
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
-            if (key != pressedButton)
+            if (key != pressedButtonName)
                 this.state.checkedStatus[key] = 'unchecked'
         }
-
-        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
 
     }
 
@@ -140,11 +166,26 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+            var sample = null
+
+            switch (this.state.currentSensor) {
+                case "microphone":
+                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    break
+                case "accelerometer":
+                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    break
+                case "gyroscope":
+                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    break
+                case "magnetometer":
+                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    break
+                case "barometer":
+                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    break
+                
+            }
 
             if (sample == null)
             {
@@ -192,13 +233,12 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'accelerometer': require('../assets/acceleromotor_icon.png'),
+
+            'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
         }
-
-        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
@@ -227,9 +267,10 @@ class RecordingScreen extends Component
 
 
                     <View style={styles.graphStyling}>
+                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
                         <LineChart
                             data={data}
-                            width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                            width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                             height={220}
                             chartConfig={chartConfig}
                             style={{
@@ -242,6 +283,7 @@ class RecordingScreen extends Component
                             bezier
                         />
                     </View>
+                    <Text style={styles.xLabel}>Time (Seconds)</Text>
 
                     <View style={{flexDirection: "row", paddingBottom: 10 }}>
                         {sensorButtonIcons}
@@ -282,6 +324,14 @@ class RecordingScreen extends Component
 }
 
 const styles = StyleSheet.create({
+    yLabel: {
+        transform: [{rotate: "-90deg"}],
+        fontWeight: "bold",
+    },
+    xLabel: {
+        fontWeight: "bold",
+        textAlign: "center",
+    },
     container: {
         flex: 1,
         padding: 0,
@@ -300,7 +350,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     graphStyling: {
-        flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
     },
     list: {
         flex: 1,

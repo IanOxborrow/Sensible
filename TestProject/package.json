@@ -18,6 +18,7 @@
     "react-native-dropdown-picker": "^4.0.4",
     "react-native-easy-toast": "^2.0.0",
     "react-native-floating-action": "^1.21.0",
+    "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-img-button": "^1.0.1",
     "react-native-microphone-stream": "git://github.com/chadsmith/react-native-microphone-stream.git",
@@ -37,6 +38,7 @@
     "eslint": "7.14.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.64.0",
+    "react-native-permissions": "^3.0.3",
     "react-test-renderer": "17.0.1",
     "react-timer-mixin": "^0.13.4"
   },

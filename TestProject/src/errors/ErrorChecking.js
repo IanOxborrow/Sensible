@@ -65,8 +65,10 @@ export default class ErrorChecking
                   interfaceName + "." + f.name + "(" + got + ")";
 
                 // Do a simple check of the number of parameters
-                if (expected.length !== got.length)
+                if (expected.length !== got.length && f.name !== "constructor")
+                {
                     throw new InconsistentParametersError(errorMessage);
+                }
                 // Otherwise check that each parameter name matches that of the interface
                 else
                 {

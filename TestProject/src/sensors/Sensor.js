@@ -24,6 +24,7 @@ export default class Sensor
             const child = Object.getPrototypeOf(this);
             // A list of functions that needs to be implemented
             let functions = [
+                {name: 'constructor', params: ['dataStore']},
                 {name: 'enable', params: ['sampleRate']},
                 {name: 'disable', params: []},
                 {name: 'updateSampleRate', params: ['sampleRate']},
