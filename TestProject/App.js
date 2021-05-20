@@ -32,12 +32,12 @@ import { Text } from "react-native";
 import { SensorType } from "./src/Sensors";
 import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
-import { DownloadDirectoryPath } from "react-native-fs";
+import { DocumentDirectoryPath, DownloadDirectoryPath } from "react-native-fs";
 
 export default class App extends React.Component
 {
     static recording = null;
-    static SAVE_FILE_PATH = DownloadDirectoryPath + '/';
+    static SAVE_FILE_PATH = DocumentDirectoryPath + '/';
 
     constructor(props)
     {
@@ -46,20 +46,18 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-
-
         App.recording = new Recording();
         App.recording.addSensor(SensorType.ACCELEROMETER);
         App.recording.addSensor(SensorType.GYROSCOPE);
-        // App.recording.addSensor(SensorType.MAGNETOMETER);
-        // App.recording.addSensor(SensorType.BAROMETER);
+        App.recording.addSensor(SensorType.MAGNETOMETER);
+        App.recording.addSensor(SensorType.BAROMETER);
         // App.recording.addSensor(SensorType.MICROPHONE);
 
 
-        // setInterval(function () {
-        //     // console.log(recording.graphableData);
-        //     console.log (App.recording.getSensorData(SensorType.MICROPHONE));
-        // }, 100);
+        setInterval(function () {
+            // console.log(recording.graphableData);
+            // console.log(micRecording.graphableData.length);
+        }, 100);
 
         // mic.disable();
     }

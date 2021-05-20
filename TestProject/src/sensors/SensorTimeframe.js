@@ -20,7 +20,7 @@ export default class SensorTimeframe
         }
         else if (!Number.isInteger(initialSize) || initialSize < 1)
         {
-            throw new Error('SensorTimeframe.constructor(): A valid initial storage size must be specified.');
+            throw new Error('SensorTimeframe.constructor(): A valid initial storage size must be specified. Received ' + initialSize);
         }
         else if (!Number.isInteger(bufferSize) || bufferSize < 1)
         {

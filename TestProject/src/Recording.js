@@ -30,9 +30,9 @@ export default class Recording {
         // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/'; // TODO: Figure out why content is not being save here!
         this.folderPath = App.SAVE_FILE_PATH + this.name + "_";
         this.sampleRate = 40000; // in Hz
-        this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
-        this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
-        this.enabledSensors = {};
+        this.bufferSize = 500; // The number of samples to store in the buffer before saving all of them to file at once
+        this.timeframeSize = 1000; // The number of samples in a timeframe. Additional points will be saved to file.
+        this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
         this.graphableData = {};
         this.logicalTime = 0;
         this.labels = [];
@@ -113,6 +113,9 @@ export default class Recording {
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
     addSensor(type) {
+        // TODO : Set this to the number of data points that is displayed on the graph
+        const pointsOnGraph = 500; // The number of points that is stored in the graph
+        const timeframeBufferSize = 50;
         switch (type)
         {
             case SensorType.ACCELEROMETER:
@@ -172,25 +175,12 @@ export default class Recording {
     }
 
     /**
-     * Set the label for all incoming data from hereon
+     * Create a new label which can later be added to a timeframe.
      * @param name The name of the label
      */
-    setLabel(name)
+    createLabel(name)
     {
-        // Finalise the old label
-        if (this.labels.length > 0 && this.labels[this.labels.length - 1].endTime == null)
-        {
-            this.labels[this.labels.length - 1].endTime = Date.now();
-        }
-        // Create the new label
-        let label = new Label(name, Date.now());
-        this.labels.push(label);
-        // Create a new timeframe for each sensor
-        for (const value of Object.values(this.graphableData))
-        {
-            value.push(new GenericTimeframe(this.timeframeSize, this.bufferSize, label));
-        }
-        // TODO: Asynchronously save all data from the previous timeframe to file
+        // Code
     }
 
     /**

@@ -166,25 +166,14 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            var sample = null
 
-            switch (this.state.currentSensor) {
-                case "microphone":
-                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-                    break
-                case "accelerometer":
-                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-                    break
-                case "gyroscope":
-                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-                    break
-                case "magnetometer":
-                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-                    break
-                case "barometer":
-                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
-                    break
-                
+            let sample;
+            // This works because each sensor is stored as an integer. The reason it's done like this
+            // is so when new sensors are added they won't need to be manually added here.
+            for (let i = 0; i < this.state.sensorNames.length; i++) {
+                if (this.state.checkedStatus[this.state.sensorNames[i]] == 'checked') {
+                    sample = App.recording.getSensorData(i).getLatestSample();
+                }
             }
 
             if (sample == null)

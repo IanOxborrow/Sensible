@@ -9,7 +9,6 @@
 import React, { Component } from 'react';
 import { FloatingAction } from "react-native-floating-action";
 import FAB from '../react-native-paper-src/components/FAB/FAB'
-import Appbar from '../react-native-paper-src/components/Appbar'
 
 import {
   StyleSheet,
@@ -18,7 +17,6 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
-  StatusBar
 } from 'react-native';
 
 var DATA = [
@@ -48,16 +46,17 @@ function Item({ title, onSelect }) {
 const App: () => React$Node = ({navigation}) => {
   return (
     <View style={[styles.container, {flexDirection: "column"}]}>
-    
-      <Appbar.Header>
-        <Appbar.Content title="Sensible" />
-      </Appbar.Header>
+      <View style={styles.heading}>
+        <Text style={styles.headingText}>
+        Sensible
+        </Text>
+      </View>
 
       <FlatList style={styles.list}
         data={DATA}
         renderItem={({item, index}) => (
           <TouchableOpacity onPress={() => null}>
-            <View elevation={5} style={styles.listItem}>
+            <View style={styles.listItem}>
               <Text style={styles.listItemText}> Recording # </Text>
             </View>
           </TouchableOpacity>
@@ -79,27 +78,31 @@ const App: () => React$Node = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF"
+    padding: 0,
+  },
+  heading: {
+    padding: 0,
+    backgroundColor: '#6200F2',
+  },
+  headingText: {
+    color: "white",
+    fontSize: 20,
+    padding:20,
   },
   list: {
     flex: 1,
+    padding: 20,
     paddingTop: 10,
   },
   listItem: {
     borderRadius: 5,
     height: 80,
-    marginLeft: 10,
-    marginRight: 10,
-    backgroundColor: '#FFFFFF',
+    width: '100%',
+    borderWidth: 2,
+    borderColor: '#d1d1d1',
+    backgroundColor: 'white',
     marginTop: '5%',
     justifyContent: 'center',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 2,
-      height: 3
-    },
-    shadowRadius: 5,
-    shadowOpacity: 1.0
   },
   listItemText: {
     color: 'black',
@@ -107,6 +110,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     padding: 10,
+  },
+  plusButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 50,
+    backgroundColor: '#6200F2',
+    position: 'absolute',
+    bottom:20,
+    right:20,
   },
   fab: {
     position: 'absolute',
