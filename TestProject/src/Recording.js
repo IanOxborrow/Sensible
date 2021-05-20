@@ -49,14 +49,16 @@ export default class Recording {
         const infoFilePath = this.folderPath + 'info.txt';
         exists(infoFilePath)
             .then(fileExists => {
-                if (fileExists)
-                {
+                console.log("file exists" + fileExists)
+                if (fileExists) {
+                    
                     unlink(infoFilePath).catch(() => {});
                 }
             })
             .catch(() => {})
             .finally(() => {
                 // Create the metadata file
+                console.log("abot to write file"+ infoFilePath)
                 writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
                     .then(() => {
                         console.log('Successfully created ' + infoFilePath);
@@ -64,6 +66,7 @@ export default class Recording {
                     .catch(() => {
                         throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create metadata file');
                     });
+                
             });
     }
 
@@ -73,6 +76,7 @@ export default class Recording {
      */
     initialiseGenericSensor(type)
     {
+        console.log('initilising sensor ' + type)
         const sensorClass = getSensorClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
@@ -98,6 +102,7 @@ export default class Recording {
                     .catch(() => {
                         throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create sensor file');
                     });
+                return null
             });
 
         // TODO: Remove this
