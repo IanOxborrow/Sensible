@@ -16,7 +16,7 @@ export default class SensorTimeframe
         // Make sure the correct parameters are passed in
         if (!(recording instanceof Recording))
         {
-            throw new Error('SensorTimeframe.constructor(): A valid reference to the recording instance must be passed in.');
+            throw new Error('SensorTimeframe.constructor(): A valid reference to the recording instance must be passed in. Received ' + recording);
         }
         else if (!Number.isInteger(initialSize) || initialSize < 1)
         {

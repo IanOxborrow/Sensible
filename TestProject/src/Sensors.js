@@ -37,7 +37,7 @@ export const getSensorClass = (type) => {
         case SensorType.MICROPHONE:
             return Mic;
         default:
-            throw new Error('Sensors.getSensorClass: Received an unknown type');
+            throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
     }
 };
 export const getSensorFileName = (type) => {

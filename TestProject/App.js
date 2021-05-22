@@ -28,16 +28,16 @@ import {
 */
 
 import React from "react";
-import { Text } from "react-native";
+import { PermissionsAndroid, Text } from "react-native";
 import { SensorType } from "./src/Sensors";
 import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
-import { DocumentDirectoryPath, DownloadDirectoryPath } from "react-native-fs";
+import { DocumentDirectoryPath, DownloadDirectoryPath, ExternalDirectoryPath, writeFile } from "react-native-fs";
 
 export default class App extends React.Component
 {
     static recording = null;
-    static SAVE_FILE_PATH = DocumentDirectoryPath + '/';
+    static SAVE_FILE_PATH = ExternalDirectoryPath + '/';
 
     constructor(props)
     {
@@ -52,6 +52,44 @@ export default class App extends React.Component
         App.recording.addSensor(SensorType.MAGNETOMETER);
         App.recording.addSensor(SensorType.BAROMETER);
         // App.recording.addSensor(SensorType.MICROPHONE);
+
+        console.log("DocumentDirectoryPath: " + DocumentDirectoryPath);
+
+        const requestStoragePermission = async () => {
+            // Get saving permission (Android Only!)
+            try
+            {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Storage Permission',
+                        message: 'This app needs access to your device in order ' +
+                            'to store data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED)
+                {
+                    console.log('You can use the device storage');
+                    writeFile(App.SAVE_FILE_PATH + "test.txt", 'This is a bit of a gamer move!', 'utf8')
+                        .then(() => {
+                            console.log('Successfully created ' + App.SAVE_FILE_PATH + "test.txt");
+                        }) // TODO: Don't go to any other screen until this has been done
+                        .catch(() => {
+                            throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create sensor file');
+                        });
+                } else
+                {
+                    console.log('Storage permission denied');
+                }
+            } catch (err)
+            {
+                console.warn(err);
+            }
+        };
+        requestStoragePermission();
 
 
         setInterval(function () {

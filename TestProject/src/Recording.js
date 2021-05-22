@@ -28,7 +28,7 @@ export default class Recording {
     constructor() {
         this.name = 'Recording1';
         // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/'; // TODO: Figure out why content is not being save here!
-        this.folderPath = App.SAVE_FILE_PATH + this.name + "_";
+        this.folderPath = App.SAVE_FILE_PATH + this.name + "/";
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 500; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 1000; // The number of samples in a timeframe. Additional points will be saved to file.
@@ -39,11 +39,11 @@ export default class Recording {
 
         // Create a folder for the current instance
         // TODO: Don't go to any other screen until this has been done
-        // mkdir(this.folderPath)
-        //     .then(suc => { console.log('Successfully created ' + this.folderPath); })
-        //     .catch(err => {
-        //         throw new Error(this.constructor.name + '.constructor: Failed to create the recording directory');
-        //     });
+        mkdir(this.folderPath)
+            .then(suc => { console.log('Successfully created folder ' + App.SAVE_FILE_PATH + "/" + this.name); })
+            .catch(err => {
+                throw new Error(this.constructor.name + '.constructor: Failed to create the recording directory');
+            });
 
         // Delete the existing metadata file and create a new one
         const infoFilePath = this.folderPath + 'info.txt';
@@ -174,14 +174,37 @@ export default class Recording {
         }
     }
 
+    // /**
+    //  * Create a new label which can later be added to a timeframe.
+    //  * @param name The name of the label
+    //  */
+    // createLabel(name)
+    // {
+    //     // Code
+    // }
+
     /**
-     * Create a new label which can later be added to a timeframe.
+     * Set the label for all incoming data from hereon
      * @param name The name of the label
      */
-    createLabel(name)
+    setLabel(name)
     {
-        // Code
+        // Finalise the old label
+        if (this.labels.length > 0 && this.labels[this.labels.length - 1].endTime == null)
+        {
+            this.labels[this.labels.length - 1].endTime = Date.now();
+        }
+        // Create the new label
+        let label = new Label(name, Date.now());
+        this.labels.push(label);
+        // Create a new timeframe for each sensor
+        for (const sensorTimeframe of Object.values(this.graphableData))
+        {
+            sensorTimeframe.push(new GenericTimeframe(this, this.timeframeSize, this.bufferSize, sensorTimeframe[0].type, label));
+        }
+        // TODO: Asynchronously save all data from the previous timeframe to file
     }
+
 
     /**
      * Returns a reference to the latest timeframe of that sensor
