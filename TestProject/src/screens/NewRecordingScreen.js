@@ -43,7 +43,7 @@ class NewRecordingScreen extends Component
 
         this.sensorPicker;
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false };
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false, "empty": false };
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
@@ -73,7 +73,7 @@ class NewRecordingScreen extends Component
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
                 defaultValue={item.sensorName}
-                containerStyle={{ height: 0, width: 150, backgroundColor: "#FFFFFF" }}
+                containerStyle={{ height: 50, width: 150, backgroundColor: "#FFFFFF" }}
                 style={styles.dropdown}
                 itemStyle={{
                     justifyContent: "flex-start",
@@ -120,11 +120,14 @@ class NewRecordingScreen extends Component
                         {
                             if (!this.usedSensors[key])
                             {
+                                //more the used sensors row as 'true' so that its hidden value is true
+                                this.usedSensors['empty'] = true
                                 this.sensorPicker.selectItem(key);
                                 break;
                             }
 
                             //if all the sensors have been selected, set the curret selection to the 'empty' value
+                            this.usedSensors['empty'] = false // make the empty row have a  hidden value of false
                             this.sensorPicker.selectItem("empty");
                         }
 
@@ -151,7 +154,7 @@ class NewRecordingScreen extends Component
                             icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
                         { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
                             icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "", value: "empty", hidden: true },
+                        { label: "", value: "empty", hidden: false} // this.usedSensors["empty"] },
                         /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                         {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
@@ -211,6 +214,7 @@ class NewRecordingScreen extends Component
                                     }
 
                                     //if all the sensors have been selected, set the curret selection to the 'empty' value
+                                    
                                     this.sensorPicker.selectItem("empty");
                                 }
 
