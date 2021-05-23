@@ -94,7 +94,8 @@ class RecordingScreen extends Component
             sensors: props.route.params.sensors,
             labels: props.route.params.labels,
             sensorNames: [],
-            checkedStatus: []
+            checkedStatus: [],
+            currentSensor: ""
         };
 
         // A dictionary corresponding to the hue value for the colour of each label
@@ -119,7 +120,12 @@ class RecordingScreen extends Component
 
         console.log(this.state.checkedStatus[this.state.sensorNames[0]])
 
+        this.state.currentSensor = this.state.sensorNames[0]
+
+        console.log('default sensor ' + this.state.currentSensor)
+
         // Ensure the recording class has been initialised
+        // TODO: Change this to check if a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
@@ -145,6 +151,7 @@ class RecordingScreen extends Component
             newLabel = label.labelName;
         }
         // Update the label
+        // TODO: Change this to use the current `Recording` instance
         App.recording.setLabel(newLabel);
         this.state.currentLabel = newLabel;
         // Output a debug message
@@ -153,17 +160,18 @@ class RecordingScreen extends Component
 
     //function changeDisplayedOnGraph()
 
-    toggleGraphDisplay(pressedButton) {
+    toggleGraphDisplay(pressedButtonName) {
 
-        this.state.checkedStatus[pressedButton] = 'checked';
+        this.state.currentSensor = pressedButtonName
+        this.state.checkedStatus[pressedButtonName] = 'checked';
+
+        //this.state.dataSource = [0]
 
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
-            if (key != pressedButton)
+            if (key != pressedButtonName)
                 this.state.checkedStatus[key] = 'unchecked'
         }
-
-        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
 
     }
 
@@ -178,11 +186,15 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+
+            let sample;
+            // This works because each sensor is stored as an integer. The reason it's done like this
+            // is so when new sensors are added they won't need to be manually added here.
+            for (let i = 0; i < this.state.sensorNames.length; i++) {
+                if (this.state.checkedStatus[this.state.sensorNames[i]] == 'checked') {
+                    sample = App.recording.getSensorData(i).getLatestSample();
+                }
+            }
 
             if (sample == null)
             {
@@ -244,13 +256,12 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'accelerometer': require('../assets/acceleromotor_icon.png'),
+
+            'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
         }
-
-        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
