@@ -98,9 +98,10 @@ class RecordingScreen extends Component
         };
 
         // A dictionary corresponding to the hue value for the colour of each label
-        this.labelsPallete = new Map();
+        this.labelsPallet = new Map();
         for (let i = 0; i < this.state.labels.length; i++) {
-            this.labelsPallete[this.state.labels[i].labelName] = Math.floor(360 / (i + 1));
+            let hue_step = Math.floor(360 / this.state.labels.length);
+            this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
         }
 
         for (const [key, value] of Object.entries(this.state.sensors)) {
@@ -220,8 +221,8 @@ class RecordingScreen extends Component
             // Update the counter (MAY BE REDUNDANT)
             this.state.counter++;
             if (this.state.currentLabel) {
-                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallete[this.state.currentLabel],50,50);
-                chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallete[this.state.currentLabel] + 10) % 360, 50, 50);
+                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel],50,50);
+                chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
             }
             else {
                 chartConfig.backgroundGradientTo = "#000000";
