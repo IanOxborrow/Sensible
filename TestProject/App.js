@@ -33,6 +33,8 @@ import { SensorType } from "./src/Sensors";
 import Recording from "./src/Recording";
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 
+const recordings = [];
+
 export default class App extends React.Component
 {
     static recording = null;
@@ -44,14 +46,13 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-
-
         App.recording = new Recording();
         App.recording.addSensor(SensorType.ACCELEROMETER);
         App.recording.addSensor(SensorType.GYROSCOPE);
         App.recording.addSensor(SensorType.MAGNETOMETER);
         App.recording.addSensor(SensorType.BAROMETER);
         App.recording.addSensor(SensorType.MICROPHONE);
+        recordings.push(App.recording);
 
 
         // setInterval(function () {

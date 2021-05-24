@@ -29,11 +29,6 @@ function Item({ title, onSelect }) {
 export default class App extends Component {
     constructor(props){
         super(props);
-        if (props.route.params?.recordingNumber){
-            recordingNumber = props.route.params.recordingNumber;
-            data.recordings.push(recordingNumber);
-            console.log("Data carried over: " + recordingNumber);
-        }
     }
     render() {
       //const {recordingInfo} = route.params;
@@ -59,10 +54,7 @@ export default class App extends Component {
             style={styles.fab}
             icon={require('../assets/baseline_add_black.png')}
             onPress={name => {
-              console.log("array size: " + DATA.size);
-              this.props.navigation.navigate("NewRecordingScreen", {
-                "recordingNumber": 1,
-              });
+              this.props.navigation.navigate("NewRecordingScreen");
             }}
           />
         </View>
