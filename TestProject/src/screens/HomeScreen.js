@@ -4,6 +4,7 @@ import FAB from '../react-native-paper-src/components/FAB/FAB'
 import Appbar from '../react-native-paper-src/components/Appbar'
 import { SensorType } from '../Sensors';
 import Recording from "../Recording";
+import App from "../../App";
 
 
 import {
@@ -31,7 +32,7 @@ function Item({ title, onSelect }) {
     );
 }
 
-export default class App extends Component {
+export default class HomeScreen extends Component {
     constructor(props){
         super(props);
     }
@@ -51,7 +52,7 @@ export default class App extends Component {
             renderItem={({item, index}) => (
               <TouchableOpacity onPress={() => null}>
                 <View elevation={5} style={styles.listItem}>
-                  <Text style={styles.listItemText}> {item.id} </Text>
+                  <Text style={styles.listItemText}> {recordings_list} </Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -67,8 +68,8 @@ export default class App extends Component {
               App.recording.addSensor(SensorType.MAGNETOMETER);
               App.recording.addSensor(SensorType.BAROMETER);
               App.recording.addSensor(SensorType.MICROPHONE);
-              recordings_list.push(App.recording);
-              console.log(App.recording);
+              recordings_list.push(recordings_list.length + 1);
+              console.log(recordings_list);
               this.props.navigation.navigate("NewRecordingScreen");
             }}
           />
