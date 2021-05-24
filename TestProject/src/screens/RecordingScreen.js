@@ -11,9 +11,10 @@ import React, { Component } from 'react';
 import App from '../../App';
 import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
-import Appbar from '../react-native-paper-src/components/Appbar'
-import ToggleButton from '../react-native-paper-src/components/ToggleButton'
-import Toast, {DURATION} from 'react-native-easy-toast'
+import Appbar from '../react-native-paper-src/components/Appbar';
+import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+import Toast, {DURATION} from 'react-native-easy-toast';
+import { recordings_list } from './HomeScreen';
 
 import {
     StyleSheet,
@@ -135,6 +136,7 @@ class RecordingScreen extends Component
     }
 
     render() {
+        var recording_number = recordings_list.length;
 
         const updateGraphData = () => {
             let maxPoints = 20;
@@ -219,7 +221,7 @@ class RecordingScreen extends Component
             <View style={[styles.container, { flexDirection: 'column' }]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title="Recording #" />
+                    <Appbar.Content title={ recording_number } />
                 </Appbar.Header>
 
                 <View style={styles.content}>

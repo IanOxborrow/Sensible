@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { FloatingAction } from "react-native-floating-action";
 import FAB from '../react-native-paper-src/components/FAB/FAB'
 import Appbar from '../react-native-paper-src/components/Appbar'
+import { SensorType } from '../Sensors';
+import Recording from "../Recording";
+
 
 import {
   StyleSheet,
@@ -12,6 +15,8 @@ import {
   TouchableOpacity,
   StatusBar
 } from 'react-native';
+
+export const recordings_list = [];
 
 const DATA = {
     recordings: [],
@@ -30,7 +35,9 @@ export default class App extends Component {
     constructor(props){
         super(props);
     }
+
     render() {
+      var recording_number = recordings_list.length;
       //const {recordingInfo} = route.params;
       return (
         <View style={[styles.container, {flexDirection: "column"}]}>
@@ -40,11 +47,11 @@ export default class App extends Component {
           </Appbar.Header>
 
           <FlatList style={styles.list}
-            data={DATA}
+            data={recordings_list}
             renderItem={({item, index}) => (
               <TouchableOpacity onPress={() => null}>
                 <View elevation={5} style={styles.listItem}>
-                  <Text style={styles.listItemText}> Recording # </Text>
+                  <Text style={styles.listItemText}> {item.id} </Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -54,6 +61,14 @@ export default class App extends Component {
             style={styles.fab}
             icon={require('../assets/baseline_add_black.png')}
             onPress={name => {
+              App.recording = new Recording();
+              App.recording.addSensor(SensorType.ACCELEROMETER);
+              App.recording.addSensor(SensorType.GYROSCOPE);
+              App.recording.addSensor(SensorType.MAGNETOMETER);
+              App.recording.addSensor(SensorType.BAROMETER);
+              App.recording.addSensor(SensorType.MICROPHONE);
+              recordings_list.push(App.recording);
+              console.log(App.recording);
               this.props.navigation.navigate("NewRecordingScreen");
             }}
           />
