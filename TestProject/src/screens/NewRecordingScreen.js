@@ -6,6 +6,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
+import { SensorType } from "../Sensors";
 
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
@@ -51,6 +52,7 @@ class NewRecordingScreen extends Component
         {
             throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");
         }
+
     }
 
     componentDidMount = () => {
@@ -61,6 +63,40 @@ class NewRecordingScreen extends Component
     sensorListHeader = () => {
 
     };
+
+    startRecording() {
+
+        for (let i = 0; i < this.state.selectedSensors.length; i++) {
+            console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"])
+            let sensor;
+            switch (this.state.selectedSensorData[i]["sensorName"]) {
+                case "microphone":
+                    sensor = SensorType.MICROPHONE
+                    break
+                case "accelerometer":
+                    sensor = SensorType.ACCELEROMETER
+                    break
+                case "gyroscope":
+                    sensor = SensorType.GYROSCOPE
+                    break
+                case "magnetometer":
+                    sensor = SensorType.MAGNETOMETER
+                    break
+                case "barometer":
+                    sensor = SensorType.BAROMETER
+                    break
+            }
+
+            App.recording.addSensor(sensor);
+        }
+
+        this.props.navigation.navigate("RecordingScreen", {
+            "sensors": this.state.selectedSensors,
+            "labels": this.state.addedLabels,
+        });
+    }
+
+
 
     sensorListItem = ({ item }) => (
         <View style={styles.sensorListItem}>
@@ -141,7 +177,7 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log("sensor state " + this.usedSensors)
+        // console.log("sensor state " + this.usedSensors)
 
         return (
             <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
@@ -341,12 +377,7 @@ class NewRecordingScreen extends Component
                     <FAB
                         style={styles.fab}
                         label="Start Recording"
-                        onPress={name => {
-                            this.props.navigation.navigate("RecordingScreen", {
-                                "sensors": this.state.selectedSensors,
-                                "labels": this.state.addedLabels,
-                            });
-                        }}
+                        onPress={() => {this.startRecording()}}
                     />
                 </View>
             </View>
