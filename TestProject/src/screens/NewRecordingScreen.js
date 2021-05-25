@@ -6,7 +6,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-
+import Checkbox from '../react-native-paper-src/components/Checkbox'
+import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
@@ -22,14 +23,13 @@ import {
     TouchableOpacity,
     StatusBar,
     FlatList,
+    KeyboardAvoidingView
 } from "react-native";
 import Icon from "react-native-vector-icons"
 
-class NewRecordingScreen extends Component
-{
+class NewRecordingScreen extends Component {
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         //this.props = props
         this.state = {
@@ -39,11 +39,17 @@ class NewRecordingScreen extends Component
             selectedSensorData: [],
             selectedSensors: [],
             addedLabels: [],
+
+            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
+                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
+            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
+            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
         };
 
         this.sensorPicker;
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false, "empty": false };
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false};
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
@@ -58,175 +64,67 @@ class NewRecordingScreen extends Component
         //this.sensorPicker.selectItem('accelerometer');
     };
 
-    sensorListHeader = () => {
-
-    };
-
     sensorListItem = ({ item }) => (
-        <View style={styles.sensorListItem}>
-            <DropDownPicker
-                items={[
-                    { label: item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1), value: item.sensorName }
-                    /*    icon: () => <Image source={require("../assets/" + item.sensorName + "_icon.png")} style={styles.pickerIcon} /> }*/
-                    /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
-                    {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
-                    {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
-                ]}
-                defaultValue={item.sensorName}
-                containerStyle={{ height: 50, width: 150, backgroundColor: "#FFFFFF" }}
-                style={styles.dropdown}
-                itemStyle={{
-                    justifyContent: "flex-start",
-                    backgroundColor: "#FFFFFF",
-                }}
-                dropDownStyle={{ backgroundColor: "#FFFFFF"}}
-                dropDownContainerStyle={{
+        <View style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
+            
+            <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
 
-                    position: 'absolute',
-                    backgroundColor: "#000000"
-                }}
+                <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
+
+                <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
+
+            </View>
+
+            <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
+                <TextInput
+                    placeholder="sample rate"
+                    style={{paddingRight: 24}}
+                    ref={input => {
+                        this.sampleRateInput = input;
+                    }}
+                    onChangeText={
+                        text => {
+                            this.state.sensorSampleRates[item.sensorName] = text
+                        }
+                    }
                 />
-            <View style={[styles.listComponent, {marginLeft: 20}]}>
 
-                <Text>{item.sampleRate}</Text>
-
-                <TouchableOpacity
-                    style={{ marginLeft: "auto" }}
+                <Checkbox
+                    status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
                     onPress={() => {
+                        
+                        //make sure that a sample rate has been speciified before allowing the check box to be selected
+                        if (this.state.sensorSampleRates[item.sensorName] > -1) {
 
-                        console.log("waspressed" + item.sensorName);
-                        //use the sensor name to identify which row was pressed to work out which data to remove
+                            //modifiy the state to record that a checkbox has been pressed
+                            this.state.usedSensors[item.sensorName] = !this.state.usedSensors[item.sensorName]
+                            this.setState(this.state.usedSensors)
+                        }
 
-                        //make the sensor as not being used
-                        this.usedSensors[item.sensorName] = false;
+                        //reset the used sensor data array
+                        this.state.selectedSensorData = []
 
-                        //remove the sensor from the sensordata array
-                        for (var i in this.state.selectedSensorData)
-                        {
-                            var sensorData = this.state.selectedSensorData[i];
-                            if (item.sensorName == sensorData["sensorName"])
-                            {
-                                this.state.selectedSensorData.splice(i, 1);
-                                break;
+                        //itterate over the sensors to see which ones have been selected
+                        for (const sensorName in this.state.usedSensors) {
+                            
+                            // if the sensor is selected add it to the selectedSensorData list
+                            if (this.state.usedSensors[sensorName]) {
+                                
+                                var newSensor = {
+                                    sensorName: sensorName,
+                                    sampleRate: this.state.sensorSampleRates[sensorName],
+                                };
+
+                                this.state.selectedSensorData.push(newSensor);
                             }
                         }
 
-                        //update the listview
-                        this.setState({ selectedSensors: [...this.state.selectedSensorData] });
-
-                        //set the new default vaule to be the first non hidden value
-                        for (var key in this.usedSensors)
-                        {
-                            if (!this.usedSensors[key])
-                            {
-                                //more the used sensors row as 'true' so that its hidden value is true
-                                this.usedSensors['empty'] = true
-                                this.sensorPicker.selectItem(key);
-                                break;
-                            }
-
-                            //if all the sensors have been selected, set the curret selection to the 'empty' value
-                            this.usedSensors['empty'] = false // make the empty row have a  hidden value of false
-                            this.sensorPicker.selectItem("empty");
-                        }
-
-                    }}>
-
-                    <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}  />
-                </TouchableOpacity>
+                    }}
+                />
             </View>
         </View>
     );
-
-    //constant item that stays at the bottom of the list. This acts as the add new row in the list
-    sensorListFooter = () => {
-        console.log("sensor state " + this.usedSensors)
-
-        return (
-            <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
-                <DropDownPicker
-                    ref={this.sensorPickerRef}
-                    items={[
-                        { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"], 
-                            icon:  () => <Image source={require("../assets/accelerometer_icon.png")} style={styles.pickerIcon} />},
-                        { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"], 
-                            icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"], 
-                            icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "", value: "empty", hidden: false} // this.usedSensors["empty"] },
-                        /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
-                        {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
-                        {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
-                    ]}
-                    defaultValue={"accelerometer"}
-                    controller={instance => this.sensorPicker = instance}
-
-                    containerStyle={{ height: 50, width: 180, backgroundColor: "#FFFFFF" }}
-                    style={styles.dropdown}
-                    itemStyle={{
-                        justifyContent: "flex-start",
-                        backgroundColor: "#FFFFFF",
-                    }}
-                    dropDownStyle={{backgroundColor: "#FFFFFF"}}
-
-                    onChangeItem={
-                        item => this.setState({ currentSensorSelection: item.value })
-                    }
-                />
-                <View style={[styles.listComponent, {marginLeft: 20}]}>
-                    <TextInput
-                        placeholder="sample rate"
-                        style={{}}
-                        ref={input => {
-                            this.sampleRateInput = input;
-                        }}
-                        onChangeText={
-                            text => this.setState({ currentSampleRate: text })
-                        }
-                    />
-
-                    <TouchableOpacity
-                        style={{ marginLeft: "auto" }}
-                        onPress={() => {
-
-                            //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
-                            if (this.state.currentSensorSelection != "empty" && this.state.currentSampleRate != "")
-                            {
-                                var newSensor = {
-                                    sensorName: this.state.currentSensorSelection,
-                                    sampleRate: this.state.currentSampleRate,
-                                };
-
-                                //add the selected sensor to a dictioany to mark that it has been selected
-                                this.usedSensors[this.state.currentSensorSelection] = true;
-
-                                this.state.selectedSensorData.push(newSensor);
-                                this.setState({ selectedSensors: [...this.state.selectedSensorData] });
-
-                                //set the new default vaule to be the first non hidden value
-                                for (var key in this.usedSensors)
-                                {
-                                    if (!this.usedSensors[key])
-                                    {
-                                        this.sensorPicker.selectItem(key);
-                                        break;
-                                    }
-
-                                    //if all the sensors have been selected, set the curret selection to the 'empty' value
-                                    
-                                    this.sensorPicker.selectItem("empty");
-                                }
-
-                                this.sampleRateInput.clear();
-                            }
-                        }} >
-                        <Image source={require("../assets/baseline_add_black.png") } style={styles.iconButon}  />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    };
 
     labelListItem = ({ item }) => (
         <View style={styles.labelListItem}>
@@ -305,8 +203,10 @@ class NewRecordingScreen extends Component
         );
     };
 
-    render()
-    {
+    render() {
+        
+        
+
         return (
             <View style={styles.container}>
                 <StatusBar barStyle="dark-content" />
@@ -316,17 +216,16 @@ class NewRecordingScreen extends Component
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
-                <View style={styles.content}>
-                    <View style={{ flexDirection: "row", paddingBottom: 10 }}>
-                        <Text>{"Sensors"}</Text>
-                        <Text>{"Sample Rate"}</Text>
-                    </View>
-
+                <KeyboardAwareScrollView>
+                        <View style={styles.content}>
+                    
                     <FlatList
-                        data={this.state.selectedSensors}
+                        data={this.state.sensorNames}
                         renderItem={this.sensorListItem}
-                        keyExtractor={item => item.sensorName}
-                        ListFooterComponent={this.sensorListFooter} />
+                        keyExtractor={item => item.sensorName} 
+                        style={{paddingBottom: 24}}/>
+                        {/*ListFooterComponent={this.sensorListFooter} />*/}
+
 
                     <View style={{paddingBottom: 10, fontSize: 20}}>
                         <Text>{"Labels"}</Text>
@@ -338,7 +237,13 @@ class NewRecordingScreen extends Component
                         keyExtractor={item => item.labelName}
                         ListFooterComponent={this.labelListFooter} />
 
-                    <FAB
+                </View>
+
+                </KeyboardAwareScrollView>
+
+
+                
+                <FAB
                         style={styles.fab}
                         label="Start Recording"
                         onPress={name => {
@@ -348,7 +253,6 @@ class NewRecordingScreen extends Component
                             });
                         }}
                     />
-                </View>
             </View>
         );
     }
@@ -361,8 +265,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-        flex: 1,
-        padding: 20
+        
+        padding: 20,
+        marginBottom: 100,
+        //backgroundColor: '#438023'
     },
     heading: {
         padding: 0,
@@ -396,13 +302,7 @@ const styles = StyleSheet.create({
         alignItems: "center", 
         marginBottom: 10,
     },
-    sensorListFooter: {
-        
-        flexDirection: "row", 
-        
-        alignItems: "center", 
-        marginBottom: 10,
-    },
+
     labelListItem: {
         flex: 1,
         flexDirection: "row", 
@@ -422,10 +322,10 @@ const styles = StyleSheet.create({
     },
 
     iconButon: {
-        marginLeft: "auto", 
+        marginRight: "auto", 
         margin: 5,
-        width: 30, 
-        height: 30
+        width: 35, 
+        height: 35
     },
 
     pickerIcon: { 
