@@ -46,6 +46,7 @@ class RecordingScreen extends Component
     constructor(props)
     {
         super(props);
+        recording_number = props.route.params.recording_number;
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
         console.log(props.route.params.sensors);
@@ -135,8 +136,6 @@ class RecordingScreen extends Component
     }
 
     render() {
-        var recording_number = 2;
-
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
@@ -220,7 +219,7 @@ class RecordingScreen extends Component
             <View style={[styles.container, { flexDirection: 'column' }]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title={ recording_number } />
+                    <Appbar.Content title={ "Recording " + recording_number } />
                 </Appbar.Header>
 
                 <View style={styles.content}>

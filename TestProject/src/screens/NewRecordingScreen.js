@@ -28,6 +28,7 @@ import Icon from "react-native-vector-icons"
 class NewRecordingScreen extends Component {
     constructor(props) {
         super(props);
+        recording_number = props.route.params.recording_number;
         //this.props = props
         this.state = {
             currentSensorSelection: "accelerometer",
@@ -336,6 +337,7 @@ class NewRecordingScreen extends Component {
                             this.props.navigation.navigate("RecordingScreen", {
                                 "sensors": this.state.selectedSensors,
                                 "labels": this.state.addedLabels,
+                                "recording_number": recording_number,
                             });
                         }}
                     />

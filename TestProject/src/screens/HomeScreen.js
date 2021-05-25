@@ -37,8 +37,6 @@ export default class HomeScreen extends Component {
         this.state = {
             recordings_list: [],
         }
-
-        this.state.recordings_list.push({title: "Recording 1", id: 1});
     }
 
     render() {
@@ -55,7 +53,7 @@ export default class HomeScreen extends Component {
             data={this.state.recordings_list}
             keyExtractor={(item) => item.id}
             renderItem={({item}) => (
-              <TouchableOpacity onPress={() => null}>
+              <TouchableOpacity onPress={() => console.log(item.info)}>
                 <View elevation={5} style={styles.listItem}>
                   <Text style={styles.listItemText}> {item.title} </Text>
                 </View>
@@ -68,14 +66,18 @@ export default class HomeScreen extends Component {
             icon={require('../assets/baseline_add_black.png')}
             onPress={name => {
               App.recording = new Recording();
+              App.recording.name = "Recording " + (this.state.recordings_list.length+1);
               App.recording.addSensor(SensorType.ACCELEROMETER);
               App.recording.addSensor(SensorType.GYROSCOPE);
               App.recording.addSensor(SensorType.MAGNETOMETER);
               App.recording.addSensor(SensorType.BAROMETER);
               App.recording.addSensor(SensorType.MICROPHONE);
-              this.state.recordings_list.push({title: App.recording.name, id: this.state.recordings_list.length+1});
+              this.state.recordings_list.push({title: App.recording.name, id: this.state.recordings_list.length+1, info: App.recording});
               console.log(this.state.recordings_list);
-              this.props.navigation.navigate("NewRecordingScreen");
+              this.setState({});
+              this.props.navigation.navigate("NewRecordingScreen", {
+                "recording_number": this.state.recordings_list.length,
+              });
             }}
           />
         </View>
