@@ -14,7 +14,6 @@ import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar';
 import ToggleButton from '../react-native-paper-src/components/ToggleButton';
 import Toast, {DURATION} from 'react-native-easy-toast';
-import { recordings_list } from './HomeScreen';
 
 import {
     StyleSheet,
@@ -136,7 +135,7 @@ class RecordingScreen extends Component
     }
 
     render() {
-        var recording_number = recordings_list.length;
+        var recording_number = 2;
 
         const updateGraphData = () => {
             let maxPoints = 20;

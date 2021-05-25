@@ -17,18 +17,6 @@ import {
   StatusBar
 } from 'react-native';
 
-export const recordings_list = [
-    { title: "Recording 1",
-      id: 1,
-    },
-    { title: "Recording 2",
-      id: 2,
-    },
-    { title: "Recording 3",
-      id: 3,
-    },
-];
-
 const DATA = {
     recordings: [],
 };
@@ -45,10 +33,16 @@ function Item({ title, onSelect }) {
 export default class HomeScreen extends Component {
     constructor(props){
         super(props);
+
+        this.state = {
+            recordings_list: [],
+        }
+
+        this.state.recordings_list.push({title: "Recording 1", id: 1});
     }
 
     render() {
-      var recording_number = recordings_list.length;
+      var recording_number = this.state.recordings_list.length;
       //const {recordingInfo} = route.params;
       return (
         <View style={[styles.container, {flexDirection: "column"}]}>
@@ -58,7 +52,7 @@ export default class HomeScreen extends Component {
           </Appbar.Header>
 
           <FlatList style={styles.list}
-            data={recordings_list}
+            data={this.state.recordings_list}
             keyExtractor={(item) => item.id}
             renderItem={({item}) => (
               <TouchableOpacity onPress={() => null}>
@@ -79,8 +73,8 @@ export default class HomeScreen extends Component {
               App.recording.addSensor(SensorType.MAGNETOMETER);
               App.recording.addSensor(SensorType.BAROMETER);
               App.recording.addSensor(SensorType.MICROPHONE);
-              recordings_list.push({title: App.recording.name, id: recordings_list.length});
-              console.log(recordings_list);
+              this.state.recordings_list.push({title: App.recording.name, id: this.state.recordings_list.length+1});
+              console.log(this.state.recordings_list);
               this.props.navigation.navigate("NewRecordingScreen");
             }}
           />

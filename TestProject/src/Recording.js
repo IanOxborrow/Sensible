@@ -5,7 +5,7 @@ import {PermissionsAndroid} from "react-native";
 
 export default class Recording {
     constructor() {
-        this.name = 'Recording 1';
+        this.name = 'Recording 2';
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
