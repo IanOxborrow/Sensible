@@ -8,6 +8,7 @@ import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
@@ -64,13 +65,75 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
+    sensorRow(item, i) {
+        return (
+            <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
+            
+                <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
+
+                    <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
+
+                    <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
+
+                </View>
+
+                <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
+                    <TextInput
+                        placeholder="sample rate"
+                        style={{paddingRight: 24}}
+                        ref={input => {
+                            this.sampleRateInput = input;
+                        }}
+                        onChangeText={
+                            text => {
+                                this.state.sensorSampleRates[item.sensorName] = text
+                            }
+                        }
+                    />
+
+                    <Checkbox
+                        status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                            
+                            //make sure that a sample rate has been speciified before allowing the check box to be selected
+                            if (this.state.sensorSampleRates[item.sensorName] > -1) {
+
+                                //modifiy the state to record that a checkbox has been pressed
+                                this.state.usedSensors[item.sensorName] = !this.state.usedSensors[item.sensorName]
+                                this.setState(this.state.usedSensors)
+                            }
+
+                            //reset the used sensor data array
+                            this.state.selectedSensorData = []
+
+                            //itterate over the sensors to see which ones have been selected
+                            for (const sensorName in this.state.usedSensors) {
+                                
+                                // if the sensor is selected add it to the selectedSensorData list
+                                if (this.state.usedSensors[sensorName]) {
+                                    
+                                    var newSensor = {
+                                        sensorName: sensorName,
+                                        sampleRate: this.state.sensorSampleRates[sensorName],
+                                    };
+
+                                    this.state.selectedSensorData.push(newSensor);
+                                }
+                            }
+
+                        }}
+                    />
+                </View>
+            </View>
+        )
+    }
+
     sensorListItem = ({ item }) => (
         <View style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
             
             <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
 
                 <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
-
 
                 <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
 
@@ -205,10 +268,20 @@ class NewRecordingScreen extends Component {
 
     render() {
         
+        /*
+        for (var sensor in this.state.sensorNames) {
+            console.log(sensor)
+            console.log(this.state.sensorNames[sensor])
+            this.sensorRow(this.state.sensorNames[sensor])
+        }*/
         
+        let sensorRows = this.state.sensorNames.map((sensor, i) => {
+            return this.sensorRow(sensor, i)
+        })
+
 
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
                 <StatusBar barStyle="dark-content" />
 
                 <Appbar.Header>
@@ -217,9 +290,10 @@ class NewRecordingScreen extends Component {
                 </Appbar.Header>
 
                 <KeyboardAwareScrollView>
-                        <View style={styles.content}>
-                    
-                    <FlatList
+                    <View style={styles.content}>
+                        {sensorRows}
+
+                        {/*<FlatList
                         data={this.state.sensorNames}
                         renderItem={this.sensorListItem}
                         keyExtractor={item => item.sensorName} 
@@ -227,21 +301,18 @@ class NewRecordingScreen extends Component {
                         {/*ListFooterComponent={this.sensorListFooter} />*/}
 
 
-                    <View style={{paddingBottom: 10, fontSize: 20}}>
-                        <Text>{"Labels"}</Text>
+                        <View style={{paddingBottom: 10, fontSize: 20}}>
+                            <Text>{"Labels"}</Text>
+                        </View>
+
+                        <FlatList
+                            data={this.state.addedLabels}
+                            renderItem={this.labelListItem}
+                            keyExtractor={item => item.labelName}
+                            ListFooterComponent={this.labelListFooter} />
+
                     </View>
-
-                    <FlatList
-                        data={this.state.addedLabels}
-                        renderItem={this.labelListItem}
-                        keyExtractor={item => item.labelName}
-                        ListFooterComponent={this.labelListFooter} />
-
-                </View>
-
-                </KeyboardAwareScrollView>
-
-
+                </KeyboardAwareScrollView>  
                 
                 <FAB
                         style={styles.fab}
@@ -297,7 +368,6 @@ const styles = StyleSheet.create({
 
     },
     sensorListItem: {
-        flex: 1,
         flexDirection: "row", 
         alignItems: "center", 
         marginBottom: 10,
