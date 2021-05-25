@@ -17,7 +17,17 @@ import {
   StatusBar
 } from 'react-native';
 
-export const recordings_list = [];
+export const recordings_list = [
+    { title: "Recording 1",
+      id: 1,
+    },
+    { title: "Recording 2",
+      id: 2,
+    },
+    { title: "Recording 3",
+      id: 3,
+    },
+];
 
 const DATA = {
     recordings: [],
@@ -49,10 +59,11 @@ export default class HomeScreen extends Component {
 
           <FlatList style={styles.list}
             data={recordings_list}
-            renderItem={({item, index}) => (
+            keyExtractor={(item) => item.id}
+            renderItem={({item}) => (
               <TouchableOpacity onPress={() => null}>
                 <View elevation={5} style={styles.listItem}>
-                  <Text style={styles.listItemText}> {recordings_list} </Text>
+                  <Text style={styles.listItemText}> {item.title} </Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -68,7 +79,7 @@ export default class HomeScreen extends Component {
               App.recording.addSensor(SensorType.MAGNETOMETER);
               App.recording.addSensor(SensorType.BAROMETER);
               App.recording.addSensor(SensorType.MICROPHONE);
-              recordings_list.push(recordings_list.length + 1);
+              recordings_list.push({title: App.recording.name, id: recordings_list.length});
               console.log(recordings_list);
               this.props.navigation.navigate("NewRecordingScreen");
             }}
