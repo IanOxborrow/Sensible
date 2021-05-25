@@ -68,8 +68,8 @@ class RecordingScreen extends Component
 
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
-        console.log(props.route.params.sensors);
-        console.log(props.route.params.labels);
+        console.log("sensors: " + props.route.params.sensors);
+        console.log("labels: " + props.route.params.labels);
 
 
         this.state = {
@@ -78,19 +78,19 @@ class RecordingScreen extends Component
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
-            sensors: props.route.params.sensors,
+            //sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: [],
+            sensorNames: props.route.params.sensors,
             checkedStatus: [],
             currentSensor: ""
         };
 
-        for (const [key, value] of Object.entries(this.state.sensors)) {
+        /*for (const [key, value] of Object.entries(this.state.sensors)) {
             console.log("loopy", key, value);
             this.state.sensorNames.push(value['sensorName'])
             this.state.checkedStatus[value['sensorName']] = 'unchecked'
             //this.state.checkedStatus.push({key: value['sensorName'], value: false})
-        }
+        }*/
 
         console.log(this.state.sensorNames[0])
         console.log(this.state.checkedStatus)

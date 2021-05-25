@@ -48,8 +48,6 @@ class NewRecordingScreen extends Component {
             usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
         };
 
-        this.sensorPicker;
-
         this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false};
 
         // Ensure the recording class has been initialised
@@ -105,6 +103,7 @@ class NewRecordingScreen extends Component {
 
                             //reset the used sensor data array
                             this.state.selectedSensorData = []
+                            this.state.selectedSensors = []
 
                             //itterate over the sensors to see which ones have been selected
                             for (const sensorName in this.state.usedSensors) {
@@ -118,6 +117,7 @@ class NewRecordingScreen extends Component {
                                     };
 
                                     this.state.selectedSensorData.push(newSensor);
+                                    this.state.selectedSensors.push(sensorName)
                                 }
                             }
 
@@ -127,67 +127,6 @@ class NewRecordingScreen extends Component {
             </View>
         )
     }
-
-    sensorListItem = ({ item }) => (
-        <View style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
-            
-            <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
-
-                <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
-
-                <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
-
-            </View>
-
-            <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
-                <TextInput
-                    placeholder="sample rate"
-                    style={{paddingRight: 24}}
-                    ref={input => {
-                        this.sampleRateInput = input;
-                    }}
-                    onChangeText={
-                        text => {
-                            this.state.sensorSampleRates[item.sensorName] = text
-                        }
-                    }
-                />
-
-                <Checkbox
-                    status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        
-                        //make sure that a sample rate has been speciified before allowing the check box to be selected
-                        if (this.state.sensorSampleRates[item.sensorName] > -1) {
-
-                            //modifiy the state to record that a checkbox has been pressed
-                            this.state.usedSensors[item.sensorName] = !this.state.usedSensors[item.sensorName]
-                            this.setState(this.state.usedSensors)
-                        }
-
-                        //reset the used sensor data array
-                        this.state.selectedSensorData = []
-
-                        //itterate over the sensors to see which ones have been selected
-                        for (const sensorName in this.state.usedSensors) {
-                            
-                            // if the sensor is selected add it to the selectedSensorData list
-                            if (this.state.usedSensors[sensorName]) {
-                                
-                                var newSensor = {
-                                    sensorName: sensorName,
-                                    sampleRate: this.state.sensorSampleRates[sensorName],
-                                };
-
-                                this.state.selectedSensorData.push(newSensor);
-                            }
-                        }
-
-                    }}
-                />
-            </View>
-        </View>
-    );
 
     labelListItem = ({ item }) => (
         <View style={styles.labelListItem}>
@@ -268,12 +207,6 @@ class NewRecordingScreen extends Component {
 
     render() {
         
-        /*
-        for (var sensor in this.state.sensorNames) {
-            console.log(sensor)
-            console.log(this.state.sensorNames[sensor])
-            this.sensorRow(this.state.sensorNames[sensor])
-        }*/
         
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
@@ -293,14 +226,6 @@ class NewRecordingScreen extends Component {
                     <View style={styles.content}>
                         {sensorRows}
 
-                        {/*<FlatList
-                        data={this.state.sensorNames}
-                        renderItem={this.sensorListItem}
-                        keyExtractor={item => item.sensorName} 
-                        style={{paddingBottom: 24}}/>
-                        {/*ListFooterComponent={this.sensorListFooter} />*/}
-
-
                         <View style={{paddingBottom: 10, fontSize: 20}}>
                             <Text>{"Labels"}</Text>
                         </View>
@@ -313,7 +238,7 @@ class NewRecordingScreen extends Component {
 
                     </View>
                 </KeyboardAwareScrollView>  
-                
+
                 <FAB
                         style={styles.fab}
                         label="Start Recording"
