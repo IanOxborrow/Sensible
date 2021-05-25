@@ -189,7 +189,8 @@ class RecordingScreen extends Component
 
             if (sample == null)
             {
-                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+                // throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+                return
             }
 
             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
