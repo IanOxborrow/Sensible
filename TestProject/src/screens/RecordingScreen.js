@@ -25,25 +25,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-var DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'Label Name 1',
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Label Name 2',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Label Name 3',
-    },
-    {
-        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
-        title: 'Label Name 4',
-    },
-];
-
 const data = {
     labels: [],
     datasets: [
@@ -53,8 +34,22 @@ const data = {
     ],
 };
 
+// hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
+const hslToHex = (h, s, l) => {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+};
+
 const chartConfig = {
-    backgroundColor: '#e26a00',
+    backgroundColor: '#000000',
+    backgroundGradientFrom: "#000000",
+    backgroundGradientTo: "#000000",
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
 };
 
@@ -83,6 +78,13 @@ class RecordingScreen extends Component
             checkedStatus: [],
             currentSensor: ""
         };
+
+        // A dictionary corresponding to the hue value for the colour of each label
+        this.labelsPallet = new Map();
+        for (let i = 0; i < this.state.labels.length; i++) {
+            let hue_step = Math.floor(360 / this.state.labels.length);
+            this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
+        }
 
         for (const [key, value] of Object.entries(this.state.sensors)) {
             console.log("loopy", key, value);
@@ -203,6 +205,12 @@ class RecordingScreen extends Component
                 let label = Math.round((new Date() - this.state.startTime) / 1000);
                 this.state.labelSource.push(label.toString());
             }
+            else if (timeElapsed > 0.5 && timeElapsed < 0.8)
+            {
+                let labelText = this.state.currentLabel;
+                labelText = labelText ? labelText : '';
+                this.state.labelSource.push(labelText);
+            }
             else
             {
                 this.state.labelSource.push('');
@@ -213,6 +221,17 @@ class RecordingScreen extends Component
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
+            }
+
+            // Update the counter (MAY BE REDUNDANT)
+            this.state.counter++;
+            if (this.state.currentLabel) {
+                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel],50,50);
+                chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+            }
+            else {
+                chartConfig.backgroundGradientTo = "#000000";
+                chartConfig.backgroundGradientFrom = "#000000";
             }
 
             // Update the counter (MAY BE REDUNDANT)
@@ -273,6 +292,7 @@ class RecordingScreen extends Component
                             data={data}
                             width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                             height={220}
+                            verticalLabelRotation={17}
                             chartConfig={chartConfig}
                             style={{
                                 marginVertical: 0,

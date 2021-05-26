@@ -116,9 +116,9 @@ export default class Recording {
         let label = new Label(name, Date.now());
         this.labels.push(label);
         // Create a new timeframe for each sensor
-        for (const value of Object.values(this.graphableData))
+        for (const sensorTimeframe of Object.values(this.graphableData))
         {
-            value.push(new GenericTimeframe(this.timeframeSize, this.bufferSize, label));
+            sensorTimeframe.push(new GenericTimeframe(this, this.timeframeSize, this.bufferSize, sensorTimeframe[0].type, label));
         }
         // TODO: Asynchronously save all data from the previous timeframe to file
     }
