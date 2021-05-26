@@ -1,5 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { Accelerometer, SensorType, GenericTimeframe, Mic, Gyroscope, Magnetometer, Barometer } from "./Sensors";
+import {
+    Accelerometer,
+    SensorType,
+    GenericTimeframe,
+    Mic,
+    Gyroscope,
+    Magnetometer,
+    Barometer,
+    getSensorClass,
+} from "./Sensors";
 import Label from "./sensors/Label"
 import {PermissionsAndroid, Platform} from "react-native";
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
@@ -16,6 +25,19 @@ export default class Recording {
     }
 
     /**
+     * Initialise a new sensor and a generic timeframe
+     * @param type The type of the sensor to initialise
+     */
+    initialiseGenericSensor(type)
+    {
+        const sensorClass = getSensorClass(type);
+        // Create the timeframe array for the sensor (with an initial timeframe)
+        this.graphableData[type] = [new GenericTimeframe(this, this.timeframeSize, this.bufferSize, type)];
+        // Create a new sensor instance to track and enable it
+        this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
+    }
+
+    /**
      * Add a sensor to record data from
      *
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
@@ -24,28 +46,16 @@ export default class Recording {
         switch (type)
         {
             case SensorType.ACCELEROMETER:
-                // Create the timeframe array for the accelerometer (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                // Create a new accelerometer instance to track and enable it
-                this.enabledSensors[type] = new Accelerometer(this.graphableData[type], this.sampleRate);
+                this.initialiseGenericSensor(SensorType.ACCELEROMETER);
                 break;
             case SensorType.GYROSCOPE:
-                // Create the timeframe array for the gyroscope (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                // Create a new gyroscope instance to track and enable it
-                this.enabledSensors[type] = new Gyroscope(this.graphableData[type], this.sampleRate);
+                this.initialiseGenericSensor(SensorType.GYROSCOPE);
                 break;
             case SensorType.MAGNETOMETER:
-                // Create the timeframe array for the magnetometer (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                // Create a new magnetometer instance to track and enable it
-                this.enabledSensors[type] = new Magnetometer(this.graphableData[type], this.sampleRate);
+                this.initialiseGenericSensor(SensorType.MAGNETOMETER);
                 break;
             case SensorType.BAROMETER:
-                // Create the timeframe array for the magnetometer (with an initial timeframe)
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                // Create a new barometer instance to track and enable it
-                this.enabledSensors[type] = new Barometer(this.graphableData[type], this.sampleRate);
+                this.initialiseGenericSensor(SensorType.BAROMETER);
                 break;
             case SensorType.MICROPHONE:
                 // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
@@ -83,9 +93,7 @@ export default class Recording {
                 };
 
                 requestMicPermission();
-
-                this.graphableData[type] = [new GenericTimeframe(this.timeframeSize, this.bufferSize)];
-                this.enabledSensors[type] = new Mic(this.graphableData[type], this.sampleRate);;
+                this.initialiseGenericSensor(SensorType.MICROPHONE);
 
                 break;
             default:
