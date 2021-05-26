@@ -12,16 +12,39 @@ import {
 import Label from "./sensors/Label"
 import {PermissionsAndroid, Platform} from "react-native";
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
+import App from '../App';
+import RNFetchBlob from "rn-fetch-blob";
+import Share from 'react-native-share';
 
 export default class Recording {
     constructor() {
+        this.name = 'Recording 1'; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
+        this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/';
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
-        this.enabledSensors = {};
+        this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
         this.graphableData = {};
+        this.writeStreams = {};
         this.logicalTime = 0;
         this.labels = [];
+
+        // Create the folder if it doesn't already exist
+        RNFetchBlob.fs.exists(this.folderPath).then(exists => {
+            if (!exists)
+            {
+                RNFetchBlob.fs.mkdir(this.folderPath)
+                    .then(() => { console.log('Successfully created folder ' + this.folderPath); })
+                    .catch(err => { throw Error('Recording.constructor: ' + err); });
+            }
+        });
+
+        // Create the metadata file
+        const infoFilePath = this.folderPath + 'info.txt';
+        RNFetchBlob.fs.writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
+            .then(() => { console.log('Successfully created ' + infoFilePath); })
+            .catch(err => { throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err); });
+
     }
 
     /**
