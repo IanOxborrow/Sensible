@@ -43,8 +43,8 @@ class NewRecordingScreen extends Component {
             selectedSensors: [],
             addedLabels: [],
 
-            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
+            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')},
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
             sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
             usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
@@ -65,10 +65,42 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
+    startRecording() {
+        for (let i = 0; i < this.state.selectedSensors.length; i++) {
+            console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"]);
+            let sensor;
+            switch (this.state.selectedSensorData[i]["sensorName"]) {
+                case "microphone":
+                    sensor = SensorType.MICROPHONE;
+                    break;
+                case "accelerometer":
+                    sensor = SensorType.ACCELEROMETER;
+                    break;
+                case "gyroscope":
+                    sensor = SensorType.GYROSCOPE;
+                    break;
+                case "magnetometer":
+                    sensor = SensorType.MAGNETOMETER;
+                    break;
+                case "barometer":
+                    sensor = SensorType.BAROMETER;
+                    break;
+            }
+
+            App.recording.addSensor(sensor);
+        }
+
+        this.props.navigation.navigate("RecordingScreen", {
+            "sensors": this.state.selectedSensors,
+            "labels": this.state.addedLabels,
+        });
+    }
+
+
     sensorRow(item, i) {
         return (
             <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
-            
+
                 <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
 
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
@@ -94,7 +126,7 @@ class NewRecordingScreen extends Component {
                     <Checkbox
                         status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
                         onPress={() => {
-                            
+
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
                             if (this.state.sensorSampleRates[item.sensorName] > -1) {
 
@@ -109,10 +141,10 @@ class NewRecordingScreen extends Component {
 
                             //itterate over the sensors to see which ones have been selected
                             for (const sensorName in this.state.usedSensors) {
-                                
+
                                 // if the sensor is selected add it to the selectedSensorData list
                                 if (this.state.usedSensors[sensorName]) {
-                                    
+
                                     var newSensor = {
                                         sensorName: sensorName,
                                         sampleRate: this.state.sensorSampleRates[sensorName],
@@ -208,8 +240,8 @@ class NewRecordingScreen extends Component {
     };
 
     render() {
-        
-        
+
+
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
@@ -239,7 +271,7 @@ class NewRecordingScreen extends Component {
                             ListFooterComponent={this.labelListFooter} />
 
                     </View>
-                </KeyboardAwareScrollView>  
+                </KeyboardAwareScrollView>
 
                 <FAB
                         style={styles.fab}
@@ -258,7 +290,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-        
+
         padding: 20,
         marginBottom: 100,
         //backgroundColor: '#438023'
@@ -282,46 +314,46 @@ const styles = StyleSheet.create({
         bottom: 15,
     },
     listComponent: {
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         flex: 1,
         padding: 10,
         backgroundColor: "#f4f4f4"
 
     },
     sensorListItem: {
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
 
     labelListItem: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         marginBottom: 10,
         backgroundColor: "#f4f4f4"
     },
     labelListFooter: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         alignItems: 'stretch',
         backgroundColor: "#f4f4f4"
-        
+
     },
 
     iconButon: {
-        marginRight: "auto", 
+        marginRight: "auto",
         margin: 5,
-        width: 35, 
+        width: 35,
         height: 35
     },
 
-    pickerIcon: { 
-        width: 24, 
+    pickerIcon: {
+        width: 24,
         height: 24
     }
 
