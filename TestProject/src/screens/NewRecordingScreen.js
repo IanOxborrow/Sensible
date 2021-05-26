@@ -43,9 +43,10 @@ class NewRecordingScreen extends Component
 
         this.sensorPicker;
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false };
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false, "empty": false };
 
         // Ensure the recording class has been initialised
+        // TODO: Change this to check whether a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");
@@ -72,7 +73,7 @@ class NewRecordingScreen extends Component
                     {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
                 ]}
                 defaultValue={item.sensorName}
-                containerStyle={{ height: 0, width: 150, backgroundColor: "#FFFFFF" }}
+                containerStyle={{ height: 50, width: 150, backgroundColor: "#FFFFFF" }}
                 style={styles.dropdown}
                 itemStyle={{
                     justifyContent: "flex-start",
@@ -85,7 +86,7 @@ class NewRecordingScreen extends Component
                     backgroundColor: "#000000"
                 }}
 
-                />
+            />
             <View style={[styles.listComponent, {marginLeft: 20}]}>
 
                 <Text>{item.sampleRate}</Text>
@@ -119,11 +120,14 @@ class NewRecordingScreen extends Component
                         {
                             if (!this.usedSensors[key])
                             {
+                                //more the used sensors row as 'true' so that its hidden value is true
+                                this.usedSensors['empty'] = true
                                 this.sensorPicker.selectItem(key);
                                 break;
                             }
 
                             //if all the sensors have been selected, set the curret selection to the 'empty' value
+                            this.usedSensors['empty'] = false // make the empty row have a  hidden value of false
                             this.sensorPicker.selectItem("empty");
                         }
 
@@ -137,20 +141,20 @@ class NewRecordingScreen extends Component
 
     //constant item that stays at the bottom of the list. This acts as the add new row in the list
     sensorListFooter = () => {
-        console.log("sensor state " + this.state.sensors)
+        console.log("sensor state " + this.usedSensors)
 
         return (
-            <View style={[styles.sensorListFooter, {alignSelf:'baseline'}]} >
+            <View style={[styles.sensorListFooter, {backgroundColor: 'red'}]} >
                 <DropDownPicker
                     ref={this.sensorPickerRef}
                     items={[
                         { label: "Accelerometer", value: "accelerometer", hidden: this.usedSensors["accelerometer"],
-                            icon:  () => <Image source={require("../assets/acceleromotor_icon.png")} style={styles.pickerIcon} />},
+                            icon:  () => <Image source={require("../assets/accelerometer_icon.png")} style={styles.pickerIcon} />},
                         { label: "Gyroscope", value: "gyroscope", hidden: this.usedSensors["gyroscope"],
-                        icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
+                            icon:  () => <Image source={require("../assets/gyroscope_icon.png")} style={styles.pickerIcon} /> },
                         { label: "Microphone", value: "microphone", hidden: this.usedSensors["microphone"],
-                        icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
-                        { label: "", value: "empty", hidden: true },
+                            icon:  () => <Image source={require("../assets/microphone_icon.png")} style={styles.pickerIcon} /> },
+                        { label: "", value: "empty", hidden: false} // this.usedSensors["empty"] },
                         /*{label: 'Accelerometer', value: 'accelerometer', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
                         {label: 'Gyroscope', value: 'gyroscope', icon: () => <Icon name="flag" size={18} color="#900" />},
                         {label: 'Microphone', value: 'microphone', icon: () => <Icon name="flag" size={18} color="#900" />},*/
@@ -210,6 +214,7 @@ class NewRecordingScreen extends Component
                                     }
 
                                     //if all the sensors have been selected, set the curret selection to the 'empty' value
+
                                     this.sensorPicker.selectItem("empty");
                                 }
 
@@ -312,9 +317,6 @@ class NewRecordingScreen extends Component
                 </Appbar.Header>
 
                 <View style={styles.content}>
-
-
-
                     <View style={{ flexDirection: "row", paddingBottom: 10 }}>
                         <Text>{"Sensors"}</Text>
                         <Text>{"Sample Rate"}</Text>
@@ -395,8 +397,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     sensorListFooter: {
-        flex: 1,
+
         flexDirection: "row",
+
         alignItems: "center",
         marginBottom: 10,
     },
@@ -429,6 +432,7 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24
     }
+
 
 });
 
