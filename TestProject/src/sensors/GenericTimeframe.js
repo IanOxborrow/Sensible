@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
-import SensorSample from "./SensorSample";
+import SensorSample from './SensorSample';
+import { getSensorFileName, getSensorClass } from '../Sensors';
 
 export default class GenericTimeframe extends SensorTimeframe
 {
-    static warning = false; // TODO: Remove this later, it is only used to prevent the saveToCsv function from throwing a warning repeatedly
     /**
      * @param recording     A reference to the recording class that this timeframe is stored under
      * @param initialSize   The number of samples to store before auto-saving to file
@@ -17,6 +17,7 @@ export default class GenericTimeframe extends SensorTimeframe
         super(recording, initialSize, bufferSize);
         this.type = type;
         this.label = label;
+        this.filePath = this.recording.folderPath + getSensorFileName(this.type);
     }
 
     /**
@@ -150,11 +151,18 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     saveToCsv(samples)
     {
-        if (!GenericTimeframe.warning)
+        if (this.recording.writeStreams[this.type] == null)
         {
-            console.warn('GenericTimeframe.saveToCsv: Method has not been implemented. No data will be saved.');
-            GenericTimeframe.warning = true;
+            console.log('File stream already closed, ignoring buffer flush.');
+            return; // TODO: Remove this
+            // throw Error('GenericTimeframe.saveToCsv: Failed to obtain the correct write stream');
         }
+
+        for (let i = 0; i < samples.length; i++)
+        {
+            this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + this.label + '\n');
+        }
+        console.log('Buffer for ' + getSensorClass(this.type).prototype.constructor.name + ' pushed');
     }
 
     /**
