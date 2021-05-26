@@ -142,7 +142,6 @@ class RecordingScreen extends Component
     toggleGraphDisplay(pressedButtonName) {
 
         this.state.currentSensor = pressedButtonName
-        console.log(this.state.currentSensor);
         this.state.checkedStatus[pressedButtonName] = 'checked';
 
         //this.state.dataSource = [0]

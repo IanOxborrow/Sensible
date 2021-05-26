@@ -6,15 +6,16 @@ export default class GenericTimeframe extends SensorTimeframe
 {
     static warning = false; // TODO: Remove this later, it is only used to prevent the saveToCsv function from throwing a warning repeatedly
     /**
-     * @param initialSize The maximum number of data points stored in the timeframe. This should be the same as the number
-     *                    of data points shown in the graph.
-     * @param bufferSize The number of samples to store before it is saved to the file all at once. This is used to
-     *                   prevent samples being saved one at a time which adds a lot of extra overhead
-     * @param label      The label of the current timeframe (optional)
+     * @param recording     A reference to the recording class that this timeframe is stored under
+     * @param initialSize   The number of samples to store before auto-saving to file
+     * @param bufferSize    The number of samples to push to file at once
+     * @param type          The type of data stored in the timeframe eg. SensorTypes.ACCELEROMETER
+     * @param label         The initial label of the current timeframe (optional)
      */
-    constructor(initialSize, bufferSize, label = null)
+    constructor(recording, initialSize, bufferSize, type, label = null)
     {
-        super(initialSize, bufferSize);
+        super(recording, initialSize, bufferSize);
+        this.type = type;
         this.label = label;
     }
 
@@ -30,13 +31,19 @@ export default class GenericTimeframe extends SensorTimeframe
     static moveCircularPointer(shiftCount, currentIndex, elementCount, size)
     {
         if (Math.abs(shiftCount) > elementCount)
-            {throw new Error('GenericTimeframe.moveCircularPointer: Attempted to shift the pointer ' + shiftCount +
-              ' space(s) but the array is only ' + elementCount + ' element(s) long');}
+        {
+            throw new Error('GenericTimeframe.moveCircularPointer: Attempted to shift the pointer ' + shiftCount +
+                ' space(s) but the array is only ' + elementCount + ' element(s) long');
+        }
 
         if (shiftCount > 0)
-            {return currentIndex + shiftCount < size ? currentIndex + shiftCount : currentIndex + shiftCount - size;}
+        {
+            return currentIndex + shiftCount < size ? currentIndex + shiftCount : currentIndex + shiftCount - size;
+        }
         else
-            {return currentIndex + shiftCount > -1 ? currentIndex + shiftCount : currentIndex + shiftCount + size;}
+        {
+            return currentIndex + shiftCount > -1 ? currentIndex + shiftCount : currentIndex + shiftCount + size;
+        }
     }
 
     /**
@@ -46,6 +53,12 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     addSample(sample)
     {
+        // Make sure that the data is wrapped in a sample class
+        if (!(sample instanceof SensorSample))
+        {
+            throw new Error(this.constructor.name + '.addSample: Received an unwrapped sample.');
+        }
+
         // Pop the first sample and shift the array if at capacity
         if (this.dataSize === this.data.length) {this.popAndSave(1);}
 
@@ -79,7 +92,6 @@ export default class GenericTimeframe extends SensorTimeframe
         }
     }
 
-
     /***
      * Removes the first n samples from the data array and saves it
      * @param sampleCount The first n samples to save
@@ -87,15 +99,15 @@ export default class GenericTimeframe extends SensorTimeframe
     popAndSave(sampleCount)
     {
         if (sampleCount > this.dataSize)
-            {throw new Error('GenericTimeframe.popAndSave: Attempted to pop and save ' + sampleCount +
-              ' samples but there were only ' + this.dataSize);}
+        {throw new Error('GenericTimeframe.popAndSave: Attempted to pop and save ' + sampleCount +
+            ' samples but there were only ' + this.dataSize);}
 
         // Run a function on the first n elements of the data array (used later)
         const runFirstN = (n, func) => {
             for (let i = n - 1; i >= 0; i--)
             {
                 let dataIndex = GenericTimeframe.moveCircularPointer(-this.dataSize + i,
-                  this.dataPointer, this.dataSize, this.data.length);
+                    this.dataPointer, this.dataSize, this.data.length);
                 func(dataIndex);
             }
         };
