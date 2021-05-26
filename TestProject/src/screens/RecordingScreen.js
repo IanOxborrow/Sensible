@@ -62,8 +62,8 @@ class RecordingScreen extends Component
         recording_number = props.route.params.recording_number;
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
-        console.log(props.route.params.sensors);
-        console.log(props.route.params.labels);
+        console.log("sensors: " + props.route.params.sensors);
+        console.log("labels: " + props.route.params.labels);
 
 
         this.state = {
@@ -72,9 +72,9 @@ class RecordingScreen extends Component
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
-            sensors: props.route.params.sensors,
+            //sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: [],
+            sensorNames: props.route.params.sensors,
             checkedStatus: [],
             currentSensor: ""
         };
@@ -84,13 +84,6 @@ class RecordingScreen extends Component
         for (let i = 0; i < this.state.labels.length; i++) {
             let hue_step = Math.floor(360 / this.state.labels.length);
             this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
-        }
-
-        for (const [key, value] of Object.entries(this.state.sensors)) {
-            console.log("loopy", key, value);
-            this.state.sensorNames.push(value['sensorName'])
-            this.state.checkedStatus[value['sensorName']] = 'unchecked'
-            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
         }
 
         console.log(this.state.sensorNames[0])
@@ -184,7 +177,7 @@ class RecordingScreen extends Component
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
                     break
-
+                
             }
 
             // Don't update the graph if a new sample hasn't come in
@@ -251,13 +244,12 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'accelerometer': require('../assets/acceleromotor_icon.png'),
+
+            'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
         }
-
-        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
