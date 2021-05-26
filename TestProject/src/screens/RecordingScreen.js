@@ -323,9 +323,15 @@ class RecordingScreen extends Component
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                            onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                            onPress={() => {
+                                App.recording.finish();
+                                this.props.navigation.navigate('HomeScreen');
+                            }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                                onPress={() => {
+                                    App.recording.finish(true);
+                                    this.props.navigation.navigate('HomeScreen')
+                                }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}

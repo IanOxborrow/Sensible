@@ -192,4 +192,21 @@ export default class Recording {
             subject: fileName,
         });
     }
+
+    /**
+     * Finalise the recording and save everything to file
+     * @param clear True if all created files should be deleted (use if the recording has been cancelled)
+     */
+    finish(clear = false)
+    {
+        // TODO: Implement clear functionality
+        // TODO: Do a final flush of the buffers
+        // Close all the write streams
+        for (const [sensorType, writeStream] of Object.entries(this.writeStreams))
+        {
+            writeStream.close();
+            this.writeStreams[sensorType] = null;
+            console.log("Closed write stream for sensor type-" + sensorType);
+        }
+    }
 }

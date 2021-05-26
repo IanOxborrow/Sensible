@@ -159,16 +159,17 @@ export default class GenericTimeframe extends SensorTimeframe
 
         if (this.recording.writeStreams[this.type] == null)
         {
-            console.log('File stream already closed, ignoring buffer flush.');
+            // console.log('File stream already closed, ignoring buffer flush.');
             return; // TODO: Remove this
             // throw Error('GenericTimeframe.saveToCsv: Failed to obtain the correct write stream');
         }
 
         for (let i = 0; i < samples.length; i++)
         {
-            this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + this.label + '\n');
+            const label = this.label == null ? null : this.label.name;
+            this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + label + '\n');
         }
-        console.log('Buffer for ' + getSensorClass(this.type).prototype.constructor.name + ' pushed');
+        // console.log('Buffer for ' + getSensorClass(this.type).prototype.constructor.name + ' pushed');
     }
 
     /**

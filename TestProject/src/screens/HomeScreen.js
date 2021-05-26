@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
 import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {SensorType} from '../Sensors';
+import {SensorType, toSensorType} from '../Sensors';
 import Recording from '../Recording';
 import App from '../../App';
 
@@ -52,7 +53,11 @@ export default class HomeScreen extends Component {
           data={this.state.recordings_list}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => console.log(item.info)}>
+            <TouchableOpacity onPress={() => {
+                // TODO: Share all generated files
+                // Share the generated file
+                item.info.shareSensorFile(SensorType.ACCELEROMETER);
+            }}>
               <View elevation={5} style={styles.listItem}>
                 <Text style={styles.listItemText}> {item.title} </Text>
               </View>
