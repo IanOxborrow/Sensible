@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
+import SensorSample from "./SensorSample";
 
 export default class GenericTimeframe extends SensorTimeframe
 {
@@ -58,14 +59,26 @@ export default class GenericTimeframe extends SensorTimeframe
     /**
      * Add multiple samples to the timeframe at once. This should only be called on the latest timeframe.
      * @param samples An array of samples to add to the timeframe
+     * @param wrapper A reference to a wrapper class (eg. MicSample, AccelerometerSample). This is only needed
+     *                if the data is not pre-wrapped in a Sample class
      */
-    addSamples(samples)
+    addSamples(samples, wrapper = null)
     {
+        // Make sure that the data is wrapped in a sample class
+        if (!(samples[0] instanceof SensorSample) && wrapper == null)
+        {
+            throw new Error(this.constructor.name + '.addSamples: Received an unwrapped sample with no reference to ' +
+                'a wrapper. Either pass in wrapped data or pass in a reference to the wrapper class.');
+        }
+
         for (let i = 0; i < samples.length; i++)
         {
-            this.addSample(samples[i]);
+            const sample = wrapper == null ? samples[i] : new wrapper(samples[i]);
+            // Wrap the sample if needed and add it to this timeframe
+            this.addSample(sample);
         }
     }
+
 
     /***
      * Removes the first n samples from the data array and saves it

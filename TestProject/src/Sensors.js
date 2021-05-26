@@ -5,16 +5,17 @@ import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
 import Mic from './sensors/Mic';
 
-export { default as GenericTimeframe } from "./sensors/GenericTimeframe";
-export { default as Accelerometer } from "./sensors/Accelerometer";
-export { default as AccelerometerSample } from "./sensors/AccelerometerSample";
-export { default as Gyroscope } from "./sensors/Gyroscope";
-export { default as GyroscopeSample } from "./sensors/GyroscopeSample";
-export { default as Barometer } from "./sensors/Barometer";
-export { default as BarometerSample } from "./sensors/BarometerSample";
-export { default as Magnetometer } from "./sensors/Magnetometer";
-export { default as MagnetometerSample } from "./sensors/MagnetometerSample";
-export { default as Mic } from "./sensors/Mic";
+export {default as GenericTimeframe} from './sensors/GenericTimeframe';
+export {default as Accelerometer} from './sensors/Accelerometer';
+export {default as AccelerometerSample} from './sensors/AccelerometerSample';
+export {default as Gyroscope} from './sensors/Gyroscope';
+export {default as GyroscopeSample} from './sensors/GyroscopeSample';
+export {default as Barometer} from './sensors/Barometer';
+export {default as BarometerSample} from './sensors/BarometerSample';
+export {default as Magnetometer} from './sensors/Magnetometer';
+export {default as MagnetometerSample} from './sensors/MagnetometerSample';
+export {default as Mic} from './sensors/Mic';
+export {default as MicSample} from './sensors/MicSample';
 export const SensorType = {
     ACCELEROMETER: 0,
     GYROSCOPE: 1,
@@ -36,6 +37,9 @@ export const getSensorClass = (type) => {
         case SensorType.MICROPHONE:
             return Mic;
         default:
-            throw new Error("Sensors.getSensorClass: Received an unknown type");
+            throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
     }
+};
+export const getSensorFileName = (type) => {
+    return getSensorClass(type).prototype.constructor.name + '.txt';
 };
