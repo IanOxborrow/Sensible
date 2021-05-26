@@ -11,9 +11,9 @@ import React, { Component } from 'react';
 import App from '../../App';
 import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
-import Appbar from '../react-native-paper-src/components/Appbar'
-import ToggleButton from '../react-native-paper-src/components/ToggleButton'
-import Toast, {DURATION} from 'react-native-easy-toast'
+import Appbar from '../react-native-paper-src/components/Appbar';
+import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 import {
     StyleSheet,
@@ -59,7 +59,7 @@ class RecordingScreen extends Component
     constructor(props)
     {
         super(props);
-
+        recording_number = props.route.params.recording_number;
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
         console.log(props.route.params.sensors);
@@ -163,7 +163,6 @@ class RecordingScreen extends Component
     }
 
     render() {
-
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
@@ -280,7 +279,7 @@ class RecordingScreen extends Component
             <View style={[styles.container, { flexDirection: 'column' }]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title="Recording #" />
+                    <Appbar.Content title={ "Recording " + recording_number } />
                 </Appbar.Header>
 
                 <View style={styles.content}>
@@ -324,7 +323,7 @@ class RecordingScreen extends Component
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                            onPress={() => this.props.navigation.navigate('HomeScreen')} />
                         <Button title="Cancel" color="#6200F2"
                                 onPress={() => this.props.navigation.navigate('HomeScreen')} />
                     </View>

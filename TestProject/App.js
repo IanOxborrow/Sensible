@@ -46,8 +46,6 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-        App.recording = new Recording();
-
         const requestStoragePermission = async () => {
             // Get saving permission (Android Only!)
             try

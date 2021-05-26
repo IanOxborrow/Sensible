@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
 import SensorSample from './SensorSample';
-import { getSensorFileName, getSensorClass } from '../Sensors';
+import { getSensorFileName, getSensorClass, SensorType } from "../Sensors";
 
 export default class GenericTimeframe extends SensorTimeframe
 {
@@ -151,6 +151,12 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     saveToCsv(samples)
     {
+        // TODO: Remove this
+        if (this.type == SensorType.MICROPHONE)
+        {
+            return;
+        }
+
         if (this.recording.writeStreams[this.type] == null)
         {
             console.log('File stream already closed, ignoring buffer flush.');

@@ -17,8 +17,8 @@ import RNFetchBlob from "rn-fetch-blob";
 import Share from 'react-native-share';
 
 export default class Recording {
-    constructor() {
-        this.name = 'Recording 1'; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
+    constructor(name) {
+        this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
         this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/';
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
