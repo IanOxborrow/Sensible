@@ -158,8 +158,8 @@ class RecordingScreen extends Component
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+            let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+            // let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
             // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
             // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
             // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
@@ -170,8 +170,8 @@ class RecordingScreen extends Component
             }
 
             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            //this.state.dataSource.push(sample);
+            // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            this.state.dataSource.push(sample);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)
