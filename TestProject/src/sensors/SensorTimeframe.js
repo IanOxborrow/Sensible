@@ -34,30 +34,30 @@ export default class SensorTimeframe
         this.bufferSize = 0; // The number of elements actually in the buffer
         this.recording = recording;
 
-        /*** Everything below this is for checking that child classes implement functions correctly */
-        // Only run the checks if we're allowed to
-        if (!ErrorChecking.ALLOW_IMPLEMENTATION_CHECKS) { return; }
-
-        // Prevent this class from being instantiated
-        if (this.constructor === SensorTimeframe)
-        {
-            throw new Error(this.constructor.name + ' interface cannot be instantiated');
-        }
-        // Make sure all required methods are implemented in child classes
-        else
-        {
-            // Get the interface implementation class
-            const child = Object.getPrototypeOf(this);
-            // A list of functions that needs to be implemented
-            let functions = [
-                {name: 'constructor', params: ['recording', 'initialSize', 'bufferSize']},
-                {name: 'addSample', params: ['sample']},
-                {name: 'popAndSave', params: ['sampleCount']},
-                {name: 'saveToCsv', params: ['samples']},
-            ];
-            // Check that the interface has been implemented correctly
-            ErrorChecking.checkInterfaceImplementation(functions, child);
-        }
+        // /*** Everything below this is for checking that child classes implement functions correctly */
+        // // Only run the checks if we're allowed to
+        // if (!ErrorChecking.ALLOW_IMPLEMENTATION_CHECKS) { return; }
+        //
+        // // Prevent this class from being instantiated
+        // if (this.constructor === SensorTimeframe)
+        // {
+        //     throw new Error(this.constructor.name + ' interface cannot be instantiated');
+        // }
+        // // Make sure all required methods are implemented in child classes
+        // else
+        // {
+        //     // Get the interface implementation class
+        //     const child = Object.getPrototypeOf(this);
+        //     // A list of functions that needs to be implemented
+        //     let functions = [
+        //         {name: 'constructor', params: ['recording', 'initialSize', 'bufferSize']},
+        //         {name: 'addSample', params: ['sample']},
+        //         {name: 'popAndSave', params: ['sampleCount']},
+        //         {name: 'saveToCsv', params: ['samples']},
+        //     ];
+        //     // Check that the interface has been implemented correctly
+        //     ErrorChecking.checkInterfaceImplementation(functions, child);
+        // }
 
     }
 }
