@@ -6,6 +6,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
+
+import { SensorType } from "../Sensors";
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
@@ -29,9 +31,9 @@ import {
 import Icon from "react-native-vector-icons"
 
 class NewRecordingScreen extends Component {
-
     constructor(props) {
         super(props);
+        recording_number = props.route.params.recording_number;
         //this.props = props
         this.state = {
             currentSensorSelection: "accelerometer",
@@ -40,7 +42,6 @@ class NewRecordingScreen extends Component {
             selectedSensorData: [],
             selectedSensors: [],
             addedLabels: [],
-
             sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
                           {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
@@ -63,16 +64,48 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
+    startRecording() {
+        for (let i = 0; i < this.state.selectedSensors.length; i++) {
+            console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"]);
+            let sensor;
+            switch (this.state.selectedSensorData[i]["sensorName"]) {
+                case "microphone":
+                    sensor = SensorType.MICROPHONE;
+                    break;
+                case "accelerometer":
+                    sensor = SensorType.ACCELEROMETER;
+                    break;
+                case "gyroscope":
+                    sensor = SensorType.GYROSCOPE;
+                    break;
+                case "magnetometer":
+                    sensor = SensorType.MAGNETOMETER;
+                    break;
+                case "barometer":
+                    sensor = SensorType.BAROMETER;
+                    break;
+            }
+
+            App.recording.addSensor(sensor);
+        }
+
+        this.props.navigation.navigate("RecordingScreen", {
+            "sensors": this.state.selectedSensors,
+            "labels": this.state.addedLabels,
+            recording_number: recording_number,
+        });
+    }
+
+
     sensorRow(item, i) {
         return (
             <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
-            
+
                 <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
 
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
                     <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
-
                 </View>
 
                 <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
@@ -107,10 +140,10 @@ class NewRecordingScreen extends Component {
 
                             //itterate over the sensors to see which ones have been selected
                             for (const sensorName in this.state.usedSensors) {
-                                
+
                                 // if the sensor is selected add it to the selectedSensorData list
                                 if (this.state.usedSensors[sensorName]) {
-                                    
+
                                     var newSensor = {
                                         sensorName: sensorName,
                                         sampleRate: this.state.sensorSampleRates[sensorName],
@@ -120,7 +153,6 @@ class NewRecordingScreen extends Component {
                                     this.state.selectedSensors.push(sensorName)
                                 }
                             }
-
                         }}
                     />
                 </View>
@@ -206,8 +238,7 @@ class NewRecordingScreen extends Component {
     };
 
     render() {
-        
-        
+
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
@@ -242,12 +273,7 @@ class NewRecordingScreen extends Component {
                 <FAB
                         style={styles.fab}
                         label="Start Recording"
-                        onPress={name => {
-                            this.props.navigation.navigate("RecordingScreen", {
-                                "sensors": this.state.selectedSensors,
-                                "labels": this.state.addedLabels,
-                            });
-                        }}
+                        onPress={() => {this.startRecording()}}
                     />
             </View>
         );
@@ -261,7 +287,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-        
         padding: 20,
         marginBottom: 100,
         //backgroundColor: '#438023'
@@ -285,8 +310,8 @@ const styles = StyleSheet.create({
         bottom: 15,
     },
     listComponent: {
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         flex: 1,
         padding: 10,
         backgroundColor: "#f4f4f4"
@@ -300,20 +325,20 @@ const styles = StyleSheet.create({
 
     labelListItem: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         marginBottom: 10,
         backgroundColor: "#f4f4f4"
     },
     labelListFooter: {
         flex: 1,
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         padding: 10,
         alignItems: 'stretch',
         backgroundColor: "#f4f4f4"
-        
+
     },
 
     iconButon: {
@@ -323,8 +348,8 @@ const styles = StyleSheet.create({
         height: 35
     },
 
-    pickerIcon: { 
-        width: 24, 
+    pickerIcon: {
+        width: 24,
         height: 24
     }
 
