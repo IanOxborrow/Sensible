@@ -2,7 +2,7 @@
 import "react-native-gesture-handler";
 import React, { Component, useState, useRef } from "react";
 import { FloatingAction } from "react-native-floating-action";
-import DropDownPicker from "react-native-dropdown-picker";
+//import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
