@@ -28,16 +28,16 @@ import {
 */
 
 import React from "react";
-import { Text } from "react-native";
-import { SensorType } from "./src/Sensors";
-import Recording from "./src/Recording";
+import { PermissionsAndroid, Text } from 'react-native';
+import { SensorType } from './src/Sensors';
+import Recording from './src/Recording';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
-import { DownloadDirectoryPath } from "react-native-fs";
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default class App extends React.Component
 {
     static recording = null;
-    static SAVE_FILE_PATH = DownloadDirectoryPath + '/';
+    static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
 
     constructor(props)
     {
@@ -46,22 +46,34 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-
-
-        App.recording = new Recording();
-        App.recording.addSensor(SensorType.ACCELEROMETER);
-        App.recording.addSensor(SensorType.GYROSCOPE);
-        // App.recording.addSensor(SensorType.MAGNETOMETER);
-        // App.recording.addSensor(SensorType.BAROMETER);
-        // App.recording.addSensor(SensorType.MICROPHONE);
-
-
-        // setInterval(function () {
-        //     // console.log(recording.graphableData);
-        //     console.log (App.recording.getSensorData(SensorType.MICROPHONE));
-        // }, 100);
-
-        // mic.disable();
+        const requestStoragePermission = async () => {
+            // Get saving permission (Android Only!)
+            try
+            {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Storage Permission',
+                        message: 'This app needs access to your device in order ' +
+                            'to store data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED)
+                {
+                    console.log('You can use the device storage');
+                } else
+                {
+                    console.log('Storage permission denied');
+                }
+            } catch (err)
+            {
+                console.warn(err);
+            }
+        };
+        requestStoragePermission();
     }
 
     /**

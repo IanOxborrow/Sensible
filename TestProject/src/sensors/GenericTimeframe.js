@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
-import SensorSample from "./SensorSample";
-import { getSensorFileName } from "../Sensors";
-import { appendFile } from "react-native-fs";
+import SensorSample from './SensorSample';
+import { getSensorFileName, getSensorClass, SensorType } from "../Sensors";
 
 export default class GenericTimeframe extends SensorTimeframe
 {
@@ -35,7 +34,7 @@ export default class GenericTimeframe extends SensorTimeframe
         if (Math.abs(shiftCount) > elementCount)
         {
             throw new Error('GenericTimeframe.moveCircularPointer: Attempted to shift the pointer ' + shiftCount +
-              ' space(s) but the array is only ' + elementCount + ' element(s) long');
+                ' space(s) but the array is only ' + elementCount + ' element(s) long');
         }
 
         if (shiftCount > 0)
@@ -101,15 +100,15 @@ export default class GenericTimeframe extends SensorTimeframe
     popAndSave(sampleCount)
     {
         if (sampleCount > this.dataSize)
-            {throw new Error('GenericTimeframe.popAndSave: Attempted to pop and save ' + sampleCount +
-              ' samples but there were only ' + this.dataSize);}
+        {throw new Error('GenericTimeframe.popAndSave: Attempted to pop and save ' + sampleCount +
+            ' samples but there were only ' + this.dataSize);}
 
         // Run a function on the first n elements of the data array (used later)
         const runFirstN = (n, func) => {
             for (let i = n - 1; i >= 0; i--)
             {
                 let dataIndex = GenericTimeframe.moveCircularPointer(-this.dataSize + i,
-                  this.dataPointer, this.dataSize, this.data.length);
+                    this.dataPointer, this.dataSize, this.data.length);
                 func(dataIndex);
             }
         };
@@ -152,10 +151,25 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     saveToCsv(samples)
     {
+        // TODO: Remove this
+        if (this.type == SensorType.MICROPHONE)
+        {
+            return;
+        }
+
+        if (this.recording.writeStreams[this.type] == null)
+        {
+            // console.log('File stream already closed, ignoring buffer flush.');
+            return; // TODO: Remove this
+            // throw Error('GenericTimeframe.saveToCsv: Failed to obtain the correct write stream');
+        }
+
         for (let i = 0; i < samples.length; i++)
         {
-            appendFile(this.filePath, samples[0].getData().toString() + ',' + this.label + '\n', 'utf8');
+            const label = this.label == null ? null : this.label.name;
+            this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + label + '\n');
         }
+        // console.log('Buffer for ' + getSensorClass(this.type).prototype.constructor.name + ' pushed');
     }
 
     /**
