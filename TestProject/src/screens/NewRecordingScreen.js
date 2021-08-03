@@ -93,6 +93,7 @@ class NewRecordingScreen extends Component {
         this.props.navigation.navigate("RecordingScreen", {
             "sensors": this.state.selectedSensors,
             "labels": this.state.addedLabels,
+            recording_number: recording_number,
         });
     }
 
