@@ -95,7 +95,6 @@ export default class App extends React.Component
     /** This is just temporary, reference: https://www.debuggr.io/react-setstate-is-not-a-function/ **/
     updateDisplay()
     {
-        console.log("was called")
         let data = this.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
         this.state.accelerometerData = data == null ? 'Loading accelerometer data...' : data.x + ', ' + data.y + ', ' + data.z;
         this.setState({});

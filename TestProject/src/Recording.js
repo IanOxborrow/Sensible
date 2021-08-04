@@ -74,8 +74,6 @@ export default class Recording {
      */
     addSensor(type) {
 
-        console.log('hellol' + type)
-
         switch (type)
         {
             case SensorType.ACCELEROMETER:
