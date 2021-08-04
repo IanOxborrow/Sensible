@@ -73,6 +73,9 @@ export default class Recording {
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
     addSensor(type) {
+
+        console.log('hellol' + type)
+
         switch (type)
         {
             case SensorType.ACCELEROMETER:
