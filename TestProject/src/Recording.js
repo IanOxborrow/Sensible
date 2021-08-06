@@ -73,6 +73,7 @@ export default class Recording {
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
     addSensor(type) {
+
         switch (type)
         {
             case SensorType.ACCELEROMETER:

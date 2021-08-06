@@ -2,12 +2,12 @@
 import "react-native-gesture-handler";
 import React, { Component, useState, useRef } from "react";
 import { FloatingAction } from "react-native-floating-action";
-import DropDownPicker from "react-native-dropdown-picker";
+//import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-import { SensorType } from "../Sensors";
 
+import { SensorType } from "../Sensors";
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
@@ -42,9 +42,8 @@ class NewRecordingScreen extends Component {
             selectedSensorData: [],
             selectedSensors: [],
             addedLabels: [],
-
-            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')},
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
+            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
             sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
             usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
@@ -107,7 +106,6 @@ class NewRecordingScreen extends Component {
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
                     <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
-
                 </View>
 
                 <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
@@ -127,7 +125,7 @@ class NewRecordingScreen extends Component {
                     <Checkbox
                         status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
                         onPress={() => {
-
+                            
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
                             if (this.state.sensorSampleRates[item.sensorName] > -1) {
 
@@ -155,7 +153,6 @@ class NewRecordingScreen extends Component {
                                     this.state.selectedSensors.push(sensorName)
                                 }
                             }
-
                         }}
                     />
                 </View>
@@ -242,7 +239,6 @@ class NewRecordingScreen extends Component {
 
     render() {
 
-
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
@@ -272,7 +268,7 @@ class NewRecordingScreen extends Component {
                             ListFooterComponent={this.labelListFooter} />
 
                     </View>
-                </KeyboardAwareScrollView>
+                </KeyboardAwareScrollView>  
 
                 <FAB
                         style={styles.fab}
@@ -291,7 +287,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-
         padding: 20,
         marginBottom: 100,
         //backgroundColor: '#438023'
@@ -323,8 +318,8 @@ const styles = StyleSheet.create({
 
     },
     sensorListItem: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         marginBottom: 10,
     },
 
@@ -347,9 +342,9 @@ const styles = StyleSheet.create({
     },
 
     iconButon: {
-        marginRight: "auto",
+        marginRight: "auto", 
         margin: 5,
-        width: 35,
+        width: 35, 
         height: 35
     },
 
