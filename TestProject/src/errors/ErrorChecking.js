@@ -46,7 +46,7 @@ export default class ErrorChecking
          * InconsistentParametersError)
          */
 
-        // Only run the checks if we're allowed to and it hasn't already been checked
+            // Only run the checks if we're allowed to and it hasn't already been checked
         const interfaceName = interfaceImplementation.constructor.name;
         if (!ErrorChecking.ALLOW_IMPLEMENTATION_CHECKS || interfaceName in this.checkedImplementations)
             return;
@@ -56,17 +56,19 @@ export default class ErrorChecking
         functions.forEach((f) => {
             if (!interfaceImplementation.hasOwnProperty(f.name))
                 throw new NotImplementedError(f.name + "(" + f.params + ") of " +
-                  interfaceName + " has not been implemented");
+                    interfaceName + " has not been implemented");
             else
             {
                 const expected = f.params;
                 const got = ErrorChecking.getParameterNames(interfaceImplementation[f.name]);
                 const errorMessage = "Expected " + interfaceName + "." + f.name + "(" + expected + ") but got " +
-                  interfaceName + "." + f.name + "(" + got + ")";
+                    interfaceName + "." + f.name + "(" + got + ")";
 
                 // Do a simple check of the number of parameters
-                if (expected.length !== got.length)
+                if (expected.length !== got.length && f.name !== "constructor")
+                {
                     throw new InconsistentParametersError(errorMessage);
+                }
                 // Otherwise check that each parameter name matches that of the interface
                 else
                 {

@@ -11,9 +11,9 @@ import React, { Component } from 'react';
 import App from '../../App';
 import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
-import Appbar from '../react-native-paper-src/components/Appbar'
-import ToggleButton from '../react-native-paper-src/components/ToggleButton'
-import Toast, {DURATION} from 'react-native-easy-toast'
+import Appbar from '../react-native-paper-src/components/Appbar';
+import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 import {
     StyleSheet,
@@ -34,23 +34,36 @@ const data = {
     ],
 };
 
+// hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
+const hslToHex = (h, s, l) => {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+};
+
 const chartConfig = {
-    backgroundColor: '#e26a00',
+    backgroundColor: '#000000',
+    backgroundGradientFrom: "#000000",
+    backgroundGradientTo: "#000000",
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
 };
 
 
 class RecordingScreen extends Component
 {
-
     constructor(props)
     {
         super(props);
-
+        recording_number = props.route.params.recording_number;
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
-        console.log(props.route.params.sensors);
-        console.log(props.route.params.labels);
+        console.log("sensors: " + props.route.params.sensors);
+        console.log("labels: " + props.route.params.labels);
 
 
         this.state = {
@@ -59,17 +72,18 @@ class RecordingScreen extends Component
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
-            sensors: props.route.params.sensors,
+            //sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: [],
-            checkedStatus: []
+            sensorNames: props.route.params.sensors,
+            checkedStatus: [],
+            currentSensor: ""
         };
 
-        for (const [key, value] of Object.entries(this.state.sensors)) {
-            console.log("loopy", key, value);
-            this.state.sensorNames.push(value['sensorName'])
-            this.state.checkedStatus[value['sensorName']] = 'unchecked'
-            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
+        // A dictionary corresponding to the hue value for the colour of each label
+        this.labelsPallet = new Map();
+        for (let i = 0; i < this.state.labels.length; i++) {
+            let hue_step = Math.floor(360 / this.state.labels.length);
+            this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
         }
 
         console.log(this.state.sensorNames[0])
@@ -80,7 +94,12 @@ class RecordingScreen extends Component
 
         console.log(this.state.checkedStatus[this.state.sensorNames[0]])
 
+        this.state.currentSensor = this.state.sensorNames[0]
+
+        console.log('default sensor ' + this.state.currentSensor)
+
         // Ensure the recording class has been initialised
+        // TODO: Change this to check if a `Recording` instance has been passed in
         if (App.recording == null)
         {
             throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
@@ -106,6 +125,7 @@ class RecordingScreen extends Component
             newLabel = label.labelName;
         }
         // Update the label
+        // TODO: Change this to use the current `Recording` instance
         App.recording.setLabel(newLabel);
         this.state.currentLabel = newLabel;
         // Output a debug message
@@ -114,18 +134,18 @@ class RecordingScreen extends Component
 
     //function changeDisplayedOnGraph()
 
-    toggleGraphDisplay(pressedButton) {
+    toggleGraphDisplay(pressedButtonName) {
 
-        this.state.checkedStatus[pressedButton] = 'checked';
+        this.state.currentSensor = pressedButtonName
+        this.state.checkedStatus[pressedButtonName] = 'checked';
 
-        // TODO next sprint: This can be optimised to simply uncheck the last button and check the new button
+        //this.state.dataSource = [0]
+
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
-            if (key != pressedButton)
+            if (key != pressedButtonName)
                 this.state.checkedStatus[key] = 'unchecked'
         }
-
-        // TODO: Update a variable in `this.state` which stores data for the currently active sensor
 
     }
 
@@ -136,24 +156,39 @@ class RecordingScreen extends Component
     }
 
     render() {
-
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
-            // let sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-            let sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-            // let sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+            let sample = null;
 
+            switch (this.state.currentSensor) {
+                case "microphone":
+                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    break
+                case "accelerometer":
+                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    break
+                case "gyroscope":
+                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    break
+                case "magnetometer":
+                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    break
+                case "barometer":
+                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    break
+                
+            }
+
+            // Don't update the graph if a new sample hasn't come in
             if (sample == null)
             {
-                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+                return;
             }
 
             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            //this.state.dataSource.push(sample);
+            // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            this.state.dataSource.push(sample.getData()[0]);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)
@@ -161,6 +196,12 @@ class RecordingScreen extends Component
                 this.state.lastUpdateTime = new Date();
                 let label = Math.round((new Date() - this.state.startTime) / 1000);
                 this.state.labelSource.push(label.toString());
+            }
+            else if (timeElapsed > 0.5 && timeElapsed < 0.8)
+            {
+                let labelText = this.state.currentLabel;
+                labelText = labelText ? labelText : '';
+                this.state.labelSource.push(labelText);
             }
             else
             {
@@ -172,6 +213,17 @@ class RecordingScreen extends Component
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
+            }
+
+            // Update the counter (MAY BE REDUNDANT)
+            this.state.counter++;
+            if (this.state.currentLabel) {
+                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel],50,50);
+                chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+            }
+            else {
+                chartConfig.backgroundGradientTo = "#000000";
+                chartConfig.backgroundGradientFrom = "#000000";
             }
 
             // Update the counter (MAY BE REDUNDANT)
@@ -192,13 +244,12 @@ class RecordingScreen extends Component
         //console.log("names " + this.state.sensorNames)
 
         let iconDictionary = {
-            'accelerometer': require('../assets/acceleromotor_icon.png'),
+
+            'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
             'microphone': require('../assets/microphone_icon.png')
         }
-
-        // console.log(this.state.checkedStatus)
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
             return <ToggleButton
@@ -220,17 +271,19 @@ class RecordingScreen extends Component
             <View style={[styles.container, { flexDirection: 'column' }]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title="Recording #" />
+                    <Appbar.Content title={ "Recording " + recording_number } />
                 </Appbar.Header>
 
                 <View style={styles.content}>
 
 
                     <View style={styles.graphStyling}>
+                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
                         <LineChart
                             data={data}
-                            width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                            width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                             height={220}
+                            verticalLabelRotation={17}
                             chartConfig={chartConfig}
                             style={{
                                 marginVertical: 0,
@@ -242,6 +295,7 @@ class RecordingScreen extends Component
                             bezier
                         />
                     </View>
+                    <Text style={styles.xLabel}>Time (Seconds)</Text>
 
                     <View style={{flexDirection: "row", paddingBottom: 10 }}>
                         {sensorButtonIcons}
@@ -261,9 +315,15 @@ class RecordingScreen extends Component
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                            onPress={() => {
+                                App.recording.finish();
+                                this.props.navigation.navigate('HomeScreen');
+                            }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                                onPress={() => {
+                                    App.recording.finish(true);
+                                    this.props.navigation.navigate('HomeScreen')
+                                }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}
@@ -282,6 +342,14 @@ class RecordingScreen extends Component
 }
 
 const styles = StyleSheet.create({
+    yLabel: {
+        transform: [{rotate: "-90deg"}],
+        fontWeight: "bold",
+    },
+    xLabel: {
+        fontWeight: "bold",
+        textAlign: "center",
+    },
     container: {
         flex: 1,
         padding: 0,
@@ -300,7 +368,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     graphStyling: {
-        flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
     },
     list: {
         flex: 1,
