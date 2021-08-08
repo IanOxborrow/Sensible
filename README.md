@@ -17,7 +17,7 @@ Tristan Smith (u6949592)                    Backend app development, sensor rese
 
 ## Team Charter
 
-You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter.pdf)
+You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter_Semester_2.pdf)
 
 Our team charter gives an overview of many documents which are vital to our project's success. Links to each of theses documents mentioned can be found below.
 
@@ -64,7 +64,7 @@ To communicate our understanding of the project requirements to our stakeholders
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
-To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/communication%20plan.pdf)
+To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/Communication_plan_semester_2.pdf)
 
 To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](Background%20Documentation/Meeting%20Minutes)
 
