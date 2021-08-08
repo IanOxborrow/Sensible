@@ -60,7 +60,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
-To communicate our understanding of the project requirements to our stakeholders we have created a User Story Map here: [MVP](https://miro.com/app/board/o9J_l3Ib_I4=/)
+To communicate our understanding of the project requirements to our stakeholders we have created a User Story Map here: [User Story Map](https://miro.com/app/board/o9J_l3Ib_I4=/)
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
