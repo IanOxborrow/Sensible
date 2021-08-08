@@ -26,6 +26,8 @@ Our team charter gives an overview of many documents which are vital to our proj
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
 
+[Semester 2 Audit 1 presentation](link)
+
 [Semester 1 Audit 3 presentation](https://prezi.com/view/cKJAmTEcKYXGDH3sH9L9/)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
@@ -34,7 +36,7 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1_SIGNED.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S2_2021.docx)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
@@ -58,7 +60,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
-To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
+To communicate our understanding of the project requirements to our stakeholders we have created a User Story Map here: [MVP](https://miro.com/app/board/o9J_l3Ib_I4=/)
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
@@ -72,7 +74,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_08-08.pdf)
 
 # System Documentation
 
