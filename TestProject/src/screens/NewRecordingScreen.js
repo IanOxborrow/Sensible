@@ -10,10 +10,9 @@ import Appbar from '../react-native-paper-src/components/Appbar'
 import { SensorType } from "../Sensors";
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
+
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
-
 
 import App from "../../App";
 import {
@@ -110,6 +109,7 @@ class NewRecordingScreen extends Component {
 
                 <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
                     <TextInput
+                        scrollEnabled={false}
                         placeholder="sample rate"
                         style={{paddingRight: 24}}
                         ref={input => {
@@ -168,8 +168,6 @@ class NewRecordingScreen extends Component {
             <TouchableOpacity
                 style={{ marginLeft: "auto" }}
                 onPress={() => {
-                    console.log("waspressed" + item.labelName);
-                    //use the label name to identify which row was pressed to work out which data to remove
 
                     //remove the selected label from the list
                     for (var i in this.state.addedLabels)
@@ -196,6 +194,8 @@ class NewRecordingScreen extends Component {
             <View style={styles.labelListFooter}>
 
                 <TextInput
+                    scrollEnabled={false}
+
                     placeholder="Label Name"
                     styles={{fontSize: 40}}
                     ref={input => {
@@ -253,28 +253,28 @@ class NewRecordingScreen extends Component {
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
-                <KeyboardAwareScrollView>
-                    <View style={styles.content}>
-                        {sensorRows}
+                <View style={styles.content}>
+                    {sensorRows}
 
-                        <View style={{paddingBottom: 10, fontSize: 20}}>
-                            <Text>{"Labels"}</Text>
-                        </View>
-
-                        <FlatList
-                            data={this.state.addedLabels}
-                            renderItem={this.labelListItem}
-                            keyExtractor={item => item.labelName}
-                            ListFooterComponent={this.labelListFooter} />
-
+                    <View style={{paddingBottom: 10, fontSize: 20}}>
+                        <Text>{"Labels"}</Text>
                     </View>
-                </KeyboardAwareScrollView>  
+
+                    <KeyboardAwareFlatList
+                        styles={{flex: 1}}
+                        removeClippedSubviews={false}
+                        data={this.state.addedLabels}
+                        renderItem={this.labelListItem}
+                        keyExtractor={item => item.labelName}
+                        ListFooterComponent={this.labelListFooter} />
+                </View>
 
                 <FAB
-                        style={styles.fab}
-                        label="Start Recording"
-                        onPress={() => {this.startRecording()}}
-                    />
+                    style={styles.fab}
+                    label="Start Recording"
+                    onPress={() => {this.startRecording()}}
+                />
+
             </View>
         );
     }
@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
     content: {
         padding: 20,
         marginBottom: 100,
+        flex: 1
         //backgroundColor: '#438023'
     },
     heading: {
