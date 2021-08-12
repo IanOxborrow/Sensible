@@ -2,18 +2,17 @@
 import "react-native-gesture-handler";
 import React, { Component, useState, useRef } from "react";
 import { FloatingAction } from "react-native-floating-action";
-import DropDownPicker from "react-native-dropdown-picker";
+//import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-import { SensorType } from "../Sensors";
 
+import { SensorType } from "../Sensors";
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
+
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
-
 
 import App from "../../App";
 import {
@@ -42,9 +41,8 @@ class NewRecordingScreen extends Component {
             selectedSensorData: [],
             selectedSensors: [],
             addedLabels: [],
-
-            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')},
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
+            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
             sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
             usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
@@ -107,11 +105,11 @@ class NewRecordingScreen extends Component {
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
                     <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
-
                 </View>
 
                 <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
                     <TextInput
+                        scrollEnabled={false}
                         placeholder="sample rate"
                         style={{paddingRight: 24}}
                         ref={input => {
@@ -127,7 +125,7 @@ class NewRecordingScreen extends Component {
                     <Checkbox
                         status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
                         onPress={() => {
-
+                            
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
                             if (this.state.sensorSampleRates[item.sensorName] > -1) {
 
@@ -155,7 +153,6 @@ class NewRecordingScreen extends Component {
                                     this.state.selectedSensors.push(sensorName)
                                 }
                             }
-
                         }}
                     />
                 </View>
@@ -171,8 +168,6 @@ class NewRecordingScreen extends Component {
             <TouchableOpacity
                 style={{ marginLeft: "auto" }}
                 onPress={() => {
-                    console.log("waspressed" + item.labelName);
-                    //use the label name to identify which row was pressed to work out which data to remove
 
                     //remove the selected label from the list
                     for (var i in this.state.addedLabels)
@@ -199,6 +194,8 @@ class NewRecordingScreen extends Component {
             <View style={styles.labelListFooter}>
 
                 <TextInput
+                    scrollEnabled={false}
+
                     placeholder="Label Name"
                     styles={{fontSize: 40}}
                     ref={input => {
@@ -242,7 +239,6 @@ class NewRecordingScreen extends Component {
 
     render() {
 
-
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
@@ -257,28 +253,28 @@ class NewRecordingScreen extends Component {
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
-                <KeyboardAwareScrollView>
-                    <View style={styles.content}>
-                        {sensorRows}
+                <View style={styles.content}>
+                    {sensorRows}
 
-                        <View style={{paddingBottom: 10, fontSize: 20}}>
-                            <Text>{"Labels"}</Text>
-                        </View>
-
-                        <FlatList
-                            data={this.state.addedLabels}
-                            renderItem={this.labelListItem}
-                            keyExtractor={item => item.labelName}
-                            ListFooterComponent={this.labelListFooter} />
-
+                    <View style={{paddingBottom: 10, fontSize: 20}}>
+                        <Text>{"Labels"}</Text>
                     </View>
-                </KeyboardAwareScrollView>
+
+                    <KeyboardAwareFlatList
+                        styles={{flex: 1}}
+                        removeClippedSubviews={false}
+                        data={this.state.addedLabels}
+                        renderItem={this.labelListItem}
+                        keyExtractor={item => item.labelName}
+                        ListFooterComponent={this.labelListFooter} />
+                </View>
 
                 <FAB
-                        style={styles.fab}
-                        label="Start Recording"
-                        onPress={() => {this.startRecording()}}
-                    />
+                    style={styles.fab}
+                    label="Start Recording"
+                    onPress={() => {this.startRecording()}}
+                />
+
             </View>
         );
     }
@@ -291,9 +287,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-
         padding: 20,
         marginBottom: 100,
+        flex: 1
         //backgroundColor: '#438023'
     },
     heading: {
@@ -323,8 +319,8 @@ const styles = StyleSheet.create({
 
     },
     sensorListItem: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "row", 
+        alignItems: "center", 
         marginBottom: 10,
     },
 
@@ -347,9 +343,9 @@ const styles = StyleSheet.create({
     },
 
     iconButon: {
-        marginRight: "auto",
+        marginRight: "auto", 
         margin: 5,
-        width: 35,
+        width: 35, 
         height: 35
     },
 
