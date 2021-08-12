@@ -28,9 +28,10 @@ import {
 */
 
 import React from "react";
-import { PermissionsAndroid, Text } from 'react-native';
+import { PermissionsAndroid, Platform} from 'react-native';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { SensorType } from './src/Sensors';
-import Recording from './src/Recording';
+//import Recording from './src/Recording';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -46,10 +47,11 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
+        //check(PERMISSIONS.IOS.STOREKIT)
+
         const requestStoragePermission = async () => {
             // Get saving permission (Android Only!)
-            try
-            {
+            try {
                 const granted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                     {
@@ -73,7 +75,10 @@ export default class App extends React.Component
                 console.warn(err);
             }
         };
-        requestStoragePermission();
+
+        if (Platform.OS == 'android') {
+            requestStoragePermission();
+        }
     }
 
     /**

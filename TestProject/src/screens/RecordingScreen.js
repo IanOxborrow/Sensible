@@ -79,6 +79,13 @@ class RecordingScreen extends Component
             currentSensor: ""
         };
 
+        /*for (const [key, value] of Object.entries(this.state.sensors)) {
+            console.log("loopy", key, value);
+            this.state.sensorNames.push(value['sensorName'])
+            this.state.checkedStatus[value['sensorName']] = 'unchecked'
+            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
+        }*/
+
         // A dictionary corresponding to the hue value for the colour of each label
         this.labelsPallet = new Map();
         for (let i = 0; i < this.state.labels.length; i++) {
