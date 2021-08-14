@@ -2,6 +2,9 @@
 import SensorTimeframe from './SensorTimeframe';
 import SensorSample from './SensorSample';
 import { getSensorFileName, getSensorClass, SensorType } from "../Sensors";
+import {NativeModules} from "react-native";
+
+const { ofstream } = NativeModules;
 
 export default class GenericTimeframe extends SensorTimeframe
 {
@@ -61,7 +64,10 @@ export default class GenericTimeframe extends SensorTimeframe
         }
 
         // Pop the first sample and shift the array if at capacity
-        if (this.dataSize === this.data.length) {this.popAndSave(1);}
+        if (this.dataSize === this.data.length) {this.popAndSave(1);} // TODO: Modify the popAndSave function to only pop (we save each point as we go)
+        // Write the new sample to file
+        const label = this.label == null ? null : this.label.name;
+        ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
 
         // Add the sample
         this.data[this.dataPointer] = sample;
@@ -152,23 +158,23 @@ export default class GenericTimeframe extends SensorTimeframe
     saveToCsv(samples)
     {
         // TODO: Remove this
-        if (this.type == SensorType.MICROPHONE)
-        {
-            return;
-        }
-
-        if (this.recording.writeStreams[this.type] == null)
-        {
-            // console.log('File stream already closed, ignoring buffer flush.');
-            return; // TODO: Remove this
-            // throw Error('GenericTimeframe.saveToCsv: Failed to obtain the correct write stream');
-        }
-
-        for (let i = 0; i < samples.length; i++)
-        {
-            const label = this.label == null ? null : this.label.name;
-            this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + label + '\n');
-        }
+        // if (this.type == SensorType.MICROPHONE)
+        // {
+        //     return;
+        // }
+        //
+        // if (this.recording.writeStreams[this.type] == null)
+        // {
+        //     // console.log('File stream already closed, ignoring buffer flush.');
+        //     return; // TODO: Remove this
+        //     // throw Error('GenericTimeframe.saveToCsv: Failed to obtain the correct write stream');
+        // }
+        //
+        // for (let i = 0; i < samples.length; i++)
+        // {
+        //     const label = this.label == null ? null : this.label.name;
+        //     this.recording.writeStreams[this.type].write(samples[i].getData().toString() + ',' + label + '\n');
+        // }
         // console.log('Buffer for ' + getSensorClass(this.type).prototype.constructor.name + ' pushed');
     }
 

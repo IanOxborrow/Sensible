@@ -10,11 +10,13 @@ import {
     SensorClass, getSensorClass, getSensorFileName,
 } from "./Sensors";
 import Label from './sensors/Label';
-import {PermissionsAndroid, Platform} from 'react-native';
+import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
 import App from '../App';
 import RNFetchBlob from "rn-fetch-blob";
 import Share from 'react-native-share';
+
+const { ofstream } = NativeModules;
 
 export default class Recording {
     constructor(name) {
@@ -26,6 +28,7 @@ export default class Recording {
         this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
         this.graphableData = {};
         this.writeStreams = {};
+        this.fileStreamIndices = {}
         this.logicalTime = 0;
         this.labels = [];
 
@@ -60,11 +63,15 @@ export default class Recording {
         // Create a new sensor instance to track and enable it
         this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
 
-        // Create a new file and add the stream for later
-        RNFetchBlob.fs.writeStream(sensorFile, 'utf8', false).then(stream => {
-            this.writeStreams[type] = stream;
-            console.log('Successfully created ' + sensorFile);
-        });
+        // Create a new file and store the stream index for later
+        ofstream.open(sensorFile, false).then((streamIndex) => {
+            this.fileStreamIndices[type] = streamIndex;
+        })
+        // TODO: Test writing to file
+        // RNFetchBlob.fs.writeStream(sensorFile, 'utf8', false).then(stream => {
+        //     this.writeStreams[type] = stream;
+        //     console.log('Successfully created ' + sensorFile);
+        // });
     }
 
     /**
