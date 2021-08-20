@@ -75,5 +75,11 @@
 	<key>NSMotionUsageDescription</key>
 	<string>YOUR TEXT</string>
 
+‍	<key>NSCameraUsageDescription</key>
+	<string>YOUR TEXT</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>YOUR TEXT</string>
+
 </dict>
 </plist>
