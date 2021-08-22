@@ -1,3 +1,7 @@
+# App Demo Video
+
+https://drive.google.com/file/d/1FREW7_BdJp_DIx7t4rQuUZVYbVYFYMGC/view?usp=sharing
+
 # Sensible Techlauncher
 
 Gathering well-labeled data for machine learning projects can be very difficult and expensive. These days we all carry around a mobile phone which has sensors ranging from accelerometers to ambient light sensors. The goal of this project is to produce an app for Android and iOS which can harness these existing sensors for data collection. It will allow data to be labelled in real-time as well as allow selecting which sensors collect the data. The app is for educational purposes and will be very useful for machine learning students as they will not be restricted to using existing applications which tend to either not allow labelling or don't allow the selection of sensors.
@@ -67,8 +71,6 @@ To keep track of the communication at meetings we have kept minutes of all clien
 To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register%20(Updated).pdf)
 
 # Prototypes and Releases
-
-You can find a video demonstrating our current working product here: [Sensible Demo](link)
 
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
 
