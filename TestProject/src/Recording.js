@@ -16,7 +16,7 @@ import App from '../App';
 import RNFetchBlob from "rn-fetch-blob";
 import Share from 'react-native-share';
 
-const { ofstream } = NativeModules;
+const { ofstream, microphone } = NativeModules;
 
 export default class Recording {
     constructor(name) {
@@ -47,6 +47,12 @@ export default class Recording {
         RNFetchBlob.fs.writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
             .then(() => { console.log('Successfully created ' + infoFilePath); })
             .catch(err => { throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err); });
+
+        // TODO: Remove this later -- just code to test the microphone package
+        microphone.enable(44100, this.folderPath + "test.txt");
+        setTimeout(() => {
+            microphone.disable();
+        }, 30000)
 
     }
 

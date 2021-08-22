@@ -67,7 +67,8 @@ export default class GenericTimeframe extends SensorTimeframe
         if (this.dataSize === this.data.length) {this.popAndSave(1);} // TODO: Modify the popAndSave function to only pop (we save each point as we go)
         // Write the new sample to file
         const label = this.label == null ? null : this.label.name;
-        ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
+        // TODO: Uncomment this later!
+        // ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
 
         // Add the sample
         this.data[this.dataPointer] = sample;

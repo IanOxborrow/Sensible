@@ -45,7 +45,8 @@ public class OFStream extends ReactContextBaseJavaModule {
         try {
             // Create a new file stream
             FileOutputStream fileOutputStream = new FileOutputStream(path, append);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream, 1 << 8);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream, 1 << 20);
+            // TODO: Find a way to fix the lag for the mic (maybe reduce the sampling rate?)
             // Index the file stream so that it can be used for output operations later
             streamIndex = outputStreams.size();
             outputStreams.add(bufferedOutputStream);

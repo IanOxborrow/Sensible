@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FileIO implements ReactPackage {
+public class Packages implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
@@ -21,6 +21,7 @@ public class FileIO implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new OFStream(reactContext));
+        modules.add(new Microphone(reactContext));
 
         return modules;
     }
