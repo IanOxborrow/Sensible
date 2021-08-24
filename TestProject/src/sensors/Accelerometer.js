@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
-import { AccelerometerSample} from '../Sensors';
+import { AccelerometerSample } from '../Sensors';
 import { accelerometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
 
 export default class Accelerometer extends Sensor
@@ -8,7 +8,6 @@ export default class Accelerometer extends Sensor
     constructor(dataStore, sampleRate = null)
     {
         super(dataStore);
-        accelerometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
         // Enable the sensor if the parameter has been passed in
         if (sampleRate != null)
         {
@@ -49,6 +48,7 @@ export default class Accelerometer extends Sensor
             }
 
             this.isEnabled = true;
+            this.subscription = accelerometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
             this.updateSampleRate(sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
@@ -62,7 +62,7 @@ export default class Accelerometer extends Sensor
         if (this.isEnabled)
         {
             this.isEnabled = false;
-            this.updateSampleRate(0);
+            this.subscription.unsubscribe();
         }
         else
         {

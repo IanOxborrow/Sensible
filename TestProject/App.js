@@ -28,14 +28,17 @@ import {
 */
 
 import React from "react";
-import { Text } from "react-native";
-import { SensorType } from "./src/Sensors";
-import Recording from "./src/Recording";
+import { PermissionsAndroid, Platform} from 'react-native';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import { SensorType } from './src/Sensors';
+//import Recording from './src/Recording';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default class App extends React.Component
 {
-    static recording;
+    static recording = null;
+    static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
 
     constructor(props)
     {
@@ -44,21 +47,38 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
+        //check(PERMISSIONS.IOS.STOREKIT)
 
+        const requestStoragePermission = async () => {
+            // Get saving permission (Android Only!)
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Storage Permission',
+                        message: 'This app needs access to your device in order ' +
+                            'to store data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED)
+                {
+                    console.log('You can use the device storage');
+                } else
+                {
+                    console.log('Storage permission denied');
+                }
+            } catch (err)
+            {
+                console.warn(err);
+            }
+        };
 
-        App.recording = new Recording();
-        App.recording.addSensor(SensorType.ACCELEROMETER);
-        // setInterval(() => this.updateDisplay(), 1);
-
-        App.recording.addSensor(SensorType.MICROPHONE);
-
-
-        setInterval(function () {
-            // console.log(recording.graphableData);
-            // console.log(micRecording.graphableData.length);
-        }, 100);
-
-        // mic.disable();
+        if (Platform.OS == 'android') {
+            requestStoragePermission();
+        }
     }
 
     /**
