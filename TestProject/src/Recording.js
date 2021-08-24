@@ -12,59 +12,39 @@ import {
 import Label from './sensors/Label';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
-import {
-    mkdir,
-    writeFile,
-    appendFile,
-    DocumentDirectoryPath,
-    readDir,
-    readFile,
-    exists,
-    unlink,
-} from "react-native-fs";
 import App from '../App';
+import RNFetchBlob from "rn-fetch-blob";
+import Share from 'react-native-share';
 
 export default class Recording {
-    constructor() {
-        this.name = 'Recording1';
-        // this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/'; // TODO: Figure out why content is not being save here!
-        this.folderPath = App.SAVE_FILE_PATH + this.name + "/";
+    constructor(name) {
+        this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
+        this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/';
         this.sampleRate = 40000; // in Hz
-        this.bufferSize = 500; // The number of samples to store in the buffer before saving all of them to file at once
-        this.timeframeSize = 1000; // The number of samples in a timeframe. Additional points will be saved to file.
+        this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
+        this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
         this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
         this.graphableData = {};
+        this.writeStreams = {};
         this.logicalTime = 0;
         this.labels = [];
 
-        // Create a folder for the current instance
-        // TODO: Don't go to any other screen until this has been done
-        mkdir(this.folderPath)
-            .then(suc => { console.log('Successfully created folder ' + App.SAVE_FILE_PATH + "/" + this.name); })
-            .catch(err => {
-                throw new Error(this.constructor.name + '.constructor: Failed to create the recording directory');
-            });
+        // Create the folder if it doesn't already exist
+        RNFetchBlob.fs.exists(this.folderPath).then(exists => {
+            if (!exists)
+            {
+                RNFetchBlob.fs.mkdir(this.folderPath)
+                    .then(() => { console.log('Successfully created folder ' + this.folderPath); })
+                    .catch(err => { throw Error('Recording.constructor: ' + err); });
+            }
+        });
 
-        // Delete the existing metadata file and create a new one
+        // Create the metadata file
         const infoFilePath = this.folderPath + 'info.txt';
-        exists(infoFilePath)
-            .then(fileExists => {
-                if (fileExists)
-                {
-                    unlink(infoFilePath).catch(() => {});
-                }
-            })
-            .catch(() => {})
-            .finally(() => {
-                // Create the metadata file
-                writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
-                    .then(() => {
-                        console.log('Successfully created ' + infoFilePath);
-                    })
-                    .catch(() => {
-                        throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create metadata file');
-                    });
-            });
+        RNFetchBlob.fs.writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
+            .then(() => { console.log('Successfully created ' + infoFilePath); })
+            .catch(err => { throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err); });
+
     }
 
     /**
@@ -80,31 +60,11 @@ export default class Recording {
         // Create a new sensor instance to track and enable it
         this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
 
-        // Delete any existing file
-        exists(sensorFile)
-            .then(fileExists => {
-                if (fileExists)
-                {
-                    unlink(sensorFile).catch(() => {});
-                }
-            })
-            .catch(() => {})
-            .finally(() => {
-                // Create a file to store the data
-                writeFile(sensorFile, '', 'utf8')
-                    .then(() => {
-                        console.log('Successfully created ' + sensorFile);
-                    }) // TODO: Don't go to any other screen until this has been done
-                    .catch(() => {
-                        throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create sensor file');
-                    });
-            });
-
-        // TODO: Remove this
-        // readFile(sensorFile, 'utf8')
-        //     .then(content => {
-        //         console.log(sensorFile + " - " + content);
-        //     });
+        // Create a new file and add the stream for later
+        RNFetchBlob.fs.writeStream(sensorFile, 'utf8', false).then(stream => {
+            this.writeStreams[type] = stream;
+            console.log('Successfully created ' + sensorFile);
+        });
     }
 
     /**
@@ -113,9 +73,7 @@ export default class Recording {
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
     addSensor(type) {
-        // TODO : Set this to the number of data points that is displayed on the graph
-        const pointsOnGraph = 500; // The number of points that is stored in the graph
-        const timeframeBufferSize = 50;
+
         switch (type)
         {
             case SensorType.ACCELEROMETER:
@@ -174,15 +132,6 @@ export default class Recording {
         }
     }
 
-    // /**
-    //  * Create a new label which can later be added to a timeframe.
-    //  * @param name The name of the label
-    //  */
-    // createLabel(name)
-    // {
-    //     // Code
-    // }
-
     /**
      * Set the label for all incoming data from hereon
      * @param name The name of the label
@@ -221,5 +170,44 @@ export default class Recording {
 
         let sensorData = this.graphableData[type];
         return sensorData[sensorData.length - 1];
+    }
+
+    /**
+     * Open the share menu to download the sensor file
+     * @param type The type of sensor they would like to get the timeframe for
+     */
+    shareSensorFile(type)
+    {
+        // Make sure the writing stream has been closed before accessing the file
+        if (this.writeStreams[type] != null)
+        {
+            this.writeStreams[type].close(); // TODO: Remove this
+            this.writeStreams[type] = null; // TODO: Remove this
+            // throw new Error('Recording.shareSensorFile: Attempted to open a sensor file whilst the write stream is open.');
+        }
+        // Open the share menu to allow downloading the file
+        const fileName = getSensorFileName(type);
+        const path = 'file://' + this.folderPath + fileName;
+        Share.open({
+            url: path,
+            subject: fileName,
+        });
+    }
+
+    /**
+     * Finalise the recording and save everything to file
+     * @param clear True if all created files should be deleted (use if the recording has been cancelled)
+     */
+    finish(clear = false)
+    {
+        // TODO: Implement clear functionality
+        // TODO: Do a final flush of the buffers
+        // Close all the write streams
+        for (const [sensorType, writeStream] of Object.entries(this.writeStreams))
+        {
+            writeStream.close();
+            this.writeStreams[sensorType] = null;
+            console.log("Closed write stream for sensor type-" + sensorType);
+        }
     }
 }

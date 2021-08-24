@@ -25,25 +25,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-var DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'Label Name 1',
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Label Name 2',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Label Name 3',
-    },
-    {
-        id: 'njq29823-nde8-12nb-23hd-14557ie2id72',
-        title: 'Label Name 4',
-    },
-];
-
 const data = {
     labels: [],
     datasets: [
@@ -55,14 +36,14 @@ const data = {
 
 // hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
 const hslToHex = (h, s, l) => {
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = n => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
 };
 
 const chartConfig = {
@@ -72,17 +53,17 @@ const chartConfig = {
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
 };
 
+
 class RecordingScreen extends Component
 {
-
     constructor(props)
     {
         super(props);
-
+        recording_number = props.route.params.recording_number;
         sensors = props.route.params.sensors;
         labels = props.route.params.labels;
-        console.log(props.route.params.sensors);
-        console.log(props.route.params.labels);
+        console.log("sensors: " + props.route.params.sensors);
+        console.log("labels: " + props.route.params.labels);
 
 
         this.state = {
@@ -91,25 +72,25 @@ class RecordingScreen extends Component
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
-            sensors: props.route.params.sensors,
+            //sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: [],
+            sensorNames: props.route.params.sensors,
             checkedStatus: [],
             currentSensor: ""
         };
+
+        /*for (const [key, value] of Object.entries(this.state.sensors)) {
+            console.log("loopy", key, value);
+            this.state.sensorNames.push(value['sensorName'])
+            this.state.checkedStatus[value['sensorName']] = 'unchecked'
+            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
+        }*/
 
         // A dictionary corresponding to the hue value for the colour of each label
         this.labelsPallet = new Map();
         for (let i = 0; i < this.state.labels.length; i++) {
             let hue_step = Math.floor(360 / this.state.labels.length);
             this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
-        }
-
-        for (const [key, value] of Object.entries(this.state.sensors)) {
-            console.log("loopy", key, value);
-            this.state.sensorNames.push(value['sensorName'])
-            this.state.checkedStatus[value['sensorName']] = 'unchecked'
-            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
         }
 
         console.log(this.state.sensorNames[0])
@@ -182,28 +163,39 @@ class RecordingScreen extends Component
     }
 
     render() {
-
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
+            let sample = null;
 
-            let sample;
-            // This works because each sensor is stored as an integer. The reason it's done like this
-            // is so when new sensors are added they won't need to be manually added here.
-            for (let i = 0; i < this.state.sensorNames.length; i++) {
-                if (this.state.checkedStatus[this.state.sensorNames[i]] == 'checked') {
-                    sample = App.recording.getSensorData(i).getLatestSample();
-                }
+            switch (this.state.currentSensor) {
+                case "microphone":
+                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    break
+                case "accelerometer":
+                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    break
+                case "gyroscope":
+                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    break
+                case "magnetometer":
+                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    break
+                case "barometer":
+                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    break
+                
             }
 
+            // Don't update the graph if a new sample hasn't come in
             if (sample == null)
             {
-                throw new Error("RecordingScreen.render: Attempted to get samples from current sensor but no data was found");
+                return;
             }
 
             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-            this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            //this.state.dataSource.push(sample);
+            // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+            this.state.dataSource.push(sample.getData()[0]);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
             if (timeElapsed >= 1)
@@ -240,6 +232,9 @@ class RecordingScreen extends Component
                 chartConfig.backgroundGradientTo = "#000000";
                 chartConfig.backgroundGradientFrom = "#000000";
             }
+
+            // Update the counter (MAY BE REDUNDANT)
+            this.state.counter++;
         };
 
         const updateGraphUI = () => {
@@ -283,7 +278,7 @@ class RecordingScreen extends Component
             <View style={[styles.container, { flexDirection: 'column' }]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title="Recording #" />
+                    <Appbar.Content title={ "Recording " + recording_number } />
                 </Appbar.Header>
 
                 <View style={styles.content}>
@@ -327,9 +322,15 @@ class RecordingScreen extends Component
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                            onPress={() => {
+                                App.recording.finish();
+                                this.props.navigation.navigate('HomeScreen');
+                            }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => this.props.navigation.navigate('HomeScreen')} />
+                                onPress={() => {
+                                    App.recording.finish(true);
+                                    this.props.navigation.navigate('HomeScreen')
+                                }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}

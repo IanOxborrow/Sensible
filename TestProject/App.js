@@ -28,16 +28,17 @@ import {
 */
 
 import React from "react";
-import { PermissionsAndroid, Text } from "react-native";
-import { SensorType } from "./src/Sensors";
-import Recording from "./src/Recording";
+import { PermissionsAndroid, Platform} from 'react-native';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import { SensorType } from './src/Sensors';
+//import Recording from './src/Recording';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
-import { DocumentDirectoryPath, DownloadDirectoryPath, ExternalDirectoryPath, writeFile } from "react-native-fs";
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default class App extends React.Component
 {
     static recording = null;
-    static SAVE_FILE_PATH = ExternalDirectoryPath + '/';
+    static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
 
     constructor(props)
     {
@@ -46,19 +47,11 @@ export default class App extends React.Component
             accelerometerData: '',
         };
 
-        App.recording = new Recording();
-        App.recording.addSensor(SensorType.ACCELEROMETER);
-        App.recording.addSensor(SensorType.GYROSCOPE);
-        App.recording.addSensor(SensorType.MAGNETOMETER);
-        App.recording.addSensor(SensorType.BAROMETER);
-        // App.recording.addSensor(SensorType.MICROPHONE);
-
-        console.log("DocumentDirectoryPath: " + DocumentDirectoryPath);
+        //check(PERMISSIONS.IOS.STOREKIT)
 
         const requestStoragePermission = async () => {
             // Get saving permission (Android Only!)
-            try
-            {
+            try {
                 const granted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                     {
@@ -73,13 +66,6 @@ export default class App extends React.Component
                 if (granted === PermissionsAndroid.RESULTS.GRANTED)
                 {
                     console.log('You can use the device storage');
-                    writeFile(App.SAVE_FILE_PATH + "test.txt", 'This is a bit of a gamer move!', 'utf8')
-                        .then(() => {
-                            console.log('Successfully created ' + App.SAVE_FILE_PATH + "test.txt");
-                        }) // TODO: Don't go to any other screen until this has been done
-                        .catch(() => {
-                            throw new Error(this.constructor.name + '.initialiseGenericSensor: Failed to create sensor file');
-                        });
                 } else
                 {
                     console.log('Storage permission denied');
@@ -89,15 +75,10 @@ export default class App extends React.Component
                 console.warn(err);
             }
         };
-        requestStoragePermission();
 
-
-        setInterval(function () {
-            // console.log(recording.graphableData);
-            // console.log(micRecording.graphableData.length);
-        }, 100);
-
-        // mic.disable();
+        if (Platform.OS == 'android') {
+            requestStoragePermission();
+        }
     }
 
     /**
