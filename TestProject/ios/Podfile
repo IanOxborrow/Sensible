@@ -17,6 +17,18 @@ target 'TestProject' do
     # Pods for testing
   end
 
+  # handlers and the path for permissions
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  # pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
+  # pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
+  # pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+  pod 'Permission-Motion', :path => "#{permissions_path}/Motion"
+
+
+
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
