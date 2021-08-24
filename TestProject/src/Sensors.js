@@ -23,6 +23,23 @@ export const SensorType = {
     BAROMETER: 3,
     MICROPHONE: 4,
 };
+export const toSensorType = (int) => {
+    switch (int)
+    {
+        case 0:
+            return SensorType.ACCELEROMETER;
+        case 1:
+            return SensorType.GYROSCOPE;
+        case 2:
+            return SensorType.MAGNETOMETER;
+        case 3:
+            return SensorType.BAROMETER;
+        case 4:
+            return SensorType.MICROPHONE;
+        default:
+            throw new Error('Sensors.getSensorClass: Received an unknown integer, ' + int);
+    }
+};
 export const getSensorClass = (type) => {
     switch (type)
     {
@@ -37,7 +54,7 @@ export const getSensorClass = (type) => {
         case SensorType.MICROPHONE:
             return Mic;
         default:
-            throw new Error('Sensors.getSensorClass: Received an unknown type');
+            throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
     }
 };
 export const getSensorFileName = (type) => {
