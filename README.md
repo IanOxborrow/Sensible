@@ -8,16 +8,16 @@ Gathering well-labeled data for machine learning projects can be very difficult 
 
 ## Team Roles
 
-Madeleine Carden (u5849803)                 Client liason, documentation  
-Ryan Turner (u6040885)                      Team Leader, documentation, communication with shadow team   
+Ryan Turner (u6040885)                      Project manager, documentation, communication with shadow team   
+Madeleine Carden (u5849803)                 Client liason, documentation, test manager   
 King Ho Cheung (u6181123)                   Frontend app development, presentation developer  
 Ian Oxborrow (u6668026)                     Frontend app development, screen designs, meeting minutes  
-Chathura Galappaththi (u6947345)            Backend app development, sensor research, model development  
-Tristan Smith (u6949592)                    Backend app development, Sensor research, model development   
+Chathura Galappaththi (u6947345)            Backend app development, model development, quality assurance manager   
+Tristan Smith (u6949592)                    Backend app development, sensor research, model development   
 
 ## Team Charter
 
-You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter.pdf)
+You can find information about our plans, procedures, success metrics and team roles in our team charter located here: [Team Charter](Background%20Documentation/Team%20Charter/Team_Charter_Semester_2.pdf)
 
 Our team charter gives an overview of many documents which are vital to our project's success. Links to each of theses documents mentioned can be found below.
 
@@ -25,6 +25,8 @@ Our team charter gives an overview of many documents which are vital to our proj
 
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
+
+[Semester 2 Audit 1 presentation](https://prezi.com/view/bNPwhJbPZpHlP24w2wPm/)
 
 [Semester 1 Audit 3 presentation](https://prezi.com/view/cKJAmTEcKYXGDH3sH9L9/)
 
@@ -34,7 +36,7 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S1_2021_Revision1_SIGNED.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S2_2021_signed.pdf)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
@@ -58,11 +60,11 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
 
-To communicate our understanding of the project requirements to our stakeholders we have created a Minimum Viable Product user story map here: [MVP](https://miro.com/app/board/o9J_lMgCf9M=/)
+To communicate our understanding of the project requirements to our stakeholders we have created a User Story Map here: [User Story Map](https://miro.com/app/board/o9J_l3Ib_I4=/)
 
 To communicate the UI design of our application we have created some screen designs located here: [Screen Designs](Background%20Documentation/Screen%20Designs)
 
-To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/communication%20plan.pdf)
+To view our communication plan you can visit the following link: [Communication Plan](Background%20Documentation/Communication%20plan/Communication_plan_semester_2.pdf)
 
 To keep track of the communication at meetings we have kept minutes of all client meetings, team meetings and tutorials here: [Meeting Minutes](Background%20Documentation/Meeting%20Minutes)
 
@@ -72,7 +74,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_09-05.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_08-08.pdf)
 
 # System Documentation
 
