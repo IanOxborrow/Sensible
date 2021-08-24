@@ -127,6 +127,10 @@ export default class Recording {
                 this.initialiseGenericSensor(SensorType.MICROPHONE);
 
                 break;
+            case SensorType.CAMERABACK:
+                console.log('was camera')
+                this.initialiseGenericSensor(SensorType.CAMERABACK);
+                break;
             default:
                 throw new Error(this.constructor.name + '.addSensor: Received an unrecognised sensor type with id=' + type);
         }

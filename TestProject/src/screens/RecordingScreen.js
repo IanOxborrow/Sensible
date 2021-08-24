@@ -15,6 +15,8 @@ import Appbar from '../react-native-paper-src/components/Appbar';
 import ToggleButton from '../react-native-paper-src/components/ToggleButton';
 import Toast, {DURATION} from 'react-native-easy-toast';
 
+import { RNCamera } from 'react-native-camera';
+
 import {
     StyleSheet,
     View,
@@ -76,7 +78,12 @@ class RecordingScreen extends Component
             labels: props.route.params.labels,
             sensorNames: props.route.params.sensors,
             checkedStatus: [],
-            currentSensor: ""
+            currentSensor: "",
+            recorderzIndex: -1,
+            recordOptions: {
+                mute: false,
+                quality: RNCamera.Constants.VideoQuality['288p'],
+            }
         };
 
         /*for (const [key, value] of Object.entries(this.state.sensors)) {
@@ -111,6 +118,7 @@ class RecordingScreen extends Component
         {
             throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
         }
+
     }
 
     // Funtion to create each item in the list
@@ -139,19 +147,22 @@ class RecordingScreen extends Component
         console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
     }
 
-    //function changeDisplayedOnGraph()
-
     toggleGraphDisplay(pressedButtonName) {
 
         this.state.currentSensor = pressedButtonName
         this.state.checkedStatus[pressedButtonName] = 'checked';
 
-        //this.state.dataSource = [0]
-
         for (const [key, value] of Object.entries(this.state.checkedStatus)) {
 
             if (key != pressedButtonName)
                 this.state.checkedStatus[key] = 'unchecked'
+        }
+
+        // toggles whether the camera is infront of the graph or behind it
+        if (pressedButtonName == 'back camera') {
+            this.setState({recorderzIndex: 1})
+        } else {
+            this.setState({recorderzIndex: -1})
         }
 
     }
@@ -161,6 +172,72 @@ class RecordingScreen extends Component
         // Making the toast (delicious)
         this.toast.show('Sensor: ' + buttonName, 2000);
     }
+
+
+    takeVideo = async () => {
+        console.log("take video was called")
+        const { isRecording } = this.state;
+        if (this.camera && !isRecording) {
+            console.log("about to start recording")
+            try {
+                const promise = this.camera.recordAsync(this.state.recordOptions);
+
+                if (promise) {
+                    this.setState({ isRecording: true });
+                    const data = await promise;
+                    console.warn('takeVideo', data);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+
+    stopVideo = async () => {
+        await this.camera.stopRecording();
+        this.setState({ isRecording: false });
+    };
+
+    // Displays the visulisation of the curent data. 
+    // If the camera is a part of the current recording session, it will display the camera otherwise 
+    // it will display an empty view
+    displayGraph() {
+
+        // check if the back camera value is present in the sensor array
+        if (sensors.indexOf("back camera") > -1) {
+            return (
+                <RNCamera
+                    ref={ref => {
+                        this.camera = ref;
+                    }}
+                    style={{
+                        width: Dimensions.get('window').width - 20,
+                        height: 220,
+                        justifyContent: 'space-between',
+                        padding: 20
+                    }}
+                    type="back"
+                    flashMode="false"
+                    autoFocus="true"
+                    zoom={0}
+                    whiteBalance="auto"
+                    ratio="16:9"
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel',
+                    }}>
+                    
+                </RNCamera>
+            );
+        } else {
+            return (
+                <View></View> 
+            )
+        }
+    }
+
 
     render() {
         const updateGraphData = () => {
@@ -184,7 +261,8 @@ class RecordingScreen extends Component
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
                     break
-                
+                case "back camera":
+                    break;
             }
 
             // Don't update the graph if a new sample hasn't come in
@@ -248,14 +326,19 @@ class RecordingScreen extends Component
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
 
-        //console.log("names " + this.state.sensorNames)
-
+        
+        if (!this.state.isRecording) {
+            console.log("starting take video")
+            this.takeVideo()
+        }
+        
         let iconDictionary = {
 
             'accelerometer': require('../assets/accelerometer_icon.png'),
             'camera': require('../assets/camera_icon.png'),
             'gyroscope': require('../assets/gyroscope_icon.png'),
-            'microphone': require('../assets/microphone_icon.png')
+            'microphone': require('../assets/microphone_icon.png'),
+            'back camera': require('../assets/camera_icon.png')
         }
 
         let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
@@ -269,9 +352,6 @@ class RecordingScreen extends Component
                 delayPressIn={500}
             />
         })
-        //status={status}
-
-        // console.log(sensorButtonIcons)
 
         return (
 
@@ -283,32 +363,39 @@ class RecordingScreen extends Component
 
                 <View style={styles.content}>
 
+                    <View>
+                        <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}> 
+                            {this.displayGraph()} 
+                        </View>
 
-                    <View style={styles.graphStyling}>
-                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
-                        <LineChart
-                            data={data}
-                            width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
-                            height={220}
-                            verticalLabelRotation={17}
-                            chartConfig={chartConfig}
-                            style={{
-                                marginVertical: 0,
-                                marginHorizontal: 0,
-                            }}
-                            withDots={false}
-                            withVerticalLines={false}
-                            withHorizontalLines={false}
-                            bezier
-                        />
+                        <View>
+                            <View style={styles.graphStyling}>
+                                <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
+                                <LineChart
+                                    data={data}
+                                    width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                                    height={220}
+                                    verticalLabelRotation={17}
+                                    chartConfig={chartConfig}
+                                    style={{
+                                        marginVertical: 0,
+                                        marginHorizontal: 0,
+                                    }}
+                                    withDots={false}
+                                    withVerticalLines={false}
+                                    withHorizontalLines={false}
+                                    bezier
+                                />
+                            </View>
+                            <Text style={styles.xLabel}>Time (Seconds)</Text>
+                        </View>
                     </View>
-                    <Text style={styles.xLabel}>Time (Seconds)</Text>
 
-                    <View style={{flexDirection: "row", paddingBottom: 10 }}>
+                    <View style={{backgroundColor: '#efefef', flexDirection: "row", paddingBottom: 10, zIndex: 2}}>
                         {sensorButtonIcons}
                     </View>
 
-                    <FlatList style={styles.list}
+                    <FlatList style={styles.list, {backgroundColor: '#efefef', zIndex: 2}}
                         data={labels}
                         keyExtractor={item => item.labelName}
                         renderItem={({ item, index }) => (
@@ -324,11 +411,21 @@ class RecordingScreen extends Component
                         <Button title="Finish" color="#6200F2"
                             onPress={() => {
                                 App.recording.finish();
+                                
+                                if (this.state.isRecording) {
+                                    this.stopVideo
+                                }
+
                                 this.props.navigation.navigate('HomeScreen');
                             }} />
                         <Button title="Cancel" color="#6200F2"
                                 onPress={() => {
                                     App.recording.finish(true);
+
+                                    if (this.state.isRecording) {
+                                        this.stopVideo
+                                    }
+
                                     this.props.navigation.navigate('HomeScreen')
                                 }} />
                     </View>

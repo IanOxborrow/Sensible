@@ -43,12 +43,13 @@ class NewRecordingScreen extends Component {
             addedLabels: [],
             sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
                           {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
-                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
-            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
-            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false}
+                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')},
+                          {sensorName: "back camera", imageSource: require('../assets/camera_icon.png')}],
+            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1, "back camera": -1},
+            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false, "back camera": false}
         };
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false};
+        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false, "back camera": false};
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
@@ -82,6 +83,9 @@ class NewRecordingScreen extends Component {
                     break;
                 case "barometer":
                     sensor = SensorType.BAROMETER;
+                    break;
+                case "back camera":
+                    sensor = SensorType.CAMERABACK;
                     break;
             }
 
