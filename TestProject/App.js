@@ -27,16 +27,18 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PermissionsAndroid, Platform} from 'react-native';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { SensorType } from './src/Sensors';
 //import Recording from './src/Recording';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 import RNFetchBlob from 'rn-fetch-blob';
+import SplashScreen from 'react-native-splash-screen'
 
 export default class App extends React.Component
 {
+
     static recording = null;
     static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
 
@@ -79,6 +81,10 @@ export default class App extends React.Component
         if (Platform.OS == 'android') {
             requestStoragePermission();
         }
+    }
+
+    componentDidMount() {
+        SplashScreen.hide();
     }
 
     /**
