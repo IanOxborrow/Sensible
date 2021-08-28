@@ -184,7 +184,7 @@ class RecordingScreen extends Component
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
                     break
-                
+
             }
 
             // Don't update the graph if a new sample hasn't come in
@@ -350,7 +350,7 @@ class RecordingScreen extends Component
 
 const styles = StyleSheet.create({
     yLabel: {
-        transform: [{rotate: "-90deg"}],
+        transform: [{rotate: "-90deg"}, {translateY: 50}],
         fontWeight: "bold",
     },
     xLabel: {
