@@ -1,0 +1,48 @@
+<head>
+    <link rel="stylesheet" href="uPlot.min.css">
+    <script src="uPlot.iife.min.js"></script>
+</head>
+<body>
+    <script>
+        let opts = {
+            title: "Ming Dynasty",
+            id: "chart1",
+            class: "mon-charte",
+            width: 800,
+            height: 600,
+            cursor: {show: false},
+            legend: {show: false},
+            series: [
+                {},
+                {
+                    // initial toggled state (optional)
+                    show: true,
+                    spanGaps: false,
+
+                    // in-legend display
+                    label: "REMEMBER",
+                    value: (self, rawValue) => "$" + rawValue.toFixed(2),
+
+                    // series style
+                    stroke: "red",
+                    width: 1,
+                    fill: "rgba(255, 0, 0, 0.3)",
+                    dash: [10, 5],
+                }
+            ],
+            axes: [
+                {
+                    label: "X axis"
+                },
+                {
+                    label: "Y axis"
+                }
+            ],
+        };
+
+        let data = [[1,2,3,4,5],[1,3,5,4,2]];
+
+        let uplot = new uPlot(opts, data, document.body);
+    </script>
+    <p style="font-size: xxx-large">Ming Dynasty</p>
+</body>

@@ -34,6 +34,8 @@ const data = {
     ],
 };
 
+var yAxisLabel = "Acceleration (m/s^2)";
+
 // hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
 const hslToHex = (h, s, l) => {
     l /= 100;
@@ -163,6 +165,7 @@ class RecordingScreen extends Component
     }
 
     render() {
+
         const updateGraphData = () => {
             let maxPoints = 20;
             // Add a new point
@@ -171,18 +174,23 @@ class RecordingScreen extends Component
             switch (this.state.currentSensor) {
                 case "microphone":
                     sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    yAxisLabel = "Amplitude";
                     break
                 case "accelerometer":
                     sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    yAxisLabel = "Acceleration (m/s^2)";
                     break
                 case "gyroscope":
                     sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    yAxisLabel = "Orientation";
                     break
                 case "magnetometer":
                     sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    yAxisLabel = "Field Direction";
                     break
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    yAxisLabel = "Atmospheric Pressure";
                     break
 
             }
@@ -285,7 +293,7 @@ class RecordingScreen extends Component
 
 
                     <View style={styles.graphStyling}>
-                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
+                        <Text style={styles.yLabel}>{yAxisLabel}</Text>
                         <LineChart
                             data={data}
                             width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
