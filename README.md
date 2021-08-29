@@ -26,6 +26,8 @@ Our team charter gives an overview of many documents which are vital to our proj
 
 The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
 
+[Semester 2 Audit 2 presentation](https://prezi.com/view/Iroh3hn6bXzTCIGV80Ph/)
+
 [Semester 2 Audit 1 presentation](https://prezi.com/view/bNPwhJbPZpHlP24w2wPm/)
 
 [Semester 1 Audit 3 presentation](https://prezi.com/view/cKJAmTEcKYXGDH3sH9L9/)
@@ -74,7 +76,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_08-08.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_29-08.pdf)
 
 # System Documentation
 
