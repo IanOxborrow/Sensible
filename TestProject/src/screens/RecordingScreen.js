@@ -201,7 +201,7 @@ class RecordingScreen extends Component
     // Displays the visulisation of the curent data. 
     // If the camera is a part of the current recording session, it will display the camera otherwise 
     // it will display an empty view
-    displayGraph() {
+    displayCamera() {
 
         // check if the back camera value is present in the sensor array
         if (sensors.indexOf("back camera") > -1) {
@@ -365,7 +365,7 @@ class RecordingScreen extends Component
 
                     <View>
                         <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}> 
-                            {this.displayGraph()} 
+                            {this.displayCamera()} 
                         </View>
 
                         <View>
@@ -419,15 +419,15 @@ class RecordingScreen extends Component
                                 this.props.navigation.navigate('HomeScreen');
                             }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => {
-                                    App.recording.finish(true);
+                            onPress={() => {
+                                App.recording.finish(true);
 
-                                    if (this.state.isRecording) {
-                                        this.stopVideo
-                                    }
+                                if (this.state.isRecording) {
+                                    this.stopVideo
+                                }
 
-                                    this.props.navigation.navigate('HomeScreen')
-                                }} />
+                                this.props.navigation.navigate('HomeScreen')
+                            }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}
