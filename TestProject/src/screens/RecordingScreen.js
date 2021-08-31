@@ -34,6 +34,8 @@ const data = {
     ],
 };
 
+let yAxisTitle = "Y axis";
+
 // hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
 const hslToHex = (h, s, l) => {
     l /= 100;
@@ -171,20 +173,24 @@ class RecordingScreen extends Component
             switch (this.state.currentSensor) {
                 case "microphone":
                     sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    yAxisTitle = "Amplitude";
                     break
                 case "accelerometer":
                     sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    yAxisTitle = "Acceleration";
                     break
                 case "gyroscope":
                     sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    yAxisTitle = "Orientation";
                     break
                 case "magnetometer":
                     sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    yAxisTitle = "Field Direction";
                     break
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    yAxisTitle = "Atmospheric Pressure";
                     break
-                
             }
 
             // Don't update the graph if a new sample hasn't come in
@@ -285,7 +291,7 @@ class RecordingScreen extends Component
 
 
                     <View style={styles.graphStyling}>
-                        <Text style={styles.yLabel}>Acceleration (m/s^2)</Text>
+                        <Text style={styles.yLabel}>{yAxisTitle}</Text>
                         <LineChart
                             data={data}
                             width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
@@ -350,7 +356,7 @@ class RecordingScreen extends Component
 
 const styles = StyleSheet.create({
     yLabel: {
-        transform: [{rotate: "-90deg"}],
+        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length - 80 / yAxisTitle.length}],
         fontWeight: "bold",
     },
     xLabel: {

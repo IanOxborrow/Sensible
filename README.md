@@ -1,6 +1,6 @@
 # App Demo Video
 
-https://drive.google.com/file/d/1FREW7_BdJp_DIx7t4rQuUZVYbVYFYMGC/view?usp=sharing
+https://drive.google.com/file/d/1DfoxN9tbPumEm0i-R5kw2eActvO0XS7I/view?usp=sharing
 
 # Sensible Techlauncher
 
@@ -24,7 +24,9 @@ Our team charter gives an overview of many documents which are vital to our proj
 ## Presentation Links
 
 
-The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation.  
+The following links will lead you to each of our audit presentation slides. The first link correlates to our most recent presentation. 
+
+[Semester 2 Audit 2 presentation](https://prezi.com/view/Iroh3hn6bXzTCIGV80Ph/)
 
 [Semester 2 Audit 1 presentation](https://prezi.com/view/bNPwhJbPZpHlP24w2wPm/)
 
@@ -36,7 +38,7 @@ The following links will lead you to each of our audit presentation slides. The 
 
 ## Statement of Work
 
-You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S2_2021_signed.pdf)
+You can find information about our project background, project objectives, stakeholders and work breakdown in our most recent statement of work here: [Statement of Work](Background%20Documentation/Statements%20of%20Work/SENSIBLE_SOW_S2_2021_REVISION_1_signed.pdf)
 
 If you would like to view previous revisions of our Statement of Work they can be found here: [SOWs](Background%20Documentation/Statements%20of%20Work)
 
@@ -74,7 +76,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 # Prototypes and Releases
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_08-08.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_29-08.pdf)
 
 # System Documentation
 
