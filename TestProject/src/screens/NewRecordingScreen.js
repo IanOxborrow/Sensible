@@ -7,7 +7,7 @@ import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
 import { SensorType } from "../Sensors";
-import Checkbox from '../react-native-paper-src/components/Checkbox'
+import CheckBox from 'react-native-check-box'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
@@ -111,7 +111,7 @@ class NewRecordingScreen extends Component {
         return (
             <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
 
-                <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
+                <View style={{flexDirection: "row", alignItems: "center"}}>
 
                     <TouchableOpacity onPress={() => this.showInfo(item.sensorName)}>
                         <Image source={require('../assets/information_icon.png')} style={[styles.infoButton]}/>
@@ -119,14 +119,14 @@ class NewRecordingScreen extends Component {
 
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
-                    <Text style={{paddingLeft: 24}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
+                    <Text style={{paddingLeft: 10}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
                 </View>
 
-                <View style={{alignSelf: 'flex-end', flexDirection: "row", alignItems: "center"}}>
+                <View style={{alignSelf: 'center', flexDirection: "row"}}>
                     <TextInput
                         scrollEnabled={false}
                         placeholder="sample rate"
-                        style={{paddingRight: 24}}
+                        style={{paddingRight: 10}}
                         ref={input => {
                             this.sampleRateInput = input;
                         }}
@@ -137,9 +137,9 @@ class NewRecordingScreen extends Component {
                         }
                     />
 
-                    <Checkbox
-                        status={this.state.usedSensors[item.sensorName] ? 'checked' : 'unchecked'}
-                        onPress={() => {
+                    <CheckBox
+                        isChecked={this.state.usedSensors[item.sensorName]}
+                        onClick={() => {
                             
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
                             if (this.state.sensorSampleRates[item.sensorName] > -1) {
@@ -353,7 +353,6 @@ const styles = StyleSheet.create({
     },
     fab: {
         position: "absolute",
-        margin: 16,
         right: 15,
         bottom: 15,
     },
@@ -386,7 +385,6 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: 'stretch',
         backgroundColor: "#f4f4f4"
-
     },
 
     iconButon: {
@@ -441,8 +439,9 @@ const styles = StyleSheet.create({
 
     closeModal: {
         marginTop: 10,
-        marginLeft: 100,
-        marginRight: 100,
+        alignSelf: 'center'
+        //marginLeft: 100,
+        //marginRight: 100,
     },
 
     modalOverlay: {
