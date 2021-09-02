@@ -356,7 +356,7 @@ class RecordingScreen extends Component
 
 const styles = StyleSheet.create({
     yLabel: {
-        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length - 1 / yAxisTitle.length}],
+        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length + 60 / yAxisTitle.length}],
         fontWeight: "bold",
     },
     xLabel: {

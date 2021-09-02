@@ -138,6 +138,7 @@ class NewRecordingScreen extends Component {
                     />
 
                     <CheckBox
+                        style={{flexDirection: "row"}}
                         isChecked={this.state.usedSensors[item.sensorName]}
                         onClick={() => {
                             
