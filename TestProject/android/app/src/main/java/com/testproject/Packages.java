@@ -19,6 +19,7 @@ public class Packages implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
+        modules.add(new OFStream(reactContext));
         modules.add(new Accelerometer(reactContext));
 
         return modules;

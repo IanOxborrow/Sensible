@@ -1,5 +1,7 @@
 package com.testproject;
 
+import android.util.Log;
+
 public class Timer {
     private long start = -1;
     private long end = -1;
@@ -47,7 +49,9 @@ public class Timer {
      */
     public long getDuration(Units units) {
         if (start < 0) {
-            throw new Error("[Android] Timer: Attempted to get the duration of a timer which hasn't been started.");
+            String error = "Timer.getDuration: Attempted to get the duration of a timer which hasn't been started.";
+            Log.e("AndroidRuntime", error);
+            throw new Error("[Android] " + error);
         }
 
         if (running) {
