@@ -25,7 +25,7 @@ export const SensorType = {
     MAGNETOMETER: 2,
     BAROMETER: 3,
     MICROPHONE: 4,
-    CAMERABACK: 5
+    CAMERABACK: 5,
 };
 export const toSensorType = (int) => {
     switch (int)

@@ -6,7 +6,6 @@ import { FloatingAction } from "react-native-floating-action";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-
 import { SensorType } from "../Sensors";
 import Checkbox from '../react-native-paper-src/components/Checkbox'
 import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -23,13 +22,28 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     StatusBar,
     FlatList,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Modal
 } from "react-native";
 import Icon from "react-native-vector-icons"
 
 class NewRecordingScreen extends Component {
+
+    // An object that holds each sensor and it's matching description.
+    // Uses the same sensor name as sensorNames. "Measures" section and "Output" section split by "||"
+    sensorDescriptions = {
+        "accelerometer" : "Measures: Rate of change of velocity (how fast you move the phone)||Output: x per sample rate, representing current velocity (m/s^2).",
+        "barometer": "Measures: Air pressure in milibars||Output: ",
+        "back camera": "Measures: The light received by the back camera||Output: MP4 file, saved to device",
+        //"front camera": "Measures: The light received by the front camera||Output: MP4 file, saved to device",
+        "gyroscope" : "Measures: Orientation and angular velocity (rate of change of movement in each axis)||Output: x, y, z per sample rate, representing each vector's change in velocity (m/s^2).",
+        "magnetometer": "Measures: The magnetic feild strength in micro microteslas along three axes||Output: ",
+        "microphone" : "Measures: Sound, amplitude representing decibels||Output: MP3 file, saved to device.",
+    }
+
     constructor(props) {
         super(props);
         recording_number = props.route.params.recording_number;
@@ -42,14 +56,25 @@ class NewRecordingScreen extends Component {
             selectedSensors: [],
             addedLabels: [],
             sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')},
-                          {sensorName: "back camera", imageSource: require('../assets/camera_icon.png')}],
-            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1, "back camera": -1},
-            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false, "back camera": false}
+                          {sensorName: "back camera", imageSource: require('../assets/camera_icon.png')},
+                          {sensorName: "magnetometer", imageSource: require('../assets/magnetometer_icon.png')},
+                          {sensorName: "barometer", imageSource: require('../assets/barometer_icon.png')}],
+                            //"barometer"
+                            
+
+            sensorSampleRates: {"accelerometer": -1, "barometer": -1, "back camera": -1, "gyroscope": -1, 
+                                "magnetometer": -1, "microphone": -1},
+
+            usedSensors: {"accelerometer": false, "barometer": false, "back camera": false, "gyroscope": false, 
+                        "magnetometer": false, "microphone": false},
+            modalVisible: false,
+            currentSensorInfo: "",
         };
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false, "back camera": false};
+        this.usedSensors = {"accelerometer": false, "barometer": false, "back camera": false, "gyroscope": false, 
+                            "magnetometer": false, "microphone": false}
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
@@ -87,6 +112,7 @@ class NewRecordingScreen extends Component {
                 case "back camera":
                     sensor = SensorType.CAMERABACK;
                     break;
+
             }
 
             App.recording.addSensor(sensor);
@@ -99,12 +125,20 @@ class NewRecordingScreen extends Component {
         });
     }
 
-
+    /**
+     * Returns a formatted row in the list of sensors. This function should only be called in the render function
+     * @param item An element from the sensorNames dictionary
+     * @param i A identifer to distinguish it from other rows. Is usualy just a number
+     */
     sensorRow(item, i) {
         return (
             <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
 
                 <View style={{alignSelf: 'flex-start', flexDirection: "row", alignItems: "center"}}>
+
+                    <TouchableOpacity onPress={() => this.showInfo(item.sensorName)}>
+                        <Image source={require('../assets/information_icon.png')} style={[styles.infoButton]}/>
+                    </TouchableOpacity>
 
                     <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
@@ -164,6 +198,10 @@ class NewRecordingScreen extends Component {
         )
     }
 
+    /**
+     * Returns a formatted row in the list of labels.
+     * @param item An element from the addedLabels dictionary
+     */
     labelListItem = ({ item }) => (
         <View style={styles.labelListItem}>
 
@@ -241,12 +279,26 @@ class NewRecordingScreen extends Component {
         );
     };
 
+    /*  function showInfo()
+    *   Created by Ryan Turner
+    *   Presents modal to the user, with info on the sensor they just pressed
+    *   @param sensor sensor to show info for as string
+    */
+    showInfo(sensor) {
+        this.setState({ modalVisible: true, currentSensorInfo: sensor })
+    }
+
+    /**
+     * Where the layout of the NewRecordingScreen is defined.
+     * The returned value is in an XML format
+     */
     render() {
 
+        // Each element of sensor rows is sensor that can be selected.
+        // sensorRows is a static compontent instead of a FlatList to avid two scrollable elements in the same screen.
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
-
 
         return (
             <View style={styles.container} >
@@ -279,6 +331,29 @@ class NewRecordingScreen extends Component {
                     onPress={() => {this.startRecording()}}
                 />
 
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                  >
+                  <TouchableWithoutFeedback onPress={() => {this.setState({ modalVisible: false })}}>
+                    <View style={styles.modalOverlay} />
+                  </TouchableWithoutFeedback>
+
+                  <View style={styles.parentView}>
+                      <View style={styles.modalView}>
+                        <Text style={styles.capitalise}>Sensor: {this.state.currentSensorInfo}</Text>
+                        <Text style={styles.sensorDescriptions}>{this.state.currentSensorInfo != "" ? this.sensorDescriptions[this.state.currentSensorInfo].split("||")[0] : ""}</Text>
+                        <Text style={styles.sensorDescriptions}>{this.state.currentSensorInfo != "" ? this.sensorDescriptions[this.state.currentSensorInfo].split("||")[1] : ""}</Text>
+                        <FAB
+                          style={styles.closeModal}
+                          label="Close"
+                          onPress={() => {this.setState({ modalVisible: false })}}
+                        />
+                      </View>
+                  </View>
+                </Modal>
             </View>
         );
     }
@@ -291,9 +366,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
+        flex: 1,
         padding: 20,
-        marginBottom: 100,
-        flex: 1
+        marginBottom: 100
         //backgroundColor: '#438023'
     },
     heading: {
@@ -350,15 +425,66 @@ const styles = StyleSheet.create({
         marginRight: "auto", 
         margin: 5,
         width: 35, 
-        height: 35
+        height: 35,
+    },
+
+    infoButton: {
+        marginRight: 15,
+        margin: 5,
+        width: 25,
+        height: 25,
     },
 
     pickerIcon: {
         width: 24,
         height: 24
-    }
+    },
 
+    modalView: {
+        margin: 30,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "flex-start",
+        shadowColor: "#000000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
 
+    parentView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+    },
+
+    capitalise: {
+        textTransform: "capitalize",
+        paddingBottom: 10,
+    },
+
+    sensorDescriptions: {
+        paddingBottom: 10,
+    },
+
+    closeModal: {
+        marginTop: 10,
+        marginLeft: 100,
+        marginRight: 100,
+    },
+
+    modalOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    },
 });
 
 //export default StackNav

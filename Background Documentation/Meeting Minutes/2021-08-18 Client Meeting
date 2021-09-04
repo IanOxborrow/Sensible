@@ -1,0 +1,36 @@
+# Client Meeting  
+Date: Wednesday 18nd August, 2021  
+Time: 13:00 - 15:00  
+Location: Zoom Meeting   
+Members attended: Ryan Turner (u6040885), Madeleine Carden (u5849803),Ian Oxborrow (u6668026), Chathura Galappaththi (u6947345), Tristan
+Clients attended: Robin, Chirath
+
+10:07
+* Meetign start
+* talking about covid
+
+10:11
+* we are asking the client if they know about remote testing and if that is the logical approach to this is
+* robin has said not to worry about it too much but has suggested that we will probably send the app out to members of CECS and let them test it
+* robin will follow that up with hanah
+
+10:13
+* the client has looked at the app and has feedback
+* robin has mentioned the sample rate and that is not something that should be specified
+* there should be a units of measurement on the y-axis of the graph
+
+10:19
+* robin has noticed that the recording list does not persist in the home screen
+
+10:23
+* Chirath has suggested an instruction page for the app
+* an explanation of what each sensor does
+
+10:25
+* chirath would like to know what sensors are properly implemented. The accelerometer, gyroscope, microphone are fully completed
+
+10:29
+* we have confirmed that we are focusing on the camera, magnetometer and gps for this semester
+
+12:40
+* meeting close
