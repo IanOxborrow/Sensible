@@ -15,8 +15,9 @@ import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
 import App from '../App';
 import RNFetchBlob from "rn-fetch-blob";
 import Share from 'react-native-share';
+import {waitFor} from "@babel/core/lib/gensync-utils/async";
 
-const { ofstream, microphone } = NativeModules;
+const { ofstream } = NativeModules;
 
 export default class Recording {
     constructor(name) {
@@ -28,32 +29,20 @@ export default class Recording {
         this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
         this.graphableData = {};
         this.writeStreams = {};
-        this.fileStreamIndices = {}
+        this.fileStreamIndices = {};
         this.logicalTime = 0;
         this.labels = [];
 
         // Create the folder if it doesn't already exist
-        RNFetchBlob.fs.exists(this.folderPath).then(exists => {
-            if (!exists)
-            {
-                RNFetchBlob.fs.mkdir(this.folderPath)
-                    .then(() => { console.log('Successfully created folder ' + this.folderPath); })
-                    .catch(err => { throw Error('Recording.constructor: ' + err); });
-            }
-        });
+        ofstream.mkdir(this.folderPath)
+            .then(() => { console.log('Successfully created folder ' + this.folderPath); })
+            .catch(err => { throw Error(err); });
 
         // Create the metadata file
         const infoFilePath = this.folderPath + 'info.txt';
-        RNFetchBlob.fs.writeFile(infoFilePath, 'Recording name: ' + this.name, 'utf8')
+        ofstream.writeOnce(infoFilePath, false, 'Recording name: ' + this.name)
             .then(() => { console.log('Successfully created ' + infoFilePath); })
             .catch(err => { throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err); });
-
-        // TODO: Remove this later -- just code to test the microphone package
-        microphone.enable(44100, this.folderPath + "test.txt");
-        setTimeout(() => {
-            microphone.disable();
-        }, 30000)
-
     }
 
     /**
@@ -73,11 +62,7 @@ export default class Recording {
         ofstream.open(sensorFile, false).then((streamIndex) => {
             this.fileStreamIndices[type] = streamIndex;
         })
-        // TODO: Test writing to file
-        // RNFetchBlob.fs.writeStream(sensorFile, 'utf8', false).then(stream => {
-        //     this.writeStreams[type] = stream;
-        //     console.log('Successfully created ' + sensorFile);
-        // });
+
     }
 
     /**
@@ -189,14 +174,15 @@ export default class Recording {
      * Open the share menu to download the sensor file
      * @param type The type of sensor they would like to get the timeframe for
      */
-    shareSensorFile(type)
+    async shareSensorFile(type)
     {
+        // TODO: Ensure the file is closed before sharing
+        this.enabledSensors[SensorType.ACCELEROMETER].disable();
+        const fileOpened = await ofstream.isOpen(SensorType.ACCELEROMETER);
         // Make sure the writing stream has been closed before accessing the file
-        if (this.writeStreams[type] != null)
+        if (!fileOpened)
         {
-            this.writeStreams[type].close(); // TODO: Remove this
-            this.writeStreams[type] = null; // TODO: Remove this
-            // throw new Error('Recording.shareSensorFile: Attempted to open a sensor file whilst the write stream is open.');
+            ofstream.close(this.fileStreamIndices[SensorType.ACCELEROMETER]); // TODO: Remove this
         }
         // Open the share menu to allow downloading the file
         const fileName = getSensorFileName(type);
@@ -213,13 +199,11 @@ export default class Recording {
      */
     finish(clear = false)
     {
-        // TODO: Implement clear functionality
-        // TODO: Do a final flush of the buffers
+        // TODO: Do something for clear
         // Close all the write streams
-        for (const [sensorType, writeStream] of Object.entries(this.writeStreams))
+        for (const [sensorType, fileStreamIndex] of Object.entries(this.writeStreams))
         {
-            writeStream.close();
-            this.writeStreams[sensorType] = null;
+            ofstream.close(this.fileStreamIndices[SensorType.ACCELEROMETER]);
             console.log("Closed write stream for sensor type-" + sensorType);
         }
     }

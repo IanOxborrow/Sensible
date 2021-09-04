@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Packages implements ReactPackage {
-
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
@@ -20,10 +19,8 @@ public class Packages implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new OFStream(reactContext));
-        modules.add(new Microphone(reactContext));
+        modules.add(new Accelerometer(reactContext));
 
         return modules;
     }
-
 }
