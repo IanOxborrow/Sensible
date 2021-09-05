@@ -39,6 +39,25 @@ export default class HomeScreen extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props, state) {
+    let recordingComplete = false;
+    if (props && props.route && props.route.params) {
+        recordingComplete = props.route.params.complete;
+        props.route.params.complete = false;
+    }
+
+    console.log(recordingComplete)
+
+    if (recordingComplete) {
+      state.recordings_list.push({
+        title: App.recording.name,
+        id: state.recordings_list.length + 1,
+        info: App.recording,
+      });
+    }
+    return null;
+  }
+
   render() {
     var recording_number = this.state.recordings_list.length;
     //const {recordingInfo} = route.params;
@@ -72,11 +91,7 @@ export default class HomeScreen extends Component {
             App.recording = new Recording(
               'Recording ' + (this.state.recordings_list.length + 1),
             );
-            this.state.recordings_list.push({
-              title: App.recording.name,
-              id: this.state.recordings_list.length + 1,
-              info: App.recording,
-            });
+
             console.log(this.state.recordings_list);
             this.setState({});
             this.props.navigation.navigate('NewRecordingScreen', {
