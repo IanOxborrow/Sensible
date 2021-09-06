@@ -249,7 +249,7 @@ class RecordingScreen extends Component
 
         // these get called with every update
         updateGraphData();
-        setTimeout(updateGraphUI, 200); // call render again at the specified interval
+        var subscription = setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
@@ -329,14 +329,20 @@ class RecordingScreen extends Component
                     <View>
                         <Button title="Finish" color="#6200F2"
                             onPress={() => {
+                                clearTimeout(subscription)
                                 App.recording.finish();
-                                this.props.navigation.navigate('HomeScreen');
+                                this.props.navigation.navigate('HomeScreen', {
+                                     complete: true,
+                                   });
                             }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => {
-                                    App.recording.finish(true);
-                                    this.props.navigation.navigate('HomeScreen')
-                                }} />
+                            onPress={() => {
+                                clearTimeout(subscription)
+                                App.recording.finish(true);
+                                this.props.navigation.navigate('HomeScreen', {
+                                     complete: false,
+                                   });
+                            }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}
