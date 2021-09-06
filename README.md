@@ -30,8 +30,6 @@ The following links will lead you to each of our audit presentation slides. The 
 
 [Semester 2 Audit 1 presentation](https://prezi.com/view/bNPwhJbPZpHlP24w2wPm/)
 
-[Semester 2 Audit 1 presentation](https://prezi.com/view/bNPwhJbPZpHlP24w2wPm/)
-
 [Semester 1 Audit 3 presentation](https://prezi.com/view/cKJAmTEcKYXGDH3sH9L9/)
 
 [Semester 1 Audit 2 presentation](https://prezi.com/view/ZERGlkC2WHuHI8OIEryB/)
