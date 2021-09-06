@@ -40,6 +40,7 @@ export default class App extends React.Component
 {
 
     static recording = null;
+    static recordingManager = null;
     static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
 
     constructor(props)
