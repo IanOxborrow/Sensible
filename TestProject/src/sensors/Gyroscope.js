@@ -85,7 +85,7 @@ export default class Gyroscope extends Sensor
         else if (!this.isEnabled)
         {
             throw new Error(this.constructor.name + '.updateSampleRate: Cannot update sample rate whilst the ' +
-                'sensor is disabled');
+              'sensor is disabled');
         }
 
         setUpdateIntervalForType(SensorTypes.gyroscope, this.frequencyToPeriod(sampleRate) * 1000);

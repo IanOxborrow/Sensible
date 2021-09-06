@@ -173,23 +173,23 @@ class RecordingScreen extends Component
             switch (this.state.currentSensor) {
                 case "microphone":
                     sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-                    yAxisTitle = "Amplitude";
+                    yAxisTitle = "Amplitude (dB)";
                     break
                 case "accelerometer":
                     sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-                    yAxisTitle = "Acceleration";
+                    yAxisTitle = "Acceleration (m/s^2)";
                     break
                 case "gyroscope":
                     sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-                    yAxisTitle = "Orientation";
+                    yAxisTitle = "Angular velocity (RPS)";
                     break
                 case "magnetometer":
                     sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-                    yAxisTitle = "Field Direction";
+                    yAxisTitle = "Magnetic Field Direction (μT)";
                     break
                 case "barometer":
                     sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
-                    yAxisTitle = "Atmospheric Pressure";
+                    yAxisTitle = "Atmospheric Pressure (psi)";
                     break
             }
 
@@ -249,7 +249,7 @@ class RecordingScreen extends Component
 
         // these get called with every update
         updateGraphData();
-        setTimeout(updateGraphUI, 200); // call render again at the specified interval
+        var subscription = setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
@@ -329,14 +329,20 @@ class RecordingScreen extends Component
                     <View>
                         <Button title="Finish" color="#6200F2"
                             onPress={() => {
+                                clearTimeout(subscription)
                                 App.recording.finish();
-                                this.props.navigation.navigate('HomeScreen');
+                                this.props.navigation.navigate('HomeScreen', {
+                                     complete: true,
+                                   });
                             }} />
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => {
-                                    App.recording.finish(true);
-                                    this.props.navigation.navigate('HomeScreen')
-                                }} />
+                            onPress={() => {
+                                clearTimeout(subscription)
+                                App.recording.finish(true);
+                                this.props.navigation.navigate('HomeScreen', {
+                                     complete: false,
+                                   });
+                            }} />
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}
@@ -356,7 +362,7 @@ class RecordingScreen extends Component
 
 const styles = StyleSheet.create({
     yLabel: {
-        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length - 80 / yAxisTitle.length}],
+        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length + 60 / yAxisTitle.length}],
         fontWeight: "bold",
     },
     xLabel: {
