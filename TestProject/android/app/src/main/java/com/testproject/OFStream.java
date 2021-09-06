@@ -52,9 +52,9 @@ public class OFStream extends ReactContextBaseJavaModule {
         } catch (IOException e) {
             e.printStackTrace();
             promise.reject(e);
+            Log.e("AndroidRuntime", e.toString());
+            return;
         }
-
-        System.out.println("Created a new output stream for " + path + " at index " + streamIndex);
 
         promise.resolve(streamIndex);
     }
@@ -69,7 +69,7 @@ public class OFStream extends ReactContextBaseJavaModule {
     public void write(int streamIndex, String text) {
         BufferedOutputStream outputStream = outputStreams.get(streamIndex);
         if (outputStream == null) {
-            String error = "OFStream.write: Attempted to write to a stream that is already closed";
+            String error = "OFStream.write: Attempted to write to a stream that is already closed. " + streamIndex;
             Log.e("AndroidRuntime", error);
             throw new Error("[Android] " + error);
         }
@@ -78,6 +78,7 @@ public class OFStream extends ReactContextBaseJavaModule {
             outputStreams.get(streamIndex).write(text.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("AndroidRuntime", e.toString());
         }
     }
 
@@ -98,6 +99,7 @@ public class OFStream extends ReactContextBaseJavaModule {
         } catch (IOException e) {
             e.printStackTrace();
             promise.reject(e);
+            Log.e("AndroidRuntime", e.toString());
         }
     }
 
@@ -116,6 +118,7 @@ public class OFStream extends ReactContextBaseJavaModule {
         } catch (IOException e) {
             e.printStackTrace();
             promise.reject(e);
+            Log.e("AndroidRuntime", e.toString());
         }
     }
 
@@ -127,7 +130,102 @@ public class OFStream extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isOpen(int streamIndex, Promise promise) {
-        promise.resolve(outputStreams.get(streamIndex) != null);
+        if (streamIndex < 0 || streamIndex > outputStreams.size()) {
+            promise.resolve(false);
+        }
+        else {
+            promise.resolve(outputStreams.get(streamIndex) != null);
+        }
+    }
+
+    /**
+     * Read the contents of a file. An empty string will be returned if the file does not exist
+     *
+     * @param path    The path of the file to read from
+     * @param promise Returns the contents of the file on success, otherwise returns an error
+     */
+    @ReactMethod
+    public void read(String path, Promise promise) {
+        File file = new File(path);
+        if (!file.exists()) {
+            promise.resolve("");
+            return;
+        }
+
+        StringBuilder content = new StringBuilder();
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+            int c;
+            while ((c = bufferedInputStream.read()) != -1) {
+                content.append((char)c);
+            }
+            promise.resolve(content.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            promise.reject(e);
+            Log.e("AndroidRuntime", e.toString());
+        }
+    }
+
+    /**
+     * @param path      The path of the file or folder to delete
+     * @param recursive True if a folder and it's contents are to be deleted
+     * @param promise   Returns nothing on success, otherwise returns an error
+     */
+    @ReactMethod
+    public void delete(String path, boolean recursive, Promise promise) {
+        File file = new File(path);
+        // Do nothing if the file exists
+        if (!file.exists()) {
+            return;
+        }
+        // Ensure the recursive flag is present for folders
+        else if (file.list() != null && !recursive) {
+            String error = "[Android] OFStream.delete: Received a folder with no recursive flag. Path: " + path;
+            promise.reject(new Error(error));
+            Log.e("AndroidRuntime", error);
+            return;
+        }
+
+        // Delete the file/folder
+        boolean successful = true;
+        Queue<File> delete = new LinkedList<>(Collections.singletonList(file));
+        while (!delete.isEmpty())
+        {
+            File current = delete.poll();
+            if (current == null) {
+                String error = "[Android] OFStream.delete: Received a null file.";
+                promise.reject(new Error(error));
+                Log.e("AndroidRuntime", error);
+                return;
+            }
+            // The recursive method has the potential to have duplicate items in the queue
+            else if (!current.exists()) {
+                continue;
+            }
+
+            // Delete empty folders and files
+            if (current.list() == null || current.list().length == 0) {
+                System.out.println("Deleted " + current.getAbsolutePath());
+                successful = successful && current.delete();
+            }
+            // Add contents of folder then the folder to be deleted
+            else {
+                for (String subdirectory : current.list()) {
+                    delete.add(new File(current.getAbsolutePath() + "/" + subdirectory));
+                }
+                delete.add(current);
+            }
+        }
+
+        if (successful) {
+            promise.resolve(null);
+        }
+        else {
+            String error = "[Android] OFStream.delete: Could not delete " + path;
+            promise.reject(new Error(error));
+            Log.e("AndroidRuntime", error);
+        }
     }
 
     /**
@@ -144,7 +242,9 @@ public class OFStream extends ReactContextBaseJavaModule {
                 promise.resolve(null);
             }
             else {
-                promise.reject(new Error("[Android] OFStream.mkDir: Could not create directory " + path));
+                String error = "[Android] OFStream.mkDir: Could not create directory " + path;
+                promise.reject(new Error(error));
+                Log.e("AndroidRuntime", error);
             }
         }
     }

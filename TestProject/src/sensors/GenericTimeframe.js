@@ -64,6 +64,10 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     save(sample)
     {
+        if (this.type === SensorType.MICROPHONE) {
+            return;
+        }
+
         ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + this.label + '\n');
     }
 

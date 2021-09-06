@@ -20,29 +20,42 @@ import {waitFor} from "@babel/core/lib/gensync-utils/async";
 const { ofstream } = NativeModules;
 
 export default class Recording {
-    constructor(name) {
+    constructor(name, folderPath) {
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
-        this.folderPath = App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/';
+        this.folderPath = folderPath === undefined ? App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
-        this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
+        this.enabledSensors = {};
         this.graphableData = {};
         this.writeStreams = {};
         this.fileStreamIndices = {};
         this.logicalTime = 0;
         this.labels = [];
 
-        // Create the folder if it doesn't already exist
-        ofstream.mkdir(this.folderPath)
-            .then(() => { console.log('Successfully created folder ' + this.folderPath); })
-            .catch(err => { throw Error(err); });
+        if (folderPath === undefined) {
+            // Create the folder if it doesn't already exist
+            ofstream.mkdir(this.folderPath)
+                .then(() => {
+                    console.log('Successfully created folder ' + this.folderPath);
+                })
+                .catch(err => {
+                    throw Error(err);
+                });
 
-        // Create the metadata file
-        const infoFilePath = this.folderPath + 'info.txt';
-        ofstream.writeOnce(infoFilePath, false, 'Recording name: ' + this.name)
-            .then(() => { console.log('Successfully created ' + infoFilePath); })
-            .catch(err => { throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err); });
+            // Create the metadata file
+            const infoFilePath = this.folderPath + 'info.txt';
+            ofstream.writeOnce(infoFilePath, false, 'Recording name: ' + this.name)
+                .then(() => {
+                    console.log('Successfully created ' + infoFilePath);
+                })
+                .catch(err => {
+                    throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
+                });
+
+            // Append to the recording list
+            ofstream.writeOnce(App.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+        }
     }
 
     /**
@@ -176,14 +189,15 @@ export default class Recording {
      */
     async shareSensorFile(type)
     {
-        // TODO: Ensure the file is closed before sharing
-        this.enabledSensors[SensorType.ACCELEROMETER].disable();
-        const fileOpened = await ofstream.isOpen(SensorType.ACCELEROMETER);
+        const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
+        const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
         // Make sure the writing stream has been closed before accessing the file
-        if (!fileOpened)
+        if (fileOpened)
         {
-            ofstream.close(this.fileStreamIndices[SensorType.ACCELEROMETER]); // TODO: Remove this
+            throw new Error("Recording.shareSensorFile: File cannot be shared as it is " +
+                "currently opened. File type: " + type);
         }
+
         // Open the share menu to allow downloading the file
         const fileName = getSensorFileName(type);
         const path = 'file://' + this.folderPath + fileName;
@@ -200,11 +214,16 @@ export default class Recording {
     finish(clear = false)
     {
         // TODO: Do something for clear
-        // Close all the write streams
-        for (const [sensorType, fileStreamIndex] of Object.entries(this.writeStreams))
+        for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices))
         {
-            ofstream.close(this.fileStreamIndices[SensorType.ACCELEROMETER]);
-            console.log("Closed write stream for sensor type-" + sensorType);
+            // Disable all sensors
+            this.enabledSensors[sensorType].disable();
+            // Close all the write streams
+            ofstream.close(fileStreamIndex);
         }
+    }
+
+    toString() {
+        return this.name + ";" + this.folderPath;
     }
 }

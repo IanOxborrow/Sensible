@@ -5,6 +5,7 @@ import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
 import {SensorType, toSensorType} from '../Sensors';
 import Recording from '../Recording';
+import RecordingManager from "../RecordingManager";
 import App from '../../App';
 
 import {
@@ -34,9 +35,15 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
 
+    App.recordingManager = new RecordingManager();
+
     this.state = {
-      recordings_list: [],
+      recordings_list: App.recordingManager.recordings,
     };
+
+    setTimeout(() => {
+        this.setState({});
+    }, 500);
   }
 
   render() {
@@ -77,7 +84,6 @@ export default class HomeScreen extends Component {
               id: this.state.recordings_list.length + 1,
               info: App.recording,
             });
-            console.log(this.state.recordings_list);
             this.setState({});
             this.props.navigation.navigate('NewRecordingScreen', {
               recording_number: this.state.recordings_list.length,
