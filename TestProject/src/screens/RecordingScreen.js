@@ -248,8 +248,8 @@ class RecordingScreen extends Component
         };
 
         // these get called with every update
-        // updateGraphData();
-        var subscription = setTimeout(updateGraphUI, 200); // call render again at the specified interval
+        updateGraphData();
+        var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
