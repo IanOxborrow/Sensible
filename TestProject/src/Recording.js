@@ -33,7 +33,8 @@ export default class Recording {
         this.logicalTime = 0;
         this.labels = [];
 
-        if (folderPath === undefined) {
+        // TODO: Make this platform independent!
+        if (folderPath === undefined && Platform.OS !== 'ios') {
             // Create the folder if it doesn't already exist
             ofstream.mkdir(this.folderPath)
                 .then(() => {
@@ -71,10 +72,13 @@ export default class Recording {
         // Create a new sensor instance to track and enable it
         this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
 
-        // Create a new file and store the stream index for later
-        ofstream.open(sensorFile, false).then((streamIndex) => {
-            this.fileStreamIndices[type] = streamIndex;
-        })
+        // TODO: Make this platform independent!
+        if (Platform.OS !== 'ios') {
+            // Create a new file and store the stream index for later
+            ofstream.open(sensorFile, false).then((streamIndex) => {
+                this.fileStreamIndices[type] = streamIndex;
+            })
+        }
 
     }
 
@@ -189,6 +193,11 @@ export default class Recording {
      */
     async shareSensorFile(type)
     {
+        // TODO: Make the platform independent!
+        if (Platform.OS === 'ios') {
+            return;
+        }
+
         const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
         const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
         // Make sure the writing stream has been closed before accessing the file
@@ -218,8 +227,11 @@ export default class Recording {
         {
             // Disable all sensors
             this.enabledSensors[sensorType].disable();
-            // Close all the write streams
-            ofstream.close(fileStreamIndex);
+            // TODO: Make this platform independent!
+            if (Platform.OS !== 'ios') {
+                // Close all the write streams
+                ofstream.close(fileStreamIndex);
+            }
         }
     }
 
