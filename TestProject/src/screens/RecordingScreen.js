@@ -166,7 +166,7 @@ class RecordingScreen extends Component
 
     render() {
         const updateGraphData = () => {
-            let maxPoints = 20;
+            let maxPoints = 10;
             // Add a new point
             let sample = null;
 
@@ -222,7 +222,7 @@ class RecordingScreen extends Component
             }
 
             // Remove the first point (from the front)
-            if (this.state.dataSource.length > maxPoints)
+            if (this.state.dataSource.length >= maxPoints)
             {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
@@ -248,7 +248,7 @@ class RecordingScreen extends Component
         };
 
         // these get called with every update
-        updateGraphData();
+        // updateGraphData();
         var subscription = setTimeout(updateGraphUI, 200); // call render again at the specified interval
 
         data.datasets[0].data = this.state.dataSource.map(value => value);
