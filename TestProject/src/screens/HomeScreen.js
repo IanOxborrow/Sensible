@@ -23,30 +23,33 @@ export default class HomeScreen extends Component {
 
         this.state = {
             recordings_list: RecordingManager.recordings,
+            loading: true
         };
 
-        // TODO: Use proper async
-        setTimeout(() => {
-            this.setState({});
-        }, 500);
+        // Perform any initialisation required then update the state
+        this.init().then(() => this.setState({}));
+    }
+
+    /**
+     * Perform any initialisation required
+     * @return {Promise<void>}
+     */
+    async init() {
+        await RecordingManager.loadRecordings();
+        this.state.loading = false;
     }
 
     static getDerivedStateFromProps(props, state) {
-        let recordingComplete = false;
-        if (props && props.route && props.route.params) {
-            recordingComplete = props.route.params.complete;
-            props.route.params.complete = false;
-        }
-
-        console.log(recordingComplete)
-
-        if (recordingComplete) {
+        // Add the new recording (after finishing the recording)
+        if (props && props.route && props.route.params && props.route.params.complete) {
             state.recordings_list.push({
                 title: RecordingManager.currentRecording.name,
                 id: state.recordings_list.length + 1,
                 info: RecordingManager.currentRecording,
             });
+            props.route.params.complete = false;
         }
+        // Update nothing
         return null;
     }
 
@@ -56,6 +59,12 @@ export default class HomeScreen extends Component {
                 <Appbar.Header>
                     <Appbar.Content title="Sensible"/>
                 </Appbar.Header>
+
+                {
+                    // Only show whilst recordings are being loaded
+                    this.state.loading &&
+                    <Text style={{padding: 10}}>Loading recordings...</Text>
+                }
 
                 <FlatList
                     style={styles.list}
@@ -74,18 +83,22 @@ export default class HomeScreen extends Component {
                     )}
                 />
 
-                <FAB
-                    style={styles.fab}
-                    icon={require('../assets/baseline_add_black.png')}
-                    onPress={name => {
-                        RecordingManager.currentRecording = new Recording(
-                            'Recording ' + (this.state.recordings_list.length + 1),
-                        );
-                        this.props.navigation.navigate('NewRecordingScreen', {
-                            recording_number: this.state.recordings_list.length,
-                        });
-                    }}
-                />
+                {
+                    // Only show once the recordings have been loaded
+                    !this.state.loading &&
+                    <FAB
+                        style={styles.fab}
+                        icon={require('../assets/baseline_add_black.png')}
+                        onPress={name => {
+                            RecordingManager.currentRecording = new Recording(
+                                'Recording ' + (this.state.recordings_list.length + 1),
+                            );
+                            this.props.navigation.navigate('NewRecordingScreen', {
+                                recording_number: this.state.recordings_list.length,
+                            });
+                        }}
+                    />
+                }
             </View>
         );
     }

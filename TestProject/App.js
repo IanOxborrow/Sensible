@@ -15,12 +15,19 @@ import RecordingManager from "./src/RecordingManager";
 import Recording from "./src/Recording";
 
 export default class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     /**
      * Request permission to access device storage.
-     * Note: This implementation is only for android  TODO: Implement this for iOS
+     * Note: This implementation is only for android
      * @return {Promise<void>}
      */
     async requestStoragePermission() {
+        // TODO: Implement this for iOS
+        //check(PERMISSIONS.IOS.STOREKIT)
+
         // Get saving permission (Android Only!)
         try {
             const granted = await PermissionsAndroid.request(
@@ -51,45 +58,9 @@ export default class App extends React.Component {
     async init() {
         RecordingManager.RecordingClass = Recording;
         await this.requestStoragePermission();
-        await RecordingManager.loadRecordings();
-    }
-
-    constructor(props) {
-        super(props);
-
-        //check(PERMISSIONS.IOS.STOREKIT)
-
-        const requestStoragePermission = async () => {
-            // Get saving permission (Android Only!)
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                    {
-                        title: 'Storage Permission',
-                        message: 'This app needs access to your device in order ' +
-                            'to store data',
-                        buttonNeutral: 'Ask Me Later',
-                        buttonNegative: 'Cancel',
-                        buttonPositive: 'OK',
-                    }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    console.log('You can use the device storage');
-                } else {
-                    console.log('Storage permission denied');
-                }
-            } catch (err) {
-                console.warn(err);
-            }
-        };
-
-        if (Platform.OS === 'android') {
-            requestStoragePermission();
-        }
     }
 
     componentDidMount() {
-        // TODO: Ask for storage permission whilst on the splash screen
         this.init().then(() => {
             SplashScreen.hide();
         })
