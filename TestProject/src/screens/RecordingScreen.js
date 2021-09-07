@@ -177,10 +177,8 @@ class RecordingScreen extends Component
 
 
     takeVideo = async () => {
-        console.log("take video was called")
         const { isRecording } = this.state;
         if (this.camera && !isRecording) {
-            console.log("about to start recording")
             try {
                 const promise = this.camera.recordAsync(this.state.recordOptions);
 
@@ -335,7 +333,6 @@ class RecordingScreen extends Component
 
         
         if (!this.state.isRecording) {
-            console.log("starting take video")
             this.takeVideo()
         }
         
