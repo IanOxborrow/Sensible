@@ -12,17 +12,15 @@ import {
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
-import App from '../App';
-import RNFetchBlob from "rn-fetch-blob";
 import Share from 'react-native-share';
-import {waitFor} from "@babel/core/lib/gensync-utils/async";
+import RecordingManager from "./RecordingManager";
 
 const { ofstream } = NativeModules;
 
 export default class Recording {
     constructor(name, folderPath) {
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
-        this.folderPath = folderPath === undefined ? App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
+        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
@@ -55,7 +53,7 @@ export default class Recording {
                 });
 
             // Append to the recording list
-            ofstream.writeOnce(App.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+            ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
         }
     }
 

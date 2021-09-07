@@ -8,7 +8,6 @@
  */
 
 import React, { Component } from 'react';
-import App from '../../App';
 import { SensorType } from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar';
@@ -24,6 +23,7 @@ import {
     FlatList,
     TouchableOpacity,
 } from 'react-native';
+import RecordingManager from "../RecordingManager";
 
 const data = {
     labels: [],
@@ -109,9 +109,9 @@ class RecordingScreen extends Component
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check if a `Recording` instance has been passed in
-        if (App.recording == null)
+        if (RecordingManager.currentRecording == null)
         {
-            throw new Error('NewRecordingScreen.constructor: App.recording has not been initialised');
+            throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
         }
     }
 
@@ -135,7 +135,7 @@ class RecordingScreen extends Component
         }
         // Update the label
         // TODO: Change this to use the current `Recording` instance
-        App.recording.setLabel(newLabel);
+        RecordingManager.currentRecording.setLabel(newLabel);
         this.state.currentLabel = newLabel;
         // Output a debug message
         console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
@@ -172,23 +172,23 @@ class RecordingScreen extends Component
 
             switch (this.state.currentSensor) {
                 case "microphone":
-                    sample = App.recording.getSensorData(SensorType.MICROPHONE).getLatestSample();
+                    sample = RecordingManager.currentRecording.getSensorData(SensorType.MICROPHONE).getLatestSample();
                     yAxisTitle = "Amplitude (dB)";
                     break
                 case "accelerometer":
-                    sample = App.recording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
+                    sample = RecordingManager.currentRecording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
                     yAxisTitle = "Acceleration (m/s^2)";
                     break
                 case "gyroscope":
-                    sample = App.recording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
+                    sample = RecordingManager.currentRecording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
                     yAxisTitle = "Angular velocity (RPS)";
                     break
                 case "magnetometer":
-                    sample = App.recording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
+                    sample = RecordingManager.currentRecording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
                     yAxisTitle = "Magnetic Field Direction (μT)";
                     break
                 case "barometer":
-                    sample = App.recording.getSensorData(SensorType.BAROMETER).getLatestSample();
+                    sample = RecordingManager.currentRecording.getSensorData(SensorType.BAROMETER).getLatestSample();
                     yAxisTitle = "Atmospheric Pressure (psi)";
                     break
             }
@@ -330,7 +330,7 @@ class RecordingScreen extends Component
                         <Button title="Finish" color="#6200F2"
                             onPress={() => {
                                 clearTimeout(subscription)
-                                App.recording.finish();
+                                RecordingManager.currentRecording.finish();
                                 this.props.navigation.navigate('HomeScreen', {
                                      complete: true,
                                    });
@@ -338,7 +338,7 @@ class RecordingScreen extends Component
                         <Button title="Cancel" color="#6200F2"
                             onPress={() => {
                                 clearTimeout(subscription)
-                                App.recording.finish(true);
+                                RecordingManager.currentRecording.finish(true);
                                 this.props.navigation.navigate('HomeScreen', {
                                      complete: false,
                                    });

@@ -13,7 +13,6 @@ import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-key
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
 
-import App from "../../App";
 import {
     BackHandler,
     StyleSheet,
@@ -29,6 +28,7 @@ import {
     Modal
 } from "react-native";
 import Icon from "react-native-vector-icons"
+import RecordingManager from "../RecordingManager";
 
 class NewRecordingScreen extends Component {
     // An object that holds each sensor and it's matching description.
@@ -50,8 +50,8 @@ class NewRecordingScreen extends Component {
             selectedSensorData: [],
             selectedSensors: [],
             addedLabels: [],
-            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
+            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')},
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
                           {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
             sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
             usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false},
@@ -63,9 +63,9 @@ class NewRecordingScreen extends Component {
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
-        if (App.recording == null)
+        if (RecordingManager.currentRecording == null)
         {
-            throw new Error("NewRecordingScreen.constructor: App.recording has not been initialised");
+            throw new Error("NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised");
         }
     }
 
@@ -96,7 +96,7 @@ class NewRecordingScreen extends Component {
                     break;
             }
 
-            App.recording.addSensor(sensor);
+            RecordingManager.currentRecording.addSensor(sensor);
         }
 
         this.props.navigation.navigate("RecordingScreen", {
@@ -141,7 +141,7 @@ class NewRecordingScreen extends Component {
                         style={{flexDirection: "row"}}
                         isChecked={this.state.usedSensors[item.sensorName]}
                         onClick={() => {
-                            
+
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
                             if (this.state.sensorSampleRates[item.sensorName] > -1) {
 
@@ -366,8 +366,8 @@ const styles = StyleSheet.create({
 
     },
     sensorListItem: {
-        flexDirection: "row", 
-        alignItems: "center", 
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
 
@@ -389,9 +389,9 @@ const styles = StyleSheet.create({
     },
 
     iconButon: {
-        marginRight: "auto", 
+        marginRight: "auto",
         margin: 5,
-        width: 35, 
+        width: 35,
         height: 35,
     },
 
