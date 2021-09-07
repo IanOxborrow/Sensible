@@ -89,6 +89,9 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
+    /**
+     * Is called when the start recording button is pressed. This fuction navigates to the recording screen.
+     */
     startRecording() {
         for (let i = 0; i < this.state.selectedSensors.length; i++) {
             console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"]);
@@ -230,7 +233,10 @@ class NewRecordingScreen extends Component {
         </View>
     );
 
-    //constant item that stays at the bottom of the list. This acts as the add new row in the list
+    /**
+     * Returns the permenant row that stays at the bottom of the list. 
+     * This acts as the "new label" empty row that gets adde
+     */
     labelListFooter = () => {
         return (
             <View style={styles.labelListFooter}>
