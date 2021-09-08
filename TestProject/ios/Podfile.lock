@@ -258,13 +258,13 @@ PODS:
     - React-jsi (= 0.64.0)
     - React-perflogger (= 0.64.0)
   - React-jsinspector (0.64.0)
-  - react-native-camera (4.0.3):
+  - react-native-camera (4.1.1):
     - React-Core
-    - react-native-camera/RCT (= 4.0.3)
-    - react-native-camera/RN (= 4.0.3)
-  - react-native-camera/RCT (4.0.3):
+    - react-native-camera/RCT (= 4.1.1)
+    - react-native-camera/RN (= 4.1.1)
+  - react-native-camera/RCT (4.1.1):
     - React-Core
-  - react-native-camera/RN (4.0.3):
+  - react-native-camera/RN (4.1.1):
     - React-Core
   - react-native-microphone-stream (0.0.1):
     - React
@@ -593,7 +593,7 @@ SPEC CHECKSUMS:
   React-jsi: 74341196d9547cbcbcfa4b3bbbf03af56431d5a1
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
-  react-native-camera: a6055b8538d741b5ac221fa73c866c526010c8c9
+  react-native-camera: 85210eb59b028e9430d29fa33b0252c56113beff
   react-native-microphone-stream: b452bf1fb088189f2865c0a9bad39181756bb4e4
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
