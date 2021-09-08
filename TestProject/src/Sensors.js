@@ -4,6 +4,7 @@ import Gyroscope from './sensors/Gyroscope';
 import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
 import Mic from './sensors/Mic';
+import CameraBack from './sensors/CameraBack';
 
 export {default as GenericTimeframe} from './sensors/GenericTimeframe';
 export {default as Accelerometer} from './sensors/Accelerometer';
@@ -16,12 +17,15 @@ export {default as Magnetometer} from './sensors/Magnetometer';
 export {default as MagnetometerSample} from './sensors/MagnetometerSample';
 export {default as Mic} from './sensors/Mic';
 export {default as MicSample} from './sensors/MicSample';
+export {default as CameraBack} from './sensors/CameraBack';
+export {default as CameraBackSample} from './sensors/CameraBackSample';
 export const SensorType = {
     ACCELEROMETER: 0,
     GYROSCOPE: 1,
     MAGNETOMETER: 2,
     BAROMETER: 3,
     MICROPHONE: 4,
+    CAMERABACK: 5,
 };
 export const toSensorType = (int) => {
     switch (int)
@@ -36,6 +40,8 @@ export const toSensorType = (int) => {
             return SensorType.BAROMETER;
         case 4:
             return SensorType.MICROPHONE;
+        case 5:
+            return SensorType.CAMERABACK;
         default:
             throw new Error('Sensors.getSensorClass: Received an unknown integer, ' + int);
     }
@@ -53,6 +59,8 @@ export const getSensorClass = (type) => {
             return Barometer;
         case SensorType.MICROPHONE:
             return Mic;
+        case SensorType.CAMERABACK:
+            return CameraBack;
         default:
             throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
     }

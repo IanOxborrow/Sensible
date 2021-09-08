@@ -31,11 +31,16 @@ import {
 import Icon from "react-native-vector-icons"
 
 class NewRecordingScreen extends Component {
+
     // An object that holds each sensor and it's matching description.
     // Uses the same sensor name as sensorNames. "Measures" section and "Output" section split by "||"
     sensorDescriptions = {
         "accelerometer" : "Measures: Rate of change of velocity (how fast you move the phone)||Output: x per sample rate, representing current velocity (m/s^2).",
+        "barometer": "Measures: Air pressure in milibars||Output: ",
+        "back camera": "Measures: The light received by the back camera||Output: MP4 file, saved to device",
+        //"front camera": "Measures: The light received by the front camera||Output: MP4 file, saved to device",
         "gyroscope" : "Measures: Orientation and angular velocity (rate of change of movement in each axis)||Output: x, y, z per sample rate, representing each vector's change in velocity (m/s^2).",
+        "magnetometer": "Measures: The magnetic feild strength in micro microteslas along three axes||Output: ",
         "microphone" : "Measures: Sound, amplitude representing decibels||Output: MP3 file, saved to device.",
     }
 
@@ -51,15 +56,25 @@ class NewRecordingScreen extends Component {
             selectedSensors: [],
             addedLabels: [],
             sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')}, 
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')}, 
-                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
-            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
-            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false},
+                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
+                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')},
+                          {sensorName: "back camera", imageSource: require('../assets/camera_icon.png')},
+                          {sensorName: "magnetometer", imageSource: require('../assets/magnetometer_icon.png')},
+                          {sensorName: "barometer", imageSource: require('../assets/barometer_icon.png')}],
+                            //"barometer"
+                            
+
+            sensorSampleRates: {"accelerometer": -1, "barometer": -1, "back camera": -1, "gyroscope": -1, 
+                                "magnetometer": -1, "microphone": -1},
+
+            usedSensors: {"accelerometer": false, "barometer": false, "back camera": false, "gyroscope": false, 
+                        "magnetometer": false, "microphone": false},
             modalVisible: false,
             currentSensorInfo: "",
         };
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false};
+        this.usedSensors = {"accelerometer": false, "barometer": false, "back camera": false, "gyroscope": false, 
+                            "magnetometer": false, "microphone": false}
 
         // Ensure the recording class has been initialised
         // TODO: Change this to check whether a `Recording` instance has been passed in
@@ -74,6 +89,9 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
+    /**
+     * Is called when the start recording button is pressed. This fuction navigates to the recording screen.
+     */
     startRecording() {
         for (let i = 0; i < this.state.selectedSensors.length; i++) {
             console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"]);
@@ -94,6 +112,10 @@ class NewRecordingScreen extends Component {
                 case "barometer":
                     sensor = SensorType.BAROMETER;
                     break;
+                case "back camera":
+                    sensor = SensorType.CAMERABACK;
+                    break;
+
             }
 
             App.recording.addSensor(sensor);
@@ -106,7 +128,11 @@ class NewRecordingScreen extends Component {
         });
     }
 
-
+    /**
+     * Returns a formatted row in the list of sensors. This function should only be called in the render function
+     * @param item An element from the sensorNames dictionary
+     * @param i A identifer to distinguish it from other rows. Is usualy just a number
+     */
     sensorRow(item, i) {
         return (
             <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
@@ -176,6 +202,10 @@ class NewRecordingScreen extends Component {
         )
     }
 
+    /**
+     * Returns a formatted row in the list of labels.
+     * @param item An element from the addedLabels dictionary
+     */
     labelListItem = ({ item }) => (
         <View style={styles.labelListItem}>
 
@@ -204,7 +234,10 @@ class NewRecordingScreen extends Component {
         </View>
     );
 
-    //constant item that stays at the bottom of the list. This acts as the add new row in the list
+    /**
+     * Returns the permenant row that stays at the bottom of the list. 
+     * This acts as the "new label" empty row that gets adde
+     */
     labelListFooter = () => {
         return (
             <View style={styles.labelListFooter}>
@@ -262,12 +295,17 @@ class NewRecordingScreen extends Component {
         this.setState({ modalVisible: true, currentSensorInfo: sensor })
     }
 
+    /**
+     * Where the layout of the NewRecordingScreen is defined.
+     * The returned value is in an XML format
+     */
     render() {
 
+        // Each element of sensor rows is sensor that can be selected.
+        // sensorRows is a static compontent instead of a FlatList to avid two scrollable elements in the same screen.
         let sensorRows = this.state.sensorNames.map((sensor, i) => {
             return this.sensorRow(sensor, i)
         })
-
 
         return (
             <View style={styles.container} >
@@ -335,9 +373,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
+        flex: 1,
         padding: 20,
-        marginBottom: 100,
-        flex: 1
+        marginBottom: 100
         //backgroundColor: '#438023'
     },
     heading: {

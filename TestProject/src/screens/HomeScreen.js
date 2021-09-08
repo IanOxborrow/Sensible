@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
 import {SensorType, toSensorType} from '../Sensors';
@@ -21,15 +20,6 @@ import {
 const DATA = {
   recordings: [],
 };
-
-// Funtion to create each item in the list
-function Item({title, onSelect}) {
-  return (
-    <View style={styles.listItem} onPress={() => onSelect()}>
-      <Text style={styles.listItemText}>{title}</Text>
-    </View>
-  );
-}
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -66,6 +56,10 @@ export default class HomeScreen extends Component {
     return null;
   }
 
+  /**
+     * Where the layout of the HomeScreen is defined.
+     * The returned value is in an XML formate.
+     */
   render() {
     var recording_number = this.state.recordings_list.length;
     //const {recordingInfo} = route.params;
