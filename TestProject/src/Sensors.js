@@ -17,13 +17,13 @@ export {default as MagnetometerSample} from './sensors/MagnetometerSample';
 export {default as Mic} from './sensors/Mic';
 export {default as MicSample} from './sensors/MicSample';
 export const SensorType = {
-    ACCELEROMETER: 7,
-    GYROSCOPE: 1,
-    MAGNETOMETER: 2,
-    BAROMETER: 3,
-    MICROPHONE: 4,
-    GPS: 5,
-    CAMERA: 6,
+    ACCELEROMETER: 1,
+    GYROSCOPE: 3,
+    MAGNETOMETER: 5,
+    BAROMETER: 7,
+    MICROPHONE: 9,
+    GPS: 10,
+    CAMERA: 12,
 };
 /**
  * Created by Chathura Galappaththi

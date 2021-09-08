@@ -274,7 +274,7 @@ class NewRecordingScreen extends Component {
 
                     <View style={styles.parentView}>
                         <View style={styles.modalView}>
-                            <Text style={styles.capitalise}>Sensor: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.name : ""}</Text>
+                            <Text>Sensor: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.name : ""}</Text>
                             <Text
                                 style={styles.sensorDescriptions}>Measures: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.measure : ""}</Text>
                             <Text
