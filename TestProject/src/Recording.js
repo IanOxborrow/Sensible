@@ -1,17 +1,8 @@
 /* eslint-disable prettier/prettier */
-import {
-    Accelerometer,
-    SensorType,
-    GenericTimeframe,
-    Mic,
-    Gyroscope,
-    Magnetometer,
-    Barometer,
-    SensorClass, getSensorClass, getSensorFileName,
-} from "./Sensors";
+import {GenericTimeframe, toSensorType, getSensorClass, getSensorFileName, SensorType,} from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
-import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Share from 'react-native-share';
 import RecordingManager from "./RecordingManager";
 
@@ -61,7 +52,7 @@ export default class Recording {
      * Initialise a new sensor and a generic timeframe
      * @param type The type of the sensor to initialise
      */
-    initialiseGenericSensor(type)
+    async initialiseGenericSensor(type)
     {
         const sensorClass = getSensorClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
@@ -73,9 +64,7 @@ export default class Recording {
         // TODO: Make this platform independent!
         if (Platform.OS !== 'ios') {
             // Create a new file and store the stream index for later
-            ofstream.open(sensorFile, false).then((streamIndex) => {
-                this.fileStreamIndices[type] = streamIndex;
-            })
+            this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
         }
 
     }
@@ -85,60 +74,55 @@ export default class Recording {
      *
      * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
      */
-    addSensor(type) {
-
-        switch (type)
+    async addSensor(type) {
+        switch (Number(type))
         {
             case SensorType.ACCELEROMETER:
-                this.initialiseGenericSensor(SensorType.ACCELEROMETER);
+                await this.initialiseGenericSensor(SensorType.ACCELEROMETER);
                 break;
             case SensorType.GYROSCOPE:
-                this.initialiseGenericSensor(SensorType.GYROSCOPE);
+                await this.initialiseGenericSensor(SensorType.GYROSCOPE);
                 break;
             case SensorType.MAGNETOMETER:
-                this.initialiseGenericSensor(SensorType.MAGNETOMETER);
+                await this.initialiseGenericSensor(SensorType.MAGNETOMETER);
                 break;
             case SensorType.BAROMETER:
-                this.initialiseGenericSensor(SensorType.BAROMETER);
+                await this.initialiseGenericSensor(SensorType.BAROMETER);
                 break;
             case SensorType.MICROPHONE:
                 // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
 
                 // request microphone permission
-                const requestMicPermission = async () => {
-                    if (Platform.OS === 'ios') {
-                        const granted = await check(PERMISSIONS.IOS.MICROPHONE);
-                        if (granted == RESULTS.GRANTED) {
-                            console.log('iOS - You can use the microphone');
-                        }
-                    } else {
-                        try {
-                            const granted = await PermissionsAndroid.request(
-                                PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                                {
-                                    title: 'Microphone Permission',
-                                    message:
-                                        'This app needs access to your microphone ' +
-                                        'in order to collect microphone data',
-                                    buttonNeutral: 'Ask Me Later',
-                                    buttonNegative: 'Cancel',
-                                    buttonPositive: 'OK',
-                                }
-                            );
-                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                console.log('You can use the microphone');
-                            } else {
-                                console.log('Microphone permission denied');
-                            }
-                        } catch (err) {
-                            console.warn(err);
-                        }
+                if (Platform.OS === 'ios') {
+                    const granted = await check(PERMISSIONS.IOS.MICROPHONE);
+                    if (granted == RESULTS.GRANTED) {
+                        console.log('iOS - You can use the microphone');
                     }
-                };
+                } else {
+                    try {
+                        const granted = await PermissionsAndroid.request(
+                            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                            {
+                                title: 'Microphone Permission',
+                                message:
+                                    'This app needs access to your microphone ' +
+                                    'in order to collect microphone data',
+                                buttonNeutral: 'Ask Me Later',
+                                buttonNegative: 'Cancel',
+                                buttonPositive: 'OK',
+                            }
+                        );
+                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                            console.log('You can use the microphone');
+                        } else {
+                            console.log('Microphone permission denied');
+                        }
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                }
 
-                requestMicPermission();
-                this.initialiseGenericSensor(SensorType.MICROPHONE);
-
+                await this.initialiseGenericSensor(SensorType.MICROPHONE);
                 break;
             default:
                 throw new Error(this.constructor.name + '.addSensor: Received an unrecognised sensor type with id=' + type);

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {SensorType, toSensorType} from '../Sensors';
+import {SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
 

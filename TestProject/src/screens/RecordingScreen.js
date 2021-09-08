@@ -7,8 +7,8 @@
  * @flow strict-local
  */
 
-import React, { Component } from 'react';
-import { SensorType } from '../Sensors';
+import React, {Component} from 'react';
+import {SensorInfo, SensorType} from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar';
 import ToggleButton from '../react-native-paper-src/components/ToggleButton';
@@ -56,37 +56,20 @@ const chartConfig = {
 };
 
 
-class RecordingScreen extends Component
-{
-    constructor(props)
-    {
+class RecordingScreen extends Component {
+    constructor(props) {
         super(props);
-        recording_number = props.route.params.recording_number;
-        sensors = props.route.params.sensors;
-        labels = props.route.params.labels;
-        console.log("sensors: " + props.route.params.sensors);
-        console.log("labels: " + props.route.params.labels);
-
-
         this.state = {
             startTime: new Date(),
             lastUpdateTime: new Date(),
             dataSource: [0],
             labelSource: ['0'],
             currentLabel: null,
-            //sensors: props.route.params.sensors,
             labels: props.route.params.labels,
-            sensorNames: props.route.params.sensors,
-            checkedStatus: [],
+            sensorIds: props.route.params.sensors,
+            checkedStatus: {},
             currentSensor: ""
         };
-
-        /*for (const [key, value] of Object.entries(this.state.sensors)) {
-            console.log("loopy", key, value);
-            this.state.sensorNames.push(value['sensorName'])
-            this.state.checkedStatus[value['sensorName']] = 'unchecked'
-            //this.state.checkedStatus.push({key: value['sensorName'], value: false})
-        }*/
 
         // A dictionary corresponding to the hue value for the colour of each label
         this.labelsPallet = new Map();
@@ -95,29 +78,18 @@ class RecordingScreen extends Component
             this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
         }
 
-        console.log(this.state.sensorNames[0])
-        console.log(this.state.checkedStatus)
-        console.log(this.state.checkedStatus[this.state.sensorNames[0]])
         //set the checked status of the first sensor to be true
-        this.state.checkedStatus[this.state.sensorNames[0]] = 'checked'
-
-        console.log(this.state.checkedStatus[this.state.sensorNames[0]])
-
-        this.state.currentSensor = this.state.sensorNames[0]
-
-        console.log('default sensor ' + this.state.currentSensor)
+        this.state.checkedStatus[this.state.sensorIds[0]] = 'checked'
+        this.state.currentSensor = this.state.sensorIds[0]
 
         // Ensure the recording class has been initialised
-        // TODO: Change this to check if a `Recording` instance has been passed in
-        if (RecordingManager.currentRecording == null)
-        {
+        if (RecordingManager.currentRecording == null) {
             throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
         }
     }
 
     // Funtion to create each item in the list
-    Item({ title, onSelect })
-    {
+    Item({title, onSelect}) {
         return (
             <View style={styles.listItem} onPress={() => onSelect()}>
                 <Text style={styles.listItemText}>{title}</Text>
@@ -125,12 +97,16 @@ class RecordingScreen extends Component
         );
     }
 
-    setLabel(label)
-    {
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Sets the current label
+     * @param label The new label to set as current
+     */
+    setLabel(label) {
         let newLabel = null;
         // Update the label if a different button is pressed
-        if (label.labelName !== this.state.currentLabel)
-        {
+        if (label.labelName !== this.state.currentLabel) {
             newLabel = label.labelName;
         }
         // Update the label
@@ -141,27 +117,23 @@ class RecordingScreen extends Component
         console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
     }
 
-    //function changeDisplayedOnGraph()
-
-    toggleGraphDisplay(pressedButtonName) {
-
-        this.state.currentSensor = pressedButtonName
-        this.state.checkedStatus[pressedButtonName] = 'checked';
-
-        //this.state.dataSource = [0]
-
-        for (const [key, value] of Object.entries(this.state.checkedStatus)) {
-
-            if (key != pressedButtonName)
-                this.state.checkedStatus[key] = 'unchecked'
-        }
+    /**
+     * Written by ?, Modified by Chathura Galappaththi
+     * @param sensorId The ID of the sensor to show the graph data for
+     */
+    toggleGraphDisplay(sensorId) {
+        // Unselect the current button
+        this.state.checkedStatus[this.state.currentSensor] = 'unchecked';
+        // Select the new button
+        this.state.currentSensor = sensorId
+        this.state.checkedStatus[sensorId] = 'checked';
 
     }
 
     // Displays a toast when a button is long pressed
-    displayToast(buttonName) {
+    displayToast(sensorName) {
         // Making the toast (delicious)
-        this.toast.show('Sensor: ' + buttonName, 2000);
+        this.toast.show('Sensor: ' + sensorName, 2000);
     }
 
     render() {
@@ -170,32 +142,16 @@ class RecordingScreen extends Component
             // Add a new point
             let sample = null;
 
-            switch (this.state.currentSensor) {
-                case "microphone":
-                    sample = RecordingManager.currentRecording.getSensorData(SensorType.MICROPHONE).getLatestSample();
-                    yAxisTitle = "Amplitude (dB)";
-                    break
-                case "accelerometer":
-                    sample = RecordingManager.currentRecording.getSensorData(SensorType.ACCELEROMETER).getLatestSample();
-                    yAxisTitle = "Acceleration (m/s^2)";
-                    break
-                case "gyroscope":
-                    sample = RecordingManager.currentRecording.getSensorData(SensorType.GYROSCOPE).getLatestSample();
-                    yAxisTitle = "Angular velocity (RPS)";
-                    break
-                case "magnetometer":
-                    sample = RecordingManager.currentRecording.getSensorData(SensorType.MAGNETOMETER).getLatestSample();
-                    yAxisTitle = "Magnetic Field Direction (μT)";
-                    break
-                case "barometer":
-                    sample = RecordingManager.currentRecording.getSensorData(SensorType.BAROMETER).getLatestSample();
-                    yAxisTitle = "Atmospheric Pressure (psi)";
-                    break
+            // TODO: Implement this for the camera and GPS
+            if (this.state.currentSensor == SensorType.CAMERA || this.state.currentSensor == SensorType.GPS) {
+                return;
             }
 
+            sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
+            yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
+
             // Don't update the graph if a new sample hasn't come in
-            if (sample == null)
-            {
+            if (sample == null) {
                 return;
             }
 
@@ -204,43 +160,31 @@ class RecordingScreen extends Component
             this.state.dataSource.push(sample.getData()[0]);
             // Add the corresponding x-value
             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
-            if (timeElapsed >= 1)
-            {
+            if (timeElapsed >= 1) {
                 this.state.lastUpdateTime = new Date();
                 let label = Math.round((new Date() - this.state.startTime) / 1000);
                 this.state.labelSource.push(label.toString());
-            }
-            else if (timeElapsed > 0.5 && timeElapsed < 0.8)
-            {
+            } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
                 let labelText = this.state.currentLabel;
                 labelText = labelText ? labelText : '';
                 this.state.labelSource.push(labelText);
-            }
-            else
-            {
+            } else {
                 this.state.labelSource.push('');
             }
 
             // Remove the first point (from the front)
-            if (this.state.dataSource.length >= maxPoints)
-            {
+            if (this.state.dataSource.length >= maxPoints) {
                 this.state.dataSource.shift();
                 this.state.labelSource.shift();
             }
 
-            // Update the counter (MAY BE REDUNDANT)
-            this.state.counter++;
             if (this.state.currentLabel) {
-                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel],50,50);
+                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
                 chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
-            }
-            else {
+            } else {
                 chartConfig.backgroundGradientTo = "#000000";
                 chartConfig.backgroundGradientFrom = "#000000";
             }
-
-            // Update the counter (MAY BE REDUNDANT)
-            this.state.counter++;
         };
 
         const updateGraphUI = () => {
@@ -254,37 +198,28 @@ class RecordingScreen extends Component
         data.datasets[0].data = this.state.dataSource.map(value => value);
         data.labels = this.state.labelSource.map(value => value);
 
-        //console.log("names " + this.state.sensorNames)
-
-        let iconDictionary = {
-
-            'accelerometer': require('../assets/accelerometer_icon.png'),
-            'camera': require('../assets/camera_icon.png'),
-            'gyroscope': require('../assets/gyroscope_icon.png'),
-            'microphone': require('../assets/microphone_icon.png')
-        }
-
-        let sensorButtonIcons = this.state.sensorNames.map((sensorName, i) => {
+        let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
             return <ToggleButton
-                key={i}
-                icon={iconDictionary[sensorName]}
-                value={sensorName}
-                status={this.state.checkedStatus[sensorName]}
-                onPress={() => {this.toggleGraphDisplay(sensorName)}}
-                onLongPress={() => {this.displayToast(sensorName)}}
+                key={sensorId}
+                icon={SensorInfo[sensorId].imageSrc}
+                value={SensorInfo[sensorId].name}
+                status={this.state.checkedStatus[sensorId]}
+                onPress={() => {
+                    this.toggleGraphDisplay(sensorId)
+                }}
+                onLongPress={() => {
+                    this.displayToast(SensorInfo[sensorId].name)
+                }}
                 delayPressIn={500}
             />
         })
-        //status={status}
-
-        // console.log(sensorButtonIcons)
 
         return (
 
-            <View style={[styles.container, { flexDirection: 'column' }]}>
+            <View style={[styles.container, {flexDirection: 'column'}]}>
 
                 <Appbar.Header>
-                    <Appbar.Content title={ "Recording " + recording_number } />
+                    <Appbar.Content title={RecordingManager.currentRecording.name}/>
                 </Appbar.Header>
 
                 <View style={styles.content}>
@@ -310,47 +245,47 @@ class RecordingScreen extends Component
                     </View>
                     <Text style={styles.xLabel}>Time (Seconds)</Text>
 
-                    <View style={{flexDirection: "row", paddingBottom: 10 }}>
+                    <View style={{flexDirection: "row", paddingBottom: 10}}>
                         {sensorButtonIcons}
                     </View>
 
                     <FlatList style={styles.list}
-                        data={labels}
-                        keyExtractor={item => item.labelName}
-                        renderItem={({ item, index }) => (
-                            <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                <View elevation={5} style={styles.listItem}>
-                                    <Text style={styles.listItemText}> {item.labelName} </Text>
-                                </View>
-                            </TouchableOpacity>
-                        )}
+                              data={this.state.labels}
+                              keyExtractor={item => item.labelName}
+                              renderItem={({item, index}) => (
+                                  <TouchableOpacity onPress={() => this.setLabel(item)}>
+                                      <View elevation={5} style={styles.listItem}>
+                                          <Text style={styles.listItemText}> {item.labelName} </Text>
+                                      </View>
+                                  </TouchableOpacity>
+                              )}
                     />
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                            onPress={() => {
-                                clearTimeout(subscription)
-                                RecordingManager.currentRecording.finish();
-                                this.props.navigation.navigate('HomeScreen', {
-                                     complete: true,
-                                   });
-                            }} />
+                                onPress={() => {
+                                    clearTimeout(subscription)
+                                    RecordingManager.currentRecording.finish();
+                                    this.props.navigation.navigate('HomeScreen', {
+                                        complete: true,
+                                    });
+                                }}/>
                         <Button title="Cancel" color="#6200F2"
-                            onPress={() => {
-                                clearTimeout(subscription)
-                                RecordingManager.currentRecording.finish(true);
-                                this.props.navigation.navigate('HomeScreen', {
-                                     complete: false,
-                                   });
-                            }} />
+                                onPress={() => {
+                                    clearTimeout(subscription)
+                                    RecordingManager.currentRecording.finish(true);
+                                    this.props.navigation.navigate('HomeScreen', {
+                                        complete: false,
+                                    });
+                                }}/>
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}
-                    position='top'
-                    positionValue={70}
-                    style={{backgroundColor:'white'}}
-                    textStyle={{color:'black'}}
-                    opacity={0.8}
+                       position='top'
+                       positionValue={70}
+                       style={{backgroundColor: 'white'}}
+                       textStyle={{color: 'black'}}
+                       opacity={0.8}
                     // fadeInDuration={1000} Not sure these work, computer's a bit laggy
                     // fadeOutDuration={1000}
                 />
@@ -387,9 +322,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     graphStyling: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     list: {
         flex: 1,
@@ -405,19 +340,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         shadowColor: '#000000',
         shadowOffset: {
-          width: 2,
-          height: 3
+            width: 2,
+            height: 3
         },
         shadowRadius: 5,
         shadowOpacity: 1.0
-      },
-      listItemText: {
+    },
+    listItemText: {
         color: 'black',
         textAlignVertical: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         padding: 10,
-      },
+    },
 });
 
 export default RecordingScreen;

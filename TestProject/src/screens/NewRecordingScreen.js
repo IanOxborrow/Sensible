@@ -1,14 +1,14 @@
 /* eslint-disable prettier/prettier */
 import "react-native-gesture-handler";
-import React, { Component, useState, useRef } from "react";
-import { FloatingAction } from "react-native-floating-action";
+import React, {Component, useState, useRef} from "react";
+import {FloatingAction} from "react-native-floating-action";
 //import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-import { SensorType } from "../Sensors";
+import {SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
-import { KeyboardAwareFlatList, KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import {KeyboardAwareFlatList, KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 //TODO reimplement the text inputs with this one to keep the app thematicaly consistant
 //import TextInput from '../react-native-paper-src/components/TextInput/TextInput'
@@ -31,40 +31,21 @@ import Icon from "react-native-vector-icons"
 import RecordingManager from "../RecordingManager";
 
 class NewRecordingScreen extends Component {
-    // An object that holds each sensor and it's matching description.
-    // Uses the same sensor name as sensorNames. "Measures" section and "Output" section split by "||"
-    sensorDescriptions = {
-        "accelerometer" : "Measures: Rate of change of velocity (how fast you move the phone)||Output: x per sample rate, representing current velocity (m/s^2).",
-        "gyroscope" : "Measures: Orientation and angular velocity (rate of change of movement in each axis)||Output: x, y, z per sample rate, representing each vector's change in velocity (m/s^2).",
-        "microphone" : "Measures: Sound, amplitude representing decibels||Output: MP3 file, saved to device.",
-    }
-
     constructor(props) {
+        // TODO: Use sensor types
         super(props);
-        recording_number = props.route.params.recording_number;
-        //this.props = props
         this.state = {
-            currentSensorSelection: "accelerometer",
-            currentSampleRate: "",
             currentLabelAddition: "",
-            selectedSensorData: [],
-            selectedSensors: [],
             addedLabels: [],
-            sensorNames: [{sensorName: "accelerometer", imageSource: require('../assets/accelerometer_icon.png')},
-                          {sensorName: "gyroscope", imageSource: require('../assets/gyroscope_icon.png')},
-                          {sensorName: "microphone", imageSource: require('../assets/microphone_icon.png')}],
-            sensorSampleRates: { "accelerometer": -1, "gyroscope": -1, "microphone": -1},
-            usedSensors: { "accelerometer": false, "gyroscope": false, "microphone": false},
+            sensorSampleRates: {},
+            usedSensors: {},
             modalVisible: false,
-            currentSensorInfo: "",
+            currentSensorInfo: null,
+            startingRecording: false,
         };
 
-        this.usedSensors = { "accelerometer": false, "gyroscope": false, "microphone": false};
-
         // Ensure the recording class has been initialised
-        // TODO: Change this to check whether a `Recording` instance has been passed in
-        if (RecordingManager.currentRecording == null)
-        {
+        if (RecordingManager.currentRecording == null) {
             throw new Error("NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised");
         }
     }
@@ -74,52 +55,51 @@ class NewRecordingScreen extends Component {
         //this.sensorPicker.selectItem('accelerometer');
     };
 
-    startRecording() {
-        for (let i = 0; i < this.state.selectedSensors.length; i++) {
-            console.log("Sensor found: " + this.state.selectedSensorData[i]["sensorName"]);
-            let sensor;
-            switch (this.state.selectedSensorData[i]["sensorName"]) {
-                case "microphone":
-                    sensor = SensorType.MICROPHONE;
-                    break;
-                case "accelerometer":
-                    sensor = SensorType.ACCELEROMETER;
-                    break;
-                case "gyroscope":
-                    sensor = SensorType.GYROSCOPE;
-                    break;
-                case "magnetometer":
-                    sensor = SensorType.MAGNETOMETER;
-                    break;
-                case "barometer":
-                    sensor = SensorType.BAROMETER;
-                    break;
+    // TODO: Determine original creator
+    /**
+     * Created by ?, Modified by Chathura Galappaththi
+     *
+     * Add each sensor to the current recording and move to the next screen
+     */
+    async startRecording() {
+        // Add each sensor which has been selected
+        let selectedSensors = []
+        for (const [sensorId, selected] of Object.entries(this.state.usedSensors)) {
+            if (!selected) {
+                continue;
             }
 
-            RecordingManager.currentRecording.addSensor(sensor);
+            // TODO: Hook up the camera and gps properly
+            if (sensorId == SensorType.CAMERA || sensorId == SensorType.GPS) {
+                continue
+            }
+
+            selectedSensors.push(sensorId);
+            await RecordingManager.currentRecording.addSensor(sensorId);
         }
 
+        // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
-            "sensors": this.state.selectedSensors,
+            "sensors": selectedSensors,
             "labels": this.state.addedLabels,
-            recording_number: recording_number,
         });
     }
 
 
-    sensorRow(item, i) {
+    sensorRow(sensorInfo, sensorId) {
         return (
-            <View key={i} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
+            <View key={sensorId} style={[styles.sensorListItem, {justifyContent: 'space-between'}]}>
 
                 <View style={{flexDirection: "row", alignItems: "center"}}>
 
-                    <TouchableOpacity onPress={() => this.showInfo(item.sensorName)}>
+                    <TouchableOpacity onPress={() => this.showInfo(sensorInfo)}>
                         <Image source={require('../assets/information_icon.png')} style={[styles.infoButton]}/>
                     </TouchableOpacity>
 
-                    <Image source={item.imageSource} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
+                    <Image source={sensorInfo.imageSrc} style={[styles.iconButon, {marginEnd: 'auto'}]}/>
 
-                    <Text style={{paddingLeft: 10}}>{item.sensorName.charAt(0).toUpperCase() + item.sensorName.slice(1)}</Text>
+                    <Text
+                        style={{paddingLeft: 10}}>{sensorInfo.name}</Text>
                 </View>
 
                 <View style={{alignSelf: 'center', flexDirection: "row"}}>
@@ -132,42 +112,21 @@ class NewRecordingScreen extends Component {
                         }}
                         onChangeText={
                             text => {
-                                this.state.sensorSampleRates[item.sensorName] = text
+                                this.state.sensorSampleRates[sensorId] = text
                             }
                         }
                     />
 
                     <CheckBox
                         style={{flexDirection: "row"}}
-                        isChecked={this.state.usedSensors[item.sensorName]}
+                        isChecked={this.state.usedSensors[sensorId]}
                         onClick={() => {
-
                             //make sure that a sample rate has been speciified before allowing the check box to be selected
-                            if (this.state.sensorSampleRates[item.sensorName] > -1) {
+                            if (sensorId in this.state.sensorSampleRates && this.state.sensorSampleRates[sensorId] > -1) {
 
                                 //modifiy the state to record that a checkbox has been pressed
-                                this.state.usedSensors[item.sensorName] = !this.state.usedSensors[item.sensorName]
+                                this.state.usedSensors[sensorId] = !this.state.usedSensors[sensorId]
                                 this.setState(this.state.usedSensors)
-                            }
-
-                            //reset the used sensor data array
-                            this.state.selectedSensorData = []
-                            this.state.selectedSensors = []
-
-                            //itterate over the sensors to see which ones have been selected
-                            for (const sensorName in this.state.usedSensors) {
-
-                                // if the sensor is selected add it to the selectedSensorData list
-                                if (this.state.usedSensors[sensorName]) {
-
-                                    var newSensor = {
-                                        sensorName: sensorName,
-                                        sampleRate: this.state.sensorSampleRates[sensorName],
-                                    };
-
-                                    this.state.selectedSensorData.push(newSensor);
-                                    this.state.selectedSensors.push(sensorName)
-                                }
                             }
                         }}
                     />
@@ -176,30 +135,28 @@ class NewRecordingScreen extends Component {
         )
     }
 
-    labelListItem = ({ item }) => (
+    labelListItem = ({item}) => (
         <View style={styles.labelListItem}>
 
             <Text>{item.labelName}</Text>
 
             <TouchableOpacity
-                style={{ marginLeft: "auto" }}
+                style={{marginLeft: "auto"}}
                 onPress={() => {
 
                     //remove the selected label from the list
-                    for (var i in this.state.addedLabels)
-                    {
-                        if (item.labelName == this.state.addedLabels[i]["labelName"])
-                        {
+                    for (var i in this.state.addedLabels) {
+                        if (item.labelName == this.state.addedLabels[i]["labelName"]) {
                             this.state.addedLabels.splice(i, 1);
                             break;
                         }
                     }
 
-                    this.setState({ addedLabels: [...this.state.addedLabels] });
+                    this.setState({addedLabels: [...this.state.addedLabels]});
 
                 }}>
 
-                <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}  />
+                <Image source={require("../assets/baseline_close_black.png")} style={styles.iconButon}/>
             </TouchableOpacity>
         </View>
     );
@@ -218,64 +175,62 @@ class NewRecordingScreen extends Component {
                         this.labelNameInput = input;
                     }}
                     onChangeText={
-                        text => this.setState({ currentLabelAddition: text })
-                    } />
+                        text => this.setState({currentLabelAddition: text})
+                    }/>
 
                 <TouchableOpacity
-                    style={{ marginLeft: "auto"}}
+                    style={{marginLeft: "auto"}}
                     onPress={() => {
 
                         //return if a duplicate has been found
-                        for (var i in this.state.addedLabels)
-                        {
-                            if (this.state.addedLabels[i]["labelName"] == this.state.currentLabelAddition)
-                            {
+                        for (let i in this.state.addedLabels) {
+                            if (this.state.addedLabels[i]["labelName"] === this.state.currentLabelAddition) {
                                 return;
                             }
                         }
 
                         //make sure that a value has been entered into the lable name textinput before the button is allowed to be pressed
                         // and make sure that the label name is not in the addedLabels already
-                        if (this.state.currentLabelAddition != "")
-                        {
+                        if (this.state.currentLabelAddition !== "") {
 
-                            var newLabel = { labelName: this.state.currentLabelAddition };
+                            const newLabel = {labelName: this.state.currentLabelAddition};
                             this.state.addedLabels.push(newLabel);
-                            this.setState({ addedLabels: [...this.state.addedLabels] });
+                            this.setState({addedLabels: [...this.state.addedLabels]});
 
                             this.labelNameInput.clear();
                         }
                     }}>
 
-                    <Image source={require("../assets/baseline_add_black.png")} style={styles.iconButon} />
+                    <Image source={require("../assets/baseline_add_black.png")} style={styles.iconButon}/>
                 </TouchableOpacity>
             </View>
         );
     };
 
-    /*  function showInfo()
-    *   Created by Ryan Turner
-    *   Presents modal to the user, with info on the sensor they just pressed
-    *   @param sensor sensor to show info for as string
-    */
-    showInfo(sensor) {
-        this.setState({ modalVisible: true, currentSensorInfo: sensor })
+    /**
+     * Created by Ryan Turner, Modified by Chathura Galappaththi
+     *
+     * Presents modal to the user, with info on the sensor they just pressed
+     * @param sensorInfo Sensor information to show in the modal
+     */
+    showInfo(sensorInfo) {
+        this.setState({modalVisible: true, currentSensorInfo: sensorInfo})
     }
 
     render() {
-
-        let sensorRows = this.state.sensorNames.map((sensor, i) => {
-            return this.sensorRow(sensor, i)
+        let sensorRows = Object.entries(SensorInfo).map(([sensorId, sensorInfo]) => {
+            return this.sensorRow(sensorInfo, sensorId);
         })
 
 
         return (
-            <View style={styles.container} >
-                <StatusBar barStyle="dark-content" />
+            <View style={styles.container}>
+                <StatusBar barStyle="dark-content"/>
 
                 <Appbar.Header>
-                    <Appbar.Content title="New Recording Screen" />
-                    <Appbar.Action icon={require('../assets/baseline_close_black.png')} onPress={() => this.props.navigation.goBack()}/>
+                    <Appbar.Content title="New Recording Screen"/>
+                    <Appbar.Action icon={require('../assets/baseline_close_black.png')}
+                                   onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
                 <View style={styles.content}>
@@ -291,13 +246,18 @@ class NewRecordingScreen extends Component {
                         data={this.state.addedLabels}
                         renderItem={this.labelListItem}
                         keyExtractor={item => item.labelName}
-                        ListFooterComponent={this.labelListFooter} />
+                        ListFooterComponent={this.labelListFooter}/>
                 </View>
 
                 <FAB
                     style={styles.fab}
+                    loading={this.state.startingRecording}
+                    disabled={this.state.startingRecording}
                     label="Start Recording"
-                    onPress={() => {this.startRecording()}}
+                    onPress={() => {
+                        this.startRecording();
+                        this.setState({startingRecording: true})
+                    }}
                 />
 
 
@@ -305,23 +265,29 @@ class NewRecordingScreen extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisible}
-                  >
-                  <TouchableWithoutFeedback onPress={() => {this.setState({ modalVisible: false })}}>
-                    <View style={styles.modalOverlay} />
-                  </TouchableWithoutFeedback>
+                >
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({modalVisible: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
 
-                  <View style={styles.parentView}>
-                      <View style={styles.modalView}>
-                        <Text style={styles.capitalise}>Sensor: {this.state.currentSensorInfo}</Text>
-                        <Text style={styles.sensorDescriptions}>{this.state.currentSensorInfo != "" ? this.sensorDescriptions[this.state.currentSensorInfo].split("||")[0] : ""}</Text>
-                        <Text style={styles.sensorDescriptions}>{this.state.currentSensorInfo != "" ? this.sensorDescriptions[this.state.currentSensorInfo].split("||")[1] : ""}</Text>
-                        <FAB
-                          style={styles.closeModal}
-                          label="Close"
-                          onPress={() => {this.setState({ modalVisible: false })}}
-                        />
-                      </View>
-                  </View>
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.capitalise}>Sensor: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.name : ""}</Text>
+                            <Text
+                                style={styles.sensorDescriptions}>Measures: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.measure : ""}</Text>
+                            <Text
+                                style={styles.sensorDescriptions}>Output: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.output : ""}</Text>
+                            <FAB
+                                style={styles.closeModal}
+                                label="Close"
+                                onPress={() => {
+                                    this.setState({modalVisible: false})
+                                }}
+                            />
+                        </View>
+                    </View>
                 </Modal>
             </View>
         );
@@ -415,8 +381,8 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         shadowColor: "#000000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
