@@ -9,6 +9,9 @@ import RecordingScreen from '../screens/RecordingScreen'
 
 const Stack = createStackNavigator();
 
+/**
+ * Returns a navigation container that handles transitions between the screen of the app
+ */
 function MainStackNavigator() {
   return (
     <NavigationContainer>

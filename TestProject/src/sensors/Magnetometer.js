@@ -5,14 +5,9 @@ import { magnetometer, setUpdateIntervalForType, SensorTypes } from 'react-nativ
 
 export default class Magnetometer extends Sensor
 {
-    constructor(dataStore, sampleRate = null)
+    constructor(dataStore, sampleRate)
     {
-        super(dataStore);
-        // Enable the sensor if the parameter has been passed in
-        if (sampleRate != null)
-        {
-            this.enable(sampleRate);
-        }
+        super(dataStore, sampleRate);
     }
 
     /**
@@ -35,21 +30,20 @@ export default class Magnetometer extends Sensor
 
     /**
      * Enable the magnetometer
-     * @param sampleRate The rate at which magnetometer data should be sampled
      */
-    enable(sampleRate)
+    enable()
     {
         if (!this.isEnabled)
         {
-            if (sampleRate === 0)
+            if (this.sampleRate === 0)
             {
-                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + sampleRate +
+                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + this.sampleRate +
                     '. Sample rates must be strictly positive');
             }
 
             this.isEnabled = true;
             this.subscription = magnetometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
-            this.updateSampleRate(sampleRate);
+            this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
     }
@@ -88,6 +82,7 @@ export default class Magnetometer extends Sensor
                 'sensor is disabled');
         }
 
-        setUpdateIntervalForType(SensorTypes.magnetometer, this.frequencyToPeriod(sampleRate) * 1000);
+        this.sampleRate = sampleRate;
+        setUpdateIntervalForType(SensorTypes.magnetometer, this.frequencyToPeriod(this.sampleRate) * 1000);
     }
 }

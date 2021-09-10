@@ -8,7 +8,7 @@
  */
 
 import React, {Component} from 'react';
-import {SensorInfo, SensorType} from '../Sensors';
+import {HardwareType, SensorInfo, SensorType} from '../Sensors';
 import {LineChart} from 'react-native-chart-kit';
 import Appbar from '../react-native-paper-src/components/Appbar';
 import ToggleButton from '../react-native-paper-src/components/ToggleButton';
@@ -68,7 +68,8 @@ class RecordingScreen extends Component {
             labels: props.route.params.labels,
             sensorIds: props.route.params.sensors,
             checkedStatus: {},
-            currentSensor: ""
+            currentSensor: -1,
+            recorderzIndex: -1
         };
 
         // A dictionary corresponding to the hue value for the colour of each label
@@ -86,6 +87,9 @@ class RecordingScreen extends Component {
         if (RecordingManager.currentRecording == null) {
             throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
         }
+
+        // Enable all sensors and start all recorders
+        RecordingManager.currentRecording.start();
     }
 
     // Funtion to create each item in the list
@@ -128,6 +132,12 @@ class RecordingScreen extends Component {
         this.state.currentSensor = sensorId
         this.state.checkedStatus[sensorId] = 'checked';
 
+        if (sensorId == SensorType.BACK_CAMERA) {
+            this.setState({recorderzIndex: 1});
+        }
+        else {
+            this.setState({recorderzIndex: -1});
+        }
     }
 
     // Displays a toast when a button is long pressed
@@ -142,8 +152,8 @@ class RecordingScreen extends Component {
             // Add a new point
             let sample = null;
 
-            // TODO: Implement this for the camera and GPS
-            if (this.state.currentSensor == SensorType.CAMERA || this.state.currentSensor == SensorType.GPS) {
+            // TODO: Implement this for the GPS
+            if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR || this.state.currentSensor == SensorType.GPS) {
                 return;
             }
 
@@ -223,27 +233,36 @@ class RecordingScreen extends Component {
                 </Appbar.Header>
 
                 <View style={styles.content}>
+                    <View>
+                        <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}>
+                            {
+                                RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA] &&
+                                RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
+                            }
+                        </View>
 
-
-                    <View style={styles.graphStyling}>
-                        <Text style={styles.yLabel}>{yAxisTitle}</Text>
-                        <LineChart
-                            data={data}
-                            width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
-                            height={220}
-                            verticalLabelRotation={17}
-                            chartConfig={chartConfig}
-                            style={{
-                                marginVertical: 0,
-                                marginHorizontal: 0,
-                            }}
-                            withDots={false}
-                            withVerticalLines={false}
-                            withHorizontalLines={false}
-                            bezier
-                        />
+                        <View>
+                            <View style={styles.graphStyling}>
+                                <Text style={styles.yLabel}>{yAxisTitle}</Text>
+                                <LineChart
+                                    data={data}
+                                    width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                                    height={220}
+                                    verticalLabelRotation={17}
+                                    chartConfig={chartConfig}
+                                    style={{
+                                        marginVertical: 0,
+                                        marginHorizontal: 0,
+                                    }}
+                                    withDots={false}
+                                    withVerticalLines={false}
+                                    withHorizontalLines={false}
+                                    bezier
+                                />
+                            </View>
+                            <Text style={styles.xLabel}>Time (Seconds)</Text>
+                        </View>
                     </View>
-                    <Text style={styles.xLabel}>Time (Seconds)</Text>
 
                     <View style={{flexDirection: "row", paddingBottom: 10}}>
                         {sensorButtonIcons}
@@ -263,17 +282,17 @@ class RecordingScreen extends Component {
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                onPress={() => {
-                                    clearTimeout(subscription)
-                                    RecordingManager.currentRecording.finish();
+                                onPress={async () => {
+                                    clearTimeout(subscription);
+                                    await RecordingManager.currentRecording.finish();
                                     this.props.navigation.navigate('HomeScreen', {
                                         complete: true,
                                     });
                                 }}/>
                         <Button title="Cancel" color="#6200F2"
-                                onPress={() => {
-                                    clearTimeout(subscription)
-                                    RecordingManager.currentRecording.finish(true);
+                                onPress={async () => {
+                                    clearTimeout(subscription);
+                                    await RecordingManager.currentRecording.finish(true);
                                     this.props.navigation.navigate('HomeScreen', {
                                         complete: false,
                                     });

@@ -16,6 +16,12 @@ export {default as Magnetometer} from './sensors/Magnetometer';
 export {default as MagnetometerSample} from './sensors/MagnetometerSample';
 export {default as Mic} from './sensors/Mic';
 export {default as MicSample} from './sensors/MicSample';
+
+export const HardwareType = {
+    SENSOR: 1,
+    RECORDER: 3
+}
+
 export const SensorType = {
     ACCELEROMETER: 1,
     GYROSCOPE: 3,
@@ -23,8 +29,9 @@ export const SensorType = {
     BAROMETER: 7,
     MICROPHONE: 9,
     GPS: 10,
-    CAMERA: 12,
+    BACK_CAMERA: 12,
 };
+
 /**
  * Created by Chathura Galappaththi
  * Stores all necessary information about the sensors in one place
@@ -32,6 +39,7 @@ export const SensorType = {
 export const SensorInfo = {
     [SensorType.ACCELEROMETER]: {
         name: "Accelerometer",
+        type: HardwareType.SENSOR,
         imageSrc: require('./assets/accelerometer_icon.png'),
         class: Accelerometer,
         measure: "Acceleration",
@@ -43,6 +51,7 @@ export const SensorInfo = {
     },
     [SensorType.GYROSCOPE]: {
         name: "Gyroscope",
+        type: HardwareType.SENSOR,
         imageSrc: require('./assets/gyroscope_icon.png'),
         class: Gyroscope,
         measure: "Angular velocity",
@@ -54,7 +63,8 @@ export const SensorInfo = {
     },
     [SensorType.MAGNETOMETER]: {
         name: "Magnetometer",
-        imageSrc: require('./assets/baseline_close_black.png'), // TODO: Update icon!
+        type: HardwareType.SENSOR,
+        imageSrc: require('./assets/magnetometer_icon.png'), // TODO: Update icon!
         class: Magnetometer,
         measure: "Magnetic Field Direction",
         units: "μT",
@@ -66,7 +76,8 @@ export const SensorInfo = {
     },
     [SensorType.BAROMETER]: {
         name: "Barometer",
-        imageSrc: require('./assets/baseline_close_black.png'), // TODO: Update icon!
+        type: HardwareType.SENSOR,
+        imageSrc: require('./assets/barometer_icon.png'), // TODO: Update icon!
         class: Barometer,
         measure: "Atmospheric Pressure",
         units: "psi",
@@ -78,6 +89,7 @@ export const SensorInfo = {
     },
     [SensorType.MICROPHONE]: {
         name: "Microphone",
+        type: HardwareType.RECORDER,
         imageSrc: require('./assets/microphone_icon.png'),
         class: Mic,
         measure: "Amplitude",
@@ -89,6 +101,7 @@ export const SensorInfo = {
     },
     [SensorType.GPS]: {
         name: "GPS",
+        type: HardwareType.SENSOR,
         imageSrc: require('./assets/baseline_close_black.png'),  // TODO: Update icon!
         class: null, // TODO: Set correct class!
         measure: "Coordinates",
@@ -99,8 +112,9 @@ export const SensorInfo = {
             output: "ADD OUTPUT HERE"
         }
     },
-    [SensorType.CAMERA]: {
+    [SensorType.BACK_CAMERA]: {
         name: "Camera",
+        type: HardwareType.RECORDER,
         imageSrc: require('./assets/camera_icon.png'),
         class: null, // TODO: Set correct class!
         // TODO: Update description!
@@ -112,6 +126,7 @@ export const SensorInfo = {
         }
     }
 }
+
 export const getSensorClass = (type) => {
     if (!(type in SensorInfo)) {
         throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
@@ -119,6 +134,7 @@ export const getSensorClass = (type) => {
 
     return SensorInfo[type].class;
 };
+
 export const getSensorFileName = (type) => {
     return getSensorClass(type).prototype.constructor.name + '.txt';
 };

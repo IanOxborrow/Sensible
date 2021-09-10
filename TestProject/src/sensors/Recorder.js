@@ -1,13 +1,17 @@
 /* eslint-disable prettier/prettier */
 import { ErrorChecking } from '../Errors';
+import {getSensorFileName} from "../Sensors";
 
-export default class Sensor
+export default class Recorder
 {
-    constructor(dataStore, sampleRate)
+    /**
+     * Initialise everything
+     *
+     * @param recording A reference to the recording class that this recorder is stored under
+     */
+    constructor(recording)
     {
-        this.isEnabled = false;
-        this.dataStore = dataStore;
-        this.sampleRate = sampleRate;
+        this.recording = recording;
 
         /*** Everything below this is for checking that child classes implement functions correctly */
         // // Only run the checks if we're allowed to
@@ -25,23 +29,10 @@ export default class Sensor
         //     const child = Object.getPrototypeOf(this);
         //     // A list of functions that needs to be implemented
         //     let functions = [
-        //         {name: 'constructor', params: ['dataStore']},
-        //         {name: 'enable', params: ['sampleRate']},
-        //         {name: 'disable', params: []},
-        //         {name: 'updateSampleRate', params: ['sampleRate']},
+        //         {name: 'constructor', params: ['recording']},
         //     ];
         //     // Check that the interface has been implemented correctly
         //     ErrorChecking.checkInterfaceImplementation(functions, child);
         // }
-    }
-
-    /**
-     * Convert a frequency value (in Hz) to a period value (in s)
-     * @param frequency
-     * @return The period value of the given frequency value
-     */
-    frequencyToPeriod(frequency)
-    {
-        return 1 / frequency;
     }
 }

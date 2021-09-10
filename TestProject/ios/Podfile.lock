@@ -258,6 +258,14 @@ PODS:
     - React-jsi (= 0.64.0)
     - React-perflogger (= 0.64.0)
   - React-jsinspector (0.64.0)
+  - react-native-camera (4.1.1):
+    - React-Core
+    - react-native-camera/RCT (= 4.1.1)
+    - react-native-camera/RN (= 4.1.1)
+  - react-native-camera/RCT (4.1.1):
+    - React-Core
+  - react-native-camera/RN (4.1.1):
+    - React-Core
   - react-native-microphone-stream (0.0.1):
     - React
   - react-native-safe-area-context (3.3.0):
@@ -368,7 +376,7 @@ PODS:
   - RNScreens (3.5.0):
     - React-Core
     - React-RCTImage
-  - RNSensors (7.3.2):
+  - RNSensors (7.3.3):
     - React-Core
   - RNShare (6.5.0):
     - React-Core
@@ -420,6 +428,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-microphone-stream (from `../node_modules/react-native-microphone-stream`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -499,6 +508,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-microphone-stream:
     :path: "../node_modules/react-native-microphone-stream"
   react-native-safe-area-context:
@@ -557,7 +568,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: e9718e4191d8f8d75fbc86bdfe0d43f7cbc673f3
+  FBReactNativeSpec: 8514a2836815ede6c32b324583e43ef25c985b14
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
@@ -582,6 +593,7 @@ SPEC CHECKSUMS:
   React-jsi: 74341196d9547cbcbcfa4b3bbbf03af56431d5a1
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
+  react-native-camera: 85210eb59b028e9430d29fa33b0252c56113beff
   react-native-microphone-stream: b452bf1fb088189f2865c0a9bad39181756bb4e4
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
@@ -603,7 +615,7 @@ SPEC CHECKSUMS:
   RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: 01ab149b5dd5c27f5ff26741b1d2bdf2cee1af35
-  RNSensors: c7c261211cca3928c47e05cf9c35e59a9e59a4e7
+  RNSensors: 7baffb62308e167902b28e5f74e072804bfc1ad1
   RNShare: 047d42214f875d731bde73a2b67418638af85ad9
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
@@ -612,4 +624,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8bccb2e8cb52dd8cc3f10369f4cbecc362a34952
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.0

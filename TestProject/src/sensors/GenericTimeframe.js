@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
 import SensorSample from './SensorSample';
-import { getSensorFileName, SensorType } from "../Sensors";
+import { getSensorFileName, getSensorClass, SensorType } from "../Sensors";
 import {NativeModules, Platform} from 'react-native';
 
 const { ofstream } = NativeModules;
