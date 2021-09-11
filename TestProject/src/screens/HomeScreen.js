@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
+import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {SensorType, toSensorType} from '../Sensors';
+import {SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
-import App from '../../App';
 
 import {
   StyleSheet,
@@ -17,88 +17,89 @@ import {
   StatusBar,
 } from 'react-native';
 
-const DATA = {
-  recordings: [],
-};
-
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
 
-    App.recordingManager = new RecordingManager();
-
     this.state = {
-      recordings_list: App.recordingManager.recordings,
+      recordings_list: RecordingManager.recordings,
+      loading: true
     };
 
-    // TODO: Use proper async
-    setTimeout(() => {
-        this.setState({});
-    }, 500);
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    let recordingComplete = false;
-    if (props && props.route && props.route.params) {
-        recordingComplete = props.route.params.complete;
-        props.route.params.complete = false;
-    }
-
-    console.log(recordingComplete)
-
-    if (recordingComplete) {
-      state.recordings_list.push({
-        title: App.recording.name,
-        id: state.recordings_list.length + 1,
-        info: App.recording,
-      });
-    }
-    return null;
+    // Perform any initialisation required then update the state
+    this.init().then(() => this.setState({}));
   }
 
   /**
-     * Where the layout of the HomeScreen is defined.
-     * The returned value is in an XML formate.
-     */
+   * Perform any initialisation required
+   * @return {Promise<void>}
+   */
+  async init() {
+    await RecordingManager.loadRecordings();
+    this.state.loading = false;
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    // Add the new recording (after finishing the recording)
+    if (props && props.route && props.route.params && props.route.params.complete) {
+      state.recordings_list.push({
+        title: RecordingManager.currentRecording.name,
+        id: state.recordings_list.length + 1,
+        info: RecordingManager.currentRecording,
+      });
+      props.route.params.complete = false;
+    }
+    // Update nothing
+    return null;
+  }
+
   render() {
-    var recording_number = this.state.recordings_list.length;
-    //const {recordingInfo} = route.params;
     return (
-      <View style={[styles.container, {flexDirection: 'column'}]}>
-        <Appbar.Header>
-          <Appbar.Content title="Sensible" />
-        </Appbar.Header>
+        <View style={[styles.container, {flexDirection: 'column'}]}>
+          <Appbar.Header>
+            <Appbar.Content title="Sensible"/>
+          </Appbar.Header>
 
-        <FlatList
-          style={styles.list}
-          data={this.state.recordings_list}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <TouchableOpacity onPress={() => {
-                // TODO: Share all generated files
-                // Share the generated file
-                item.info.shareSensorFile(SensorType.ACCELEROMETER);
-            }}>
-              <View elevation={5} style={styles.listItem}>
-                <Text style={styles.listItemText}> {item.title} </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+          {
+            // Only show whilst recordings are being loaded
+            this.state.loading &&
+            <Text style={{padding: 10}}>Loading recordings...</Text>
+          }
 
-        <FAB
-          style={styles.fab}
-          icon={require('../assets/baseline_add_black.png')}
-          onPress={name => {
-            App.recording = new Recording(
-              'Recording ' + (this.state.recordings_list.length + 1),
-            );
-            this.props.navigation.navigate('NewRecordingScreen', {
-              recording_number: this.state.recordings_list.length,
-            });
-          }}
-        />
-      </View>
+          <FlatList
+              style={styles.list}
+              data={this.state.recordings_list}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                  <TouchableOpacity onPress={() => {
+                    // TODO: Share all generated files
+                    // Share the generated file
+                    item.info.shareSensorFile(SensorType.ACCELEROMETER);
+                  }}>
+                    <View elevation={5} style={styles.listItem}>
+                      <Text style={styles.listItemText}> {item.title} </Text>
+                    </View>
+                  </TouchableOpacity>
+              )}
+          />
+
+          {
+            // Only show once the recordings have been loaded
+            !this.state.loading &&
+            <FAB
+                style={styles.fab}
+                icon={require('../assets/baseline_add_black.png')}
+                onPress={name => {
+                  RecordingManager.currentRecording = new Recording(
+                      'Recording ' + (this.state.recordings_list.length + 1),
+                  );
+                  this.props.navigation.navigate('NewRecordingScreen', {
+                    recording_number: this.state.recordings_list.length,
+                  });
+                }}
+            />
+          }
+        </View>
     );
   }
 }
