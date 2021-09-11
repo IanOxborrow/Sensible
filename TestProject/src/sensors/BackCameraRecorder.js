@@ -10,7 +10,7 @@ export default class BackCameraRecorder extends Recorder {
      */
     constructor(recording) {
         super(recording);
-        this.filePath = this.recording.folderPath + "camera.mp4";
+        this.filePath = this.recording.folderPath + "Camera.mp4";
         this.isRecording = false;
         this.recordedData = null;
         this.view = (<RNCamera
@@ -75,7 +75,7 @@ export default class BackCameraRecorder extends Recorder {
 
         if (!this.isRecording) {
             while (!this.recordedData) {
-                console.log("Recording has started...")
+                console.log("Camera: Recording has started...")
                 try {
                     this.isRecording = true;
                     this.recordedData = await this.camera.recordAsync(options);
@@ -83,7 +83,7 @@ export default class BackCameraRecorder extends Recorder {
                     this.isRecording = false;
                     console.log(error);
                 }
-                console.log(this.recordedData ? "Recording has stopped... " + this.camera : "Recording failed! Trying again...");
+                console.log(this.recordedData ? "Camera: Recording has stopped" + this.camera : "Camera: Recording failed! Trying again...");
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
         }
@@ -98,9 +98,9 @@ export default class BackCameraRecorder extends Recorder {
      */
     async stop() {
         if (this.isRecording) {
-            console.log("STOPPING RECORDING...");
+            console.log("Camera: Stopping recording...");
             await this.camera.stopRecording();
-            console.log("DONE!");
+            this.isRecording = false;
         }
     }
 }

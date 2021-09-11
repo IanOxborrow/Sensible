@@ -4,6 +4,8 @@ import Gyroscope from './sensors/Gyroscope';
 import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
 import Mic from './sensors/Mic';
+import BackCameraRecorder from "./sensors/BackCameraRecorder";
+import MicrophoneRecorder from "./sensors/MicrophoneRecorder";
 
 export {default as GenericTimeframe} from './sensors/GenericTimeframe';
 export {default as Accelerometer} from './sensors/Accelerometer';
@@ -14,8 +16,8 @@ export {default as Barometer} from './sensors/Barometer';
 export {default as BarometerSample} from './sensors/BarometerSample';
 export {default as Magnetometer} from './sensors/Magnetometer';
 export {default as MagnetometerSample} from './sensors/MagnetometerSample';
-export {default as Mic} from './sensors/Mic';
-export {default as MicSample} from './sensors/MicSample';
+export {default as MicrophoneRecorder} from './sensors/MicrophoneRecorder'
+export {default as BackCameraRecorder} from './sensors/BackCameraRecorder'
 
 export const HardwareType = {
     SENSOR: 1,
@@ -91,7 +93,7 @@ export const SensorInfo = {
         name: "Microphone",
         type: HardwareType.RECORDER,
         imageSrc: require('./assets/microphone_icon.png'),
-        class: Mic,
+        class: MicrophoneRecorder,
         measure: "Amplitude",
         units: "dB",
         description: {
@@ -116,7 +118,7 @@ export const SensorInfo = {
         name: "Camera",
         type: HardwareType.RECORDER,
         imageSrc: require('./assets/camera_icon.png'),
-        class: null, // TODO: Set correct class!
+        class: BackCameraRecorder, // TODO: Set correct class!
         // TODO: Update description!
         measure: "Video",
         units: "",
@@ -136,5 +138,5 @@ export const getSensorClass = (type) => {
 };
 
 export const getSensorFileName = (type) => {
-    return getSensorClass(type).prototype.constructor.name + '.txt';
+    return getSensorClass(type).prototype.constructor.name + '.csv';
 };

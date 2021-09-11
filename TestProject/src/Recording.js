@@ -1,11 +1,18 @@
 /* eslint-disable prettier/prettier */
-import {GenericTimeframe, toSensorType, getSensorClass, getSensorFileName, SensorType,} from "./Sensors";
+import {
+    GenericTimeframe,
+    toSensorType,
+    getSensorClass,
+    getSensorFileName,
+    SensorType,
+    MicrophoneRecorder,
+    BackCameraRecorder
+} from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Share from 'react-native-share';
 import RecordingManager from "./RecordingManager";
-import BackCameraRecorder from "./sensors/BackCameraRecorder";
 
 const { ofstream } = NativeModules;
 
@@ -143,6 +150,8 @@ export default class Recording {
             case SensorType.BACK_CAMERA:
                 this.enabledRecorders[type] = new BackCameraRecorder(this);
                 break;
+            case SensorType.MICROPHONE:
+                this.enabledRecorders[type] = new MicrophoneRecorder(this);
         }
     }
 
@@ -251,7 +260,6 @@ export default class Recording {
 
         // Stop all recorders
         for (const sensorType of Object.keys(this.enabledRecorders)) {
-            console.log("Disabling recorder " + sensorType);
             await this.enabledRecorders[sensorType].stop();
         }
     }

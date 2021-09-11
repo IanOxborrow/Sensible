@@ -13,7 +13,7 @@
  import Appbar from '../react-native-paper-src/components/Appbar';
  import ToggleButton from '../react-native-paper-src/components/ToggleButton';
  import Toast, {DURATION} from 'react-native-easy-toast';
- 
+
  import {
      StyleSheet,
      View,
@@ -24,7 +24,7 @@
      TouchableOpacity,
  } from 'react-native';
  import RecordingManager from "../RecordingManager";
- 
+
  const data = {
      labels: [],
      datasets: [
@@ -33,9 +33,9 @@
          },
      ],
  };
- 
+
  let yAxisTitle = "Y axis";
- 
+
  // hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
  const hslToHex = (h, s, l) => {
      l /= 100;
@@ -47,15 +47,15 @@
      };
      return `#${f(0)}${f(8)}${f(4)}`;
  };
- 
+
  const chartConfig = {
      backgroundColor: '#000000',
      backgroundGradientFrom: "#000000",
      backgroundGradientTo: "#000000",
      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
  };
- 
- 
+
+
  class RecordingScreen extends Component {
      constructor(props) {
          super(props);
@@ -69,29 +69,30 @@
              sensorIds: props.route.params.sensors,
              checkedStatus: {},
              currentSensor: -1,
-             recorderzIndex: -1
+             recorderzIndex: -1,
+             terminating: false
          };
- 
+
          // A dictionary corresponding to the hue value for the colour of each label
          this.labelsPallet = new Map();
          for (let i = 0; i < this.state.labels.length; i++) {
              let hue_step = Math.floor(360 / this.state.labels.length);
              this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
          }
- 
+
          //set the checked status of the first sensor to be true
          this.state.checkedStatus[this.state.sensorIds[0]] = 'checked'
          this.state.currentSensor = this.state.sensorIds[0]
- 
+
          // Ensure the recording class has been initialised
          if (RecordingManager.currentRecording == null) {
              throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
          }
- 
+
          // Enable all sensors and start all recorders
          RecordingManager.currentRecording.start();
      }
- 
+
      // Funtion to create each item in the list
      Item({title, onSelect}) {
          return (
@@ -100,7 +101,7 @@
              </View>
          );
      }
- 
+
      /**
       * Created by Chathura Galappaththi
       *
@@ -120,7 +121,7 @@
          // Output a debug message
          console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
      }
- 
+
      /**
       * Written by ?, Modified by Chathura Galappaththi
       * @param sensorId The ID of the sensor to show the graph data for
@@ -131,7 +132,7 @@
          // Select the new button
          this.state.currentSensor = sensorId
          this.state.checkedStatus[sensorId] = 'checked';
- 
+
          if (sensorId == SensorType.BACK_CAMERA) {
              this.setState({recorderzIndex: 1});
          }
@@ -139,32 +140,32 @@
              this.setState({recorderzIndex: -1});
          }
      }
- 
+
      // Displays a toast when a button is long pressed
      displayToast(sensorName) {
          // Making the toast (delicious)
          this.toast.show('Sensor: ' + sensorName, 2000);
      }
- 
+
      render() {
          const updateGraphData = () => {
              let maxPoints = 10;
              // Add a new point
              let sample = null;
- 
+
              // TODO: Implement this for the GPS
              if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR || this.state.currentSensor == SensorType.GPS) {
                  return;
              }
- 
+
              sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
              yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
- 
+
              // Don't update the graph if a new sample hasn't come in
              if (sample == null) {
                  return;
              }
- 
+
              // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
              // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
              this.state.dataSource.push(sample.getData()[0]);
@@ -181,13 +182,13 @@
              } else {
                  this.state.labelSource.push('');
              }
- 
+
              // Remove the first point (from the front)
              if (this.state.dataSource.length >= maxPoints) {
                  this.state.dataSource.shift();
                  this.state.labelSource.shift();
              }
- 
+
              if (this.state.currentLabel) {
                  chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
                  chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
@@ -196,18 +197,18 @@
                  chartConfig.backgroundGradientFrom = "#000000";
              }
          };
- 
+
          const updateGraphUI = () => {
              this.forceUpdate();
          };
- 
+
          // these get called with every update
          updateGraphData();
          var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
- 
+
          data.datasets[0].data = this.state.dataSource.map(value => value);
          data.labels = this.state.labelSource.map(value => value);
- 
+
          let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
              return <ToggleButton
                  key={sensorId}
@@ -223,15 +224,15 @@
                  delayPressIn={500}
              />
          })
- 
+
          return (
- 
+
              <View style={[styles.container, {flexDirection: 'column'}]}>
- 
+
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
                  </Appbar.Header>
- 
+
                  <View style={styles.content}>
                      <View>
                          <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}>
@@ -240,7 +241,7 @@
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
                              }
                          </View>
- 
+
                          <View>
                              <View style={styles.graphStyling}>
                                  <Text style={styles.yLabel}>{yAxisTitle}</Text>
@@ -263,11 +264,11 @@
                              <Text style={styles.xLabel}>Time (Seconds)</Text>
                          </View>
                      </View>
- 
+
                      <View style={{flexDirection: "row", paddingBottom: 10}}>
                          {sensorButtonIcons}
                      </View>
- 
+
                      <FlatList style={styles.list}
                                data={this.state.labels}
                                keyExtractor={item => item.labelName}
@@ -279,19 +280,23 @@
                                    </TouchableOpacity>
                                )}
                      />
- 
+
                      <View>
                          <Button title="Finish" color="#6200F2"
+                                 disabled={this.state.terminating}
                                  onPress={async () => {
                                      clearTimeout(subscription);
+                                     this.setState({terminating: true});
                                      await RecordingManager.currentRecording.finish();
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: true,
                                      });
                                  }}/>
                          <Button title="Cancel" color="#6200F2"
+                                 disabled={this.state.terminating}
                                  onPress={async () => {
                                      clearTimeout(subscription);
+                                     this.setState({terminating: true});
                                      await RecordingManager.currentRecording.finish(true);
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: false,
@@ -311,9 +316,9 @@
              </View>
          );
      }
- 
+
  }
- 
+
  const styles = StyleSheet.create({
      yLabel: {
          transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length + 60 / yAxisTitle.length}],
@@ -373,6 +378,5 @@
          padding: 10,
      },
  });
- 
+
  export default RecordingScreen;
- 
