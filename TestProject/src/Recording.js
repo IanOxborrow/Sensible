@@ -100,6 +100,41 @@ export default class Recording {
             case SensorType.BAROMETER:
                 await this.initialiseGenericSensor(SensorType.BAROMETER, sampleRate);
                 break;
+            case SensorType.GPS:
+                // request GPS permission
+                if (Platform.OS == 'ios') {
+                    const authorisation = await requestAuthorization('whenInUse');
+                    if (authorisation == 'granted' || authorisation == 'restricted') {
+                        console.log('iOS - You can use the GPS');
+                    } else {
+                        // TODO: Stop the initialisation if permission is denied
+                    }
+                } else {
+                   try {
+                      const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                         {
+                             title: 'Location Permission',
+                             message:
+                                 'This app needs access to your location ' +
+                                 'in order to collect location data',
+                             buttonNeutral: 'Ask Me Later',
+                             buttonNegative: 'Cancel',
+                             buttonPositive: 'OK',
+                         }
+                         );
+                         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                             console.log('You can use the GPS');
+                         } else {
+                             console.log('GPS permission denied');
+                             // TODO: Stop the initialisation if permission is denied
+                         }
+                     } catch (err) {
+                         console.warn(err);
+                     }
+                 }
+                await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
+                break;
             // case SensorType.MICROPHONE:
             //     // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
             //

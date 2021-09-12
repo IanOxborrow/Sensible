@@ -69,9 +69,9 @@ class NewRecordingScreen extends Component {
                 continue;
             }
 
-            // TODO: Hook up the gps properly
-            if (sensorId == SensorType.GPS) {
-                continue
+            // For sensors that aren't implemented
+            if (sensorId == null) {
+                continue;
             }
 
             selectedSensors.push(sensorId);
