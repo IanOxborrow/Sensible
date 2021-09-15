@@ -28,6 +28,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.4",
     "react-native-keyboard-aware-view": "^0.0.14",
     "react-native-microphone-stream": "git://github.com/chadsmith/react-native-microphone-stream.git",
+    "react-native-modal-dropdown": "^1.0.1",
     "react-native-reanimated": "^2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.0.0",

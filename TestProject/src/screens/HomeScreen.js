@@ -3,9 +3,10 @@ import React, {Component} from 'react';
 import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {SensorType} from '../Sensors';
+import {SensorInfo, SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
+import ModalDropdown from 'react-native-modal-dropdown';
 
 import {
     StyleSheet,
@@ -15,6 +16,8 @@ import {
     FlatList,
     TouchableOpacity,
     StatusBar,
+    Modal,
+    TouchableWithoutFeedback,
 } from 'react-native';
 
 export default class HomeScreen extends Component {
@@ -23,7 +26,9 @@ export default class HomeScreen extends Component {
 
         this.state = {
             recordings_list: RecordingManager.recordings,
-            loading: true
+            availableSensors: null,
+            loading: true,
+            modalVisible: false,
         };
 
         // Perform any initialisation required then update the state
@@ -72,9 +77,7 @@ export default class HomeScreen extends Component {
                     keyExtractor={item => item.id}
                     renderItem={({item}) => (
                         <TouchableOpacity onPress={() => {
-                            // TODO: Share all generated files
-                            // Share the generated file
-                            item.info.shareSensorFile(SensorType.ACCELEROMETER);
+                            this.setState({modalVisible: true})
                         }}>
                             <View elevation={5} style={styles.listItem}>
                                 <Text style={styles.listItemText}> {item.title} </Text>
@@ -82,6 +85,43 @@ export default class HomeScreen extends Component {
                         </TouchableOpacity>
                     )}
                 />
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.modalVisible}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({modalVisible: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <ModalDropdown
+                                defaultValue={'Press to select the sensor data you want to export'}
+                                // TODO: Only show sensors that were active during the recording
+                                options={Object.values(SensorInfo).map(x => x.name)}
+                                style={{alignItems: 'center', alignContent: 'center'}}
+                                textStyle={{fontWeight: 'bold', textAlign: 'right'}}
+                                dropdownStyle={{width: '70%'}}
+                                dropdownTextStyle={{fontWeight: 'bold', textAlign: 'center'}}
+                                onSelect={(key) => {
+                                    // Share selected sensor file
+                                    // TODO: make sure this actually works! (uncomment shareSensorFile)
+                                    this.setState({modalVisible: false})
+                                    item.info.shareSensorFile(Object.entries(SensorType)[key][1])
+                                }}/>
+                            <FAB
+                                style={styles.closeModal}
+                                label="Close"
+                                onPress={() => {
+                                    this.setState({modalVisible: false})
+                                }}
+                            />
+                        </View>
+                    </View>
+
+                </Modal>
 
                 {
                     // Only show once the recordings have been loaded
@@ -142,5 +182,41 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 15,
         bottom: 15,
+    },
+    modalView: {
+        margin: 30,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "flex-start",
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    parentView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+    },
+    capitalise: {
+        textTransform: "capitalize",
+        paddingBottom: 10,
+    },
+    closeModal: {
+        marginTop: 10,
+        alignSelf: 'center'
+    },
+    modalOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)'
     },
 });
