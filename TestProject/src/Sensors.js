@@ -4,7 +4,7 @@ import Gyroscope from './sensors/Gyroscope';
 import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
 import Mic from './sensors/Mic';
-import CameraBack from './sensors/CameraBack';
+import CameraBack from "./sensors/CameraBack";
 
 export {default as GenericTimeframe} from './sensors/GenericTimeframe';
 export {default as Accelerometer} from './sensors/Accelerometer';
@@ -19,51 +19,109 @@ export {default as Mic} from './sensors/Mic';
 export {default as MicSample} from './sensors/MicSample';
 export {default as CameraBack} from './sensors/CameraBack';
 export {default as CameraBackSample} from './sensors/CameraBackSample';
+
 export const SensorType = {
-    ACCELEROMETER: 0,
-    GYROSCOPE: 1,
-    MAGNETOMETER: 2,
-    BAROMETER: 3,
-    MICROPHONE: 4,
-    CAMERABACK: 5,
+    ACCELEROMETER: 1,
+    GYROSCOPE: 3,
+    MAGNETOMETER: 5,
+    BAROMETER: 7,
+    MICROPHONE: 9,
+    GPS: 10,
+    BACK_CAMERA: 12,
 };
-export const toSensorType = (int) => {
-    switch (int)
-    {
-        case 0:
-            return SensorType.ACCELEROMETER;
-        case 1:
-            return SensorType.GYROSCOPE;
-        case 2:
-            return SensorType.MAGNETOMETER;
-        case 3:
-            return SensorType.BAROMETER;
-        case 4:
-            return SensorType.MICROPHONE;
-        case 5:
-            return SensorType.CAMERABACK;
-        default:
-            throw new Error('Sensors.getSensorClass: Received an unknown integer, ' + int);
+/**
+ * Created by Chathura Galappaththi
+ * Stores all necessary information about the sensors in one place
+ */
+export const SensorInfo = {
+    [SensorType.ACCELEROMETER]: {
+        name: "Accelerometer",
+        imageSrc: require('./assets/accelerometer_icon.png'),
+        class: Accelerometer,
+        measure: "Acceleration",
+        units: "m/s^2",
+        description: {
+            measure: "Rate of change of velocity (how fast you move the phone)",
+            output: "x per sample rate, representing current velocity (m/s^2)"
+        }
+    },
+    [SensorType.GYROSCOPE]: {
+        name: "Gyroscope",
+        imageSrc: require('./assets/gyroscope_icon.png'),
+        class: Gyroscope,
+        measure: "Angular velocity",
+        units: "RPS",
+        description: {
+            measure: "Orientation and angular velocity (rate of change of movement in each axis)",
+            output: "x, y, z per sample rate, representing each vector's change in velocity (m/s^2)"
+        }
+    },
+    [SensorType.MAGNETOMETER]: {
+        name: "Magnetometer",
+        imageSrc: require('./assets/magnetometer_icon.png'),
+        class: Magnetometer,
+        measure: "Magnetic Field Direction",
+        units: "μT",
+        // TODO: Update description!
+        description: {
+            measure: "ADD MEASURE HERE",
+            output: "ADD OUTPUT HERE"
+        }
+    },
+    [SensorType.BAROMETER]: {
+        name: "Barometer",
+        imageSrc: require('./assets/barometer_icon.png'),
+        class: Barometer,
+        measure: "Atmospheric Pressure",
+        units: "psi",
+        // TODO: Update description!
+        description: {
+            measure: "ADD MEASURE HERE",
+            output: "ADD OUTPUT HERE"
+        }
+    },
+    [SensorType.MICROPHONE]: {
+        name: "Microphone",
+        imageSrc: require('./assets/microphone_icon.png'),
+        class: Mic,
+        measure: "Amplitude",
+        units: "dB",
+        description: {
+            measure: "Sound, amplitude representing decibels",
+            output: "MP3 file, saved to device"
+        }
+    },
+    [SensorType.GPS]: {
+        name: "GPS",
+        imageSrc: require('./assets/baseline_close_black.png'),  // TODO: Update icon!
+        class: null, // TODO: Set correct class!
+        measure: "Coordinates",
+        units: "°",
+        // TODO: Update description!
+        description: {
+            measure: "ADD MEASURE HERE",
+            output: "ADD OUTPUT HERE"
+        }
+    },
+    [SensorType.BACK_CAMERA]: {
+        name: "Camera",
+        imageSrc: require('./assets/camera_icon.png'),
+        class: CameraBack,
+        // TODO: Update description!
+        measure: "Video",
+        units: "",
+        description: {
+            measure: "ADD MEASURE HERE",
+            output: "ADD OUTPUT HERE"
+        }
     }
-};
+}
 export const getSensorClass = (type) => {
-    switch (type)
-    {
-        case SensorType.ACCELEROMETER:
-            return Accelerometer;
-        case SensorType.GYROSCOPE:
-            return Gyroscope;
-        case SensorType.MAGNETOMETER:
-            return Magnetometer;
-        case SensorType.BAROMETER:
-            return Barometer;
-        case SensorType.MICROPHONE:
-            return Mic;
-        case SensorType.CAMERABACK:
-            return CameraBack;
-        default:
-            throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
+    if (!(type in SensorInfo)) {
+        throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
     }
+
+    return SensorInfo[type].class;
 };
 export const getSensorFileName = (type) => {
     return getSensorClass(type).prototype.constructor.name + '.txt';
