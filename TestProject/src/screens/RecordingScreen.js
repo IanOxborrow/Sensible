@@ -153,8 +153,7 @@
              // Add a new point
              let sample = null;
 
-             // TODO: Implement this for the GPS
-             if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR || this.state.currentSensor == SensorType.GPS) {
+             if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
                  return;
              }
 

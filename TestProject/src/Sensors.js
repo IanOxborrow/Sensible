@@ -4,6 +4,7 @@ import Gyroscope from './sensors/Gyroscope';
 import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
 import Mic from './sensors/Mic';
+import GPS from './sensors/GPS';
 import BackCameraRecorder from "./sensors/BackCameraRecorder";
 import MicrophoneRecorder from "./sensors/MicrophoneRecorder";
 
@@ -16,8 +17,10 @@ export {default as Barometer} from './sensors/Barometer';
 export {default as BarometerSample} from './sensors/BarometerSample';
 export {default as Magnetometer} from './sensors/Magnetometer';
 export {default as MagnetometerSample} from './sensors/MagnetometerSample';
-export {default as MicrophoneRecorder} from './sensors/MicrophoneRecorder'
-export {default as BackCameraRecorder} from './sensors/BackCameraRecorder'
+export {default as MicrophoneRecorder} from './sensors/MicrophoneRecorder';
+export {default as BackCameraRecorder} from './sensors/BackCameraRecorder';
+export {default as GPS} from './sensors/GPS';
+export {default as GPSSample} from './sensors/GPSSample';
 
 export const HardwareType = {
     SENSOR: 1,
@@ -105,13 +108,12 @@ export const SensorInfo = {
         name: "GPS",
         type: HardwareType.SENSOR,
         imageSrc: require('./assets/baseline_close_black.png'),  // TODO: Update icon!
-        class: null, // TODO: Set correct class!
+        class: GPS,
         measure: "Coordinates",
         units: "°",
-        // TODO: Update description!
         description: {
-            measure: "ADD MEASURE HERE",
-            output: "ADD OUTPUT HERE"
+            measure: "Your current location on the globe",
+            output: "X and Y per sample rate, representing current global position"
         }
     },
     [SensorType.BACK_CAMERA]: {
