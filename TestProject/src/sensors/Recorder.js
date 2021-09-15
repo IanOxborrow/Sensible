@@ -1,16 +1,24 @@
 /* eslint-disable prettier/prettier */
 import { ErrorChecking } from '../Errors';
+import {getSensorFileName} from "../Sensors";
 
-export default class SensorSample
+export default class Recorder
 {
-    constructor()
+    /**
+     * Initialise everything
+     *
+     * @param recording A reference to the recording class that this recorder is stored under
+     */
+    constructor(recording)
     {
-        // /*** Everything below this is for checking that child classes implement functions correctly */
+        this.recording = recording;
+
+        /*** Everything below this is for checking that child classes implement functions correctly */
         // // Only run the checks if we're allowed to
         // if (!ErrorChecking.ALLOW_IMPLEMENTATION_CHECKS) { return; }
         //
         // // Prevent this class from being instantiated
-        // if (this.constructor === SensorSample)
+        // if (this.constructor === Sensor)
         // {
         //     throw new Error(this.constructor.name + ' interface cannot be instantiated');
         // }
@@ -21,12 +29,10 @@ export default class SensorSample
         //     const child = Object.getPrototypeOf(this);
         //     // A list of functions that needs to be implemented
         //     let functions = [
-        //         {name: 'getComponents', params: []},
-        //         {name: 'getData', params: []},
+        //         {name: 'constructor', params: ['recording']},
         //     ];
         //     // Check that the interface has been implemented correctly
         //     ErrorChecking.checkInterfaceImplementation(functions, child);
         // }
     }
-
 }

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import SensorTimeframe from './SensorTimeframe';
 import SensorSample from './SensorSample';
-import { getSensorFileName, getSensorClass, SensorType } from "../Sensors";
+import { getSensorFileName, SensorType } from "../Sensors";
 import {NativeModules, Platform} from 'react-native';
 
 const { ofstream } = NativeModules;
@@ -70,7 +70,8 @@ export default class GenericTimeframe extends SensorTimeframe
 
         // TODO: Make this platform independent!
         if (Platform.OS !== 'ios') {
-            ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + this.label + '\n');
+            const label = this.label == null ? "" : this.label.toString();
+            ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
         }
     }
 

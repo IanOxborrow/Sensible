@@ -1,34 +1,31 @@
 /* eslint-disable prettier/prettier */
 import {
-    Accelerometer,
-    SensorType,
     GenericTimeframe,
-    Mic,
-    Gyroscope,
-    Magnetometer,
-    Barometer,
-    SensorClass, getSensorClass, getSensorFileName,
+    toSensorType,
+    getSensorClass,
+    getSensorFileName,
+    SensorType,
+    MicrophoneRecorder,
+    BackCameraRecorder
 } from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
-import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
-import App from '../App';
-import RNFetchBlob from "rn-fetch-blob";
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Share from 'react-native-share';
-import {waitFor} from "@babel/core/lib/gensync-utils/async";
+import RecordingManager from "./RecordingManager";
 
 const { ofstream } = NativeModules;
 
 export default class Recording {
     constructor(name, folderPath) {
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
-        this.folderPath = folderPath === undefined ? App.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
+        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
         this.sampleRate = 40000; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
-        this.enabledSensors = {}; // TODO: Do a final flush of the buffer once the recording is finished
+        this.enabledSensors = {};
+        this.enabledRecorders = {};
         this.graphableData = {};
-        this.writeStreams = {};
         this.fileStreamIndices = {};
         this.logicalTime = 0;
         this.labels = [];
@@ -55,29 +52,29 @@ export default class Recording {
                 });
 
             // Append to the recording list
-            ofstream.writeOnce(App.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+            ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
         }
     }
 
     /**
      * Initialise a new sensor and a generic timeframe
-     * @param type The type of the sensor to initialise
+     *
+     * @param type       The type of the sensor to initialise
+     * @param sampleRate The rate at which barometer data should be sampled
      */
-    initialiseGenericSensor(type)
+    async initialiseGenericSensor(type, sampleRate)
     {
         const sensorClass = getSensorClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
         this.graphableData[type] = [new GenericTimeframe(this, this.timeframeSize, this.bufferSize, type)];
         // Create a new sensor instance to track and enable it
-        this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
+        this.enabledSensors[type] = new sensorClass(this.graphableData[type], sampleRate);
 
         // TODO: Make this platform independent!
         if (Platform.OS !== 'ios') {
             // Create a new file and store the stream index for later
-            ofstream.open(sensorFile, false).then((streamIndex) => {
-                this.fileStreamIndices[type] = streamIndex;
-            })
+            this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
         }
 
     }
@@ -85,69 +82,111 @@ export default class Recording {
     /**
      * Add a sensor to record data from
      *
-     * @param type The type of sensor to add. For example, SensorType.ACCELEROMETER
+     * @param type       The type of sensor to add. For example, SensorType.ACCELEROMETER
+     * @param sampleRate The rate at which barometer data should be sampled
      */
-    addSensor(type) {
-
-        switch (type)
+    async addSensor(type, sampleRate) {
+        switch (Number(type))
         {
             case SensorType.ACCELEROMETER:
-                this.initialiseGenericSensor(SensorType.ACCELEROMETER);
+                await this.initialiseGenericSensor(SensorType.ACCELEROMETER, sampleRate);
                 break;
             case SensorType.GYROSCOPE:
-                this.initialiseGenericSensor(SensorType.GYROSCOPE);
+                await this.initialiseGenericSensor(SensorType.GYROSCOPE, sampleRate);
                 break;
             case SensorType.MAGNETOMETER:
-                this.initialiseGenericSensor(SensorType.MAGNETOMETER);
+                await this.initialiseGenericSensor(SensorType.MAGNETOMETER, sampleRate);
                 break;
             case SensorType.BAROMETER:
-                this.initialiseGenericSensor(SensorType.BAROMETER);
+                await this.initialiseGenericSensor(SensorType.BAROMETER, sampleRate);
                 break;
-            case SensorType.MICROPHONE:
-                // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
-
-                // request microphone permission
-                const requestMicPermission = async () => {
-                    if (Platform.OS === 'ios') {
-                        const granted = await check(PERMISSIONS.IOS.MICROPHONE);
-                        if (granted == RESULTS.GRANTED) {
-                            console.log('iOS - You can use the microphone');
-                        }
+            case SensorType.GPS:
+                // request GPS permission
+                if (Platform.OS == 'ios') {
+                    const authorisation = await requestAuthorization('whenInUse');
+                    if (authorisation == 'granted' || authorisation == 'restricted') {
+                        console.log('iOS - You can use the GPS');
                     } else {
-                        try {
-                            const granted = await PermissionsAndroid.request(
-                                PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                                {
-                                    title: 'Microphone Permission',
-                                    message:
-                                        'This app needs access to your microphone ' +
-                                        'in order to collect microphone data',
-                                    buttonNeutral: 'Ask Me Later',
-                                    buttonNegative: 'Cancel',
-                                    buttonPositive: 'OK',
-                                }
-                            );
-                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                console.log('You can use the microphone');
-                            } else {
-                                console.log('Microphone permission denied');
-                            }
-                        } catch (err) {
-                            console.warn(err);
-                        }
+                        // TODO: Stop the initialisation if permission is denied
                     }
-                };
-
-                requestMicPermission();
-                this.initialiseGenericSensor(SensorType.MICROPHONE);
-
+                } else {
+                   try {
+                      const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                         {
+                             title: 'Location Permission',
+                             message:
+                                 'This app needs access to your location ' +
+                                 'in order to collect location data',
+                             buttonNeutral: 'Ask Me Later',
+                             buttonNegative: 'Cancel',
+                             buttonPositive: 'OK',
+                         }
+                         );
+                         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                             console.log('You can use the GPS');
+                         } else {
+                             console.log('GPS permission denied');
+                             // TODO: Stop the initialisation if permission is denied
+                         }
+                     } catch (err) {
+                         console.warn(err);
+                     }
+                 }
+                await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
                 break;
-            case SensorType.CAMERABACK:
-                console.log('was camera')
-                this.initialiseGenericSensor(SensorType.CAMERABACK);
-                break;
+            // case SensorType.MICROPHONE:
+            //     // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
+            //
+            //     // request microphone permission
+            //     if (Platform.OS === 'ios') {
+            //         const granted = await check(PERMISSIONS.IOS.MICROPHONE);
+            //         if (granted == RESULTS.GRANTED) {
+            //             console.log('iOS - You can use the microphone');
+            //         }
+            //     } else {
+            //         try {
+            //             const granted = await PermissionsAndroid.request(
+            //                 PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+            //                 {
+            //                     title: 'Microphone Permission',
+            //                     message:
+            //                         'This app needs access to your microphone ' +
+            //                         'in order to collect microphone data',
+            //                     buttonNeutral: 'Ask Me Later',
+            //                     buttonNegative: 'Cancel',
+            //                     buttonPositive: 'OK',
+            //                 }
+            //             );
+            //             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            //                 console.log('You can use the microphone');
+            //             } else {
+            //                 console.log('Microphone permission denied');
+            //             }
+            //         } catch (err) {
+            //             console.warn(err);
+            //         }
+            //     }
+            //
+            //     await this.initialiseGenericSensor(SensorType.MICROPHONE);
+            //     break;
             default:
                 throw new Error(this.constructor.name + '.addSensor: Received an unrecognised sensor type with id=' + type);
+        }
+    }
+
+    /**
+     * Add a recorder
+     *
+     * @param type The type of recorder to add. For example, SensorType.BACK_CAMERA
+     */
+    addRecorder(type) {
+        switch (Number(type)) {
+            case SensorType.BACK_CAMERA:
+                this.enabledRecorders[type] = new BackCameraRecorder(this);
+                break;
+            case SensorType.MICROPHONE:
+                this.enabledRecorders[type] = new MicrophoneRecorder(this);
         }
     }
 
@@ -221,21 +260,42 @@ export default class Recording {
     }
 
     /**
+     * Enable all sensors and start all recorders
+     */
+    async start() {
+        // Enable each sensor
+        for (const sensorType of Object.keys(this.enabledSensors)) {
+            this.enabledSensors[sensorType].enable();
+        }
+
+        // Enable each recorder
+        // TODO: Check that the recorders started without errors
+        for (const sensorType of Object.keys(this.enabledRecorders)) {
+            this.enabledRecorders[sensorType].record();
+        }
+    }
+
+    /**
      * Finalise the recording and save everything to file
      * @param clear True if all created files should be deleted (use if the recording has been cancelled)
      */
-    finish(clear = false)
+    async finish(clear = false)
     {
         // TODO: Do something for clear
-        for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices))
-        {
+        // Disable each sensor and its file stream
+        for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
             this.enabledSensors[sensorType].disable();
             // TODO: Make this platform independent!
             if (Platform.OS !== 'ios') {
                 // Close all the write streams
-                ofstream.close(fileStreamIndex);
+                await ofstream.close(fileStreamIndex);
             }
+        }
+
+        // Stop all recorders
+        for (const sensorType of Object.keys(this.enabledRecorders)) {
+            await this.enabledRecorders[sensorType].stop();
         }
     }
 
