@@ -5,14 +5,9 @@ import { barometer, setUpdateIntervalForType, SensorTypes } from 'react-native-s
 
 export default class Barometer extends Sensor
 {
-    constructor(dataStore, sampleRate = null)
+    constructor(dataStore, sampleRate)
     {
-        super(dataStore);
-        // Enable the sensor if the parameter has been passed in
-        if (sampleRate != null)
-        {
-            this.enable(sampleRate);
-        }
+        super(dataStore, sampleRate);
     }
 
     /**
@@ -33,17 +28,16 @@ export default class Barometer extends Sensor
 
     /**
      * Enable the barometer
-     * @param sampleRate The rate at which barometer data should be sampled
      */
-    enable(sampleRate)
+    enable()
     {
         console.warn(this.constructor.name + '.enable: A sample rate cannot be set for the barometer');
 
         if (!this.isEnabled)
         {
-            if (sampleRate === 0)
+            if (this.sampleRate === 0)
             {
-                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + sampleRate +
+                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + this.sampleRate +
                     '. Sample rates must be strictly positive');
             }
 
