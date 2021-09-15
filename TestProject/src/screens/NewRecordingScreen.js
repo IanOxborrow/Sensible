@@ -6,7 +6,7 @@ import {FloatingAction} from "react-native-floating-action";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-import {SensorInfo, SensorType} from "../Sensors";
+import {HardwareType, SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
 import {KeyboardAwareFlatList, KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
@@ -69,13 +69,18 @@ class NewRecordingScreen extends Component {
                 continue;
             }
 
-            // TODO: Hook up the camera and gps properly
-            if (sensorId == SensorType.CAMERA || sensorId == SensorType.GPS) {
+            // TODO: Hook up the gps properly
+            if (sensorId == SensorType.GPS) {
                 continue
             }
 
             selectedSensors.push(sensorId);
-            await RecordingManager.currentRecording.addSensor(sensorId);
+            if (SensorInfo[sensorId].type == HardwareType.SENSOR) {
+                await RecordingManager.currentRecording.addSensor(sensorId, 200);
+            }
+            else if (SensorInfo[sensorId].type == HardwareType.RECORDER) {
+                await RecordingManager.currentRecording.addRecorder(sensorId);
+            }
         }
 
         // Navigate to the next screen
