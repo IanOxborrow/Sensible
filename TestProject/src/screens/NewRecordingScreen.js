@@ -239,21 +239,25 @@ class NewRecordingScreen extends Component {
                 </Appbar.Header>
 
                 <View style={styles.content}>
-                    {sensorRows}
-
-                    <View style={{paddingBottom: 10, fontSize: 20}}>
-                        <Text>{"Labels"}</Text>
-                    </View>
-
-                    <KeyboardAwareFlatList
+                    
+                    <FlatList
                         styles={{flex: 1}}
                         removeClippedSubviews={false}
                         data={this.state.addedLabels}
                         renderItem={this.labelListItem}
+                        keyboardShouldPersistTaps='handled'
                         keyExtractor={item => item.labelName}
+                        ListHeaderComponent={
+                                <View>
+                                    {sensorRows}
+                                    <View style={{paddingBottom: 10, fontSize: 20}}>
+                                        <Text>{"Labels"}</Text>
+                                    </View>
+                                </View>
+                            }
                         ListFooterComponent={this.labelListFooter}/>
                 </View>
-
+                
                 <FAB
                     style={styles.fab}
                     loading={this.state.startingRecording}
@@ -269,8 +273,7 @@ class NewRecordingScreen extends Component {
                 <Modal
                     animationType="fade"
                     transparent={true}
-                    visible={this.state.modalVisible}
-                >
+                    visible={this.state.modalVisible}>
                     <TouchableWithoutFeedback onPress={() => {
                         this.setState({modalVisible: false})
                     }}>
@@ -306,7 +309,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     content: {
-        padding: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
         marginBottom: 100,
         flex: 1
         //backgroundColor: '#438023'
@@ -346,7 +350,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
+        height: 60,
+        paddingRight: 10,
+        paddingLeft: 10,
         marginBottom: 10,
         backgroundColor: "#f4f4f4"
     },
@@ -354,8 +360,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
-        alignItems: 'stretch',
+        height: 60,
+        paddingRight: 10,
+        paddingLeft: 10,
         backgroundColor: "#f4f4f4"
     },
 
