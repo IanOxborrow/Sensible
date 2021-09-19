@@ -335,48 +335,49 @@ class RecordingScreen extends Component {
                     </View>
 
                     <FlatList style={styles.list, {backgroundColor: '#efefef', zIndex: 2}}
-                              data={this.state.labels}
-                              keyExtractor={item => item.labelName}
-                              renderItem={({item, index}) => (
-                                  <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                      <View elevation={5} style={styles.listItem}>
-                                          <Text style={styles.listItemText}> {item.labelName} </Text>
-                                      </View>
-                                  </TouchableOpacity>
-                              )}
+                        data={this.state.labels}
+                        keyExtractor={item => item.labelName}
+                        renderItem={({item, index}) => (
+                            <TouchableOpacity onPress={() => this.setLabel(item)}>
+                                <View elevation={5} style={styles.listItem}>
+                                    <Text style={styles.listItemText}> {item.labelName} </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     />
 
                     <View>
                         <Button title="Finish" color="#6200F2"
-                                disabled={this.state.savingRecording}
-                                onPress={async () => {
-                                    clearTimeout(subscription);
-                                    this.state.savingRecording = true;
-                                    RecordingManager.currentRecording.finish();
-                                    if (this.state.isRecording) {
-                                        await this.stopVideo()
-                                    }
+                            disabled={this.state.savingRecording}
+                            onPress={async () => {
+                                clearTimeout(subscription);
+                                this.state.savingRecording = true;
+                                RecordingManager.currentRecording.finish();
+                                
+                                if (this.state.isRecording) {
+                                    this.stopVideo()
+                                }
 
-                                    this.props.navigation.navigate('HomeScreen', {
-                                        complete: true,
-                                    });
-                                }}/>
+                                this.props.navigation.navigate('HomeScreen', {
+                                    complete: true,
+                                });
+                            }}/>
 
                         <Button title="Cancel" color="#6200F2"
-                                disabled={this.state.savingRecording}
-                                onPress={async () => {
-                                    this.state.savingRecording = true;
-                                    clearTimeout(subscription);
-                                    RecordingManager.currentRecording.finish(true);
+                            disabled={this.state.savingRecording}
+                            onPress={async () => {
+                                this.state.savingRecording = true;
+                                clearTimeout(subscription);
+                                RecordingManager.currentRecording.finish(true);
 
-                                    if (this.state.isRecording) {
-                                        await this.stopVideo();
-                                    }
+                                if (this.state.isRecording) {
+                                    this.stopVideo();
+                                }
 
-                                    this.props.navigation.navigate('HomeScreen', {
-                                        complete: false,
-                                    });
-                                }}/>
+                                this.props.navigation.navigate('HomeScreen', {
+                                    complete: false,
+                                });
+                            }}/>
                     </View>
                 </View>
                 <Toast ref={(toast) => this.toast = toast}

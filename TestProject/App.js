@@ -27,6 +27,7 @@ export default class App extends React.Component {
     async requestStoragePermission() {
         // TODO: Implement this for iOS
         //check(PERMISSIONS.IOS.STOREKIT)
+        // The store in storekit is the app store im not sure about this reminder
 
         // Get saving permission (Android Only!)
         try {
@@ -41,7 +42,9 @@ export default class App extends React.Component {
                     buttonPositive: 'OK',
                 }
             );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+            //check if permission is granted or if the platform is ios. (storge is allowed on ios by default)
+            if (granted === PermissionsAndroid.RESULTS.GRANTED || Platform.OS === 'ios') {
                 console.log('You can use the device storage');
             } else {
                 console.log('Storage permission denied');

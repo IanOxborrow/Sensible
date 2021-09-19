@@ -5,6 +5,7 @@ import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Share from 'react-native-share';
 import RecordingManager from "./RecordingManager";
+import RNFetchBlob from "rn-fetch-blob";
 
 const { ofstream } = NativeModules;
 
@@ -22,9 +23,19 @@ export default class Recording {
         this.logicalTime = 0;
         this.labels = [];
 
+        console.log("recording")
+        console.log(this.folderPath)
+
         // TODO: Make this platform independent!
-        if (folderPath === undefined && Platform.OS !== 'ios') {
+        if (folderPath === undefined) {
+
             // Create the folder if it doesn't already exist
+            /*RNFetchBlob.fs.mkdir(this.folderPath).then(() => {
+                console.log('Successfully created folder ' + this.folderPath);
+            }).catch(err => {
+                throw Error(err);
+            });*/
+
             ofstream.mkdir(this.folderPath)
                 .then(() => {
                     console.log('Successfully created folder ' + this.folderPath);
@@ -32,6 +43,7 @@ export default class Recording {
                 .catch(err => {
                     throw Error(err);
                 });
+            
 
             // Create the metadata file
             const infoFilePath = this.folderPath + 'info.txt';
@@ -42,9 +54,24 @@ export default class Recording {
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
+            /*
+            RNFetchBlob.fs.writeStream(infoFilePath, 'utf8', false)
+                .then((stream) => {
+                    stream.write('Recording name: ' + this.name)
+                    return stream.close()
+                })
+            */
 
             // Append to the recording list
             ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+            /*RNFetchBlob.fs.writeStream(RecordingManager.SAVE_FILE_PATH + "recordings.config", 'utf8', true)
+                .then((stream) => {
+                    stream.write(this.toString() + "\n")
+                    return stream.close()
+                })*/
+
+        } else if (folderPath === undefined && Platform.OS == 'ios') {
+            console.log("using ios")
         }
     }
 
@@ -52,8 +79,7 @@ export default class Recording {
      * Initialise a new sensor and a generic timeframe
      * @param type The type of the sensor to initialise
      */
-    async initialiseGenericSensor(type)
-    {
+    async initialiseGenericSensor(type) {
         const sensorClass = getSensorClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
@@ -61,8 +87,10 @@ export default class Recording {
         // Create a new sensor instance to track and enable it
         this.enabledSensors[type] = new sensorClass(this.graphableData[type], this.sampleRate);
 
+        //console.log("initialising sensor " + type)
+
         // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
+        if (Platform.OS !== 'ios' || true) {
             // Create a new file and store the stream index for later
             this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
         }
