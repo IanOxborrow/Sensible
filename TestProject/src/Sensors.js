@@ -107,13 +107,13 @@ export const SensorInfo = {
     [SensorType.GPS]: {
         name: "GPS",
         type: HardwareType.SENSOR,
-        imageSrc: require('./assets/baseline_close_black.png'),  // TODO: Update icon!
+        imageSrc: require('./assets/gps_icon.png'),  // TODO: Update icon!
         class: GPS,
         measure: "Coordinates",
         units: "°",
         description: {
             measure: "Your current location on the globe",
-            output: "X and Y per sample rate, representing current global position"
+            output: "lat and long per sample rate, representing current global position"
         }
     },
     [SensorType.BACK_CAMERA]: {
@@ -125,8 +125,8 @@ export const SensorInfo = {
         measure: "Video",
         units: "",
         description: {
-            measure: "ADD MEASURE HERE",
-            output: "ADD OUTPUT HERE"
+            measure: "Video feed of the back camera",
+            output: "MP4 file, saved to device"
         }
     }
 }
