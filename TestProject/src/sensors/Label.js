@@ -7,4 +7,8 @@ export default class Label
         this.startTime = startTime;
         this.endTime = null;
     }
+
+    toString() {
+        return this.name;
+    }
 }

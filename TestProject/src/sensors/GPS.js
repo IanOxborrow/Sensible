@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
-import { GyroscopeSample } from '../Sensors';
-import { gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import { GPSSample } from '../Sensors';
+import Geolocation from 'react-native-geolocation-service';
 
-export default class Gyroscope extends Sensor
+export default class GPS extends Sensor
 {
     constructor(dataStore, sampleRate)
     {
@@ -11,25 +11,28 @@ export default class Gyroscope extends Sensor
     }
 
     /**
-     * Push a sample to the most recent SensorTimeframe in the Recording class. This function should only be
-     * called by the react-native-sensors module which provides data from the gyroscope
+     * Push a sample to the most recent SensorTimeframe in the Recording class.
      *
-     * @param x Angular velocity in the x axis
-     * @param y Angular velocity in the y axis
-     * @param z Angular velocity in the z axis
+     * @param latitude Sensor Latitude
+     * @param longitude Sensor Longitude
+     * @param accuracy Sensor Accuracy
+     * @param altitude Sensor Altitude
+     * @param heading Sensor Heading
+     * @param speed Sensor Speed
+     * @param timestamp Sensor Timestamp
      */
-    pushSample(x, y, z)
+    pushSample(latitude, longitude, accuracy, altitude, heading, speed, timestamp)
     {
         if (this.isEnabled)
         {
             const latestTimeframe = this.dataStore[this.dataStore.length - 1];
-            const sample = new GyroscopeSample(x, y, z);
+            let sample = new GPSSample(latitude, longitude, accuracy, altitude, heading, speed, timestamp);
             latestTimeframe.addSample(sample);
         }
     }
 
     /**
-     * Enable the gyroscope
+     * Enable the GPS
      */
     enable()
     {
@@ -42,7 +45,7 @@ export default class Gyroscope extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            this.subscription = setInterval(() => {this.getSample()}, this.frequencyToPeriod(this.sampleRate))
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
@@ -56,7 +59,7 @@ export default class Gyroscope extends Sensor
         if (this.isEnabled)
         {
             this.isEnabled = false;
-            this.subscription.unsubscribe();
+            clearTimeout(this.subscription);
         }
         else
         {
@@ -83,6 +86,29 @@ export default class Gyroscope extends Sensor
         }
 
         this.sampleRate = sampleRate;
-        setUpdateIntervalForType(SensorTypes.gyroscope, this.frequencyToPeriod(this.sampleRate) * 1000);
+    }
+
+    /***
+    * Get a sample from the GPS sensor
+    *
+    */
+    getSample() {
+        Geolocation.getCurrentPosition(
+           (position) => {
+             // position comes back as object with
+             this.pushSample(position.coords.latitude,
+                             position.coords.longitude,
+                             position.coords.accuracy,
+                             position.coords.altitude,
+                             position.coords.heading,
+                             position.coords.speed,
+                             position.timestamp);
+           },
+           (error) => {
+             // See error code charts below.
+             console.log(error.code, error.message);
+           },
+           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
     }
 }

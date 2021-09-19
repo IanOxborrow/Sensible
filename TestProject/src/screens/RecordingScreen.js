@@ -7,452 +7,377 @@
  * @flow strict-local
  */
 
-import React, {Component} from 'react';
-import {SensorInfo, SensorType} from '../Sensors';
-import {LineChart} from 'react-native-chart-kit';
-import Appbar from '../react-native-paper-src/components/Appbar';
-import ToggleButton from '../react-native-paper-src/components/ToggleButton';
-import Toast, {DURATION} from 'react-native-easy-toast';
-import {RNCamera} from 'react-native-camera';
+ import React, {Component} from 'react';
+ import {HardwareType, SensorInfo, SensorType} from '../Sensors';
+ import {LineChart} from 'react-native-chart-kit';
+ import Appbar from '../react-native-paper-src/components/Appbar';
+ import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+ import Toast, {DURATION} from 'react-native-easy-toast';
 
-import {
-    StyleSheet,
-    View,
-    Text,
-    Dimensions,
-    Button,
-    FlatList,
-    TouchableOpacity,
-} from 'react-native';
-import RecordingManager from "../RecordingManager";
+ import {
+     StyleSheet,
+     View,
+     Text,
+     Dimensions,
+     Button,
+     FlatList,
+     TouchableOpacity,
+ } from 'react-native';
+ import RecordingManager from "../RecordingManager";
 
-const data = {
-    labels: [],
-    datasets: [
-        {
-            data: [],
-        },
-    ],
-};
+ const data = {
+     labels: [],
+     datasets: [
+         {
+             data: [],
+         },
+     ],
+ };
 
-let yAxisTitle = "Y axis";
+ let yAxisTitle = "Y axis";
 
-// hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
-const hslToHex = (h, s, l) => {
-    l /= 100;
-    const a = s * Math.min(l, 1 - l) / 100;
-    const f = n => {
-        const k = (n + h / 30) % 12;
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
-    };
-    return `#${f(0)}${f(8)}${f(4)}`;
-};
+ // hsl to hexadecimal conversion from https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
+ const hslToHex = (h, s, l) => {
+     l /= 100;
+     const a = s * Math.min(l, 1 - l) / 100;
+     const f = n => {
+         const k = (n + h / 30) % 12;
+         const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+         return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+     };
+     return `#${f(0)}${f(8)}${f(4)}`;
+ };
 
-const chartConfig = {
-    backgroundColor: '#000000',
-    backgroundGradientFrom: "#000000",
-    backgroundGradientTo: "#000000",
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-};
+ const chartConfig = {
+     backgroundColor: '#000000',
+     backgroundGradientFrom: "#000000",
+     backgroundGradientTo: "#000000",
+     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+ };
 
 
-class RecordingScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            startTime: new Date(),
-            lastUpdateTime: new Date(),
-            dataSource: [0],
-            labelSource: ['0'],
-            currentLabel: null,
-            labels: props.route.params.labels,
-            sensorIds: props.route.params.sensors,
-            checkedStatus: {},
-            currentSensor: "",
-            recorderzIndex: -1,
-            recordOptions: {
-                mute: false,
-                quality: RNCamera.Constants.VideoQuality['288p'],
-            },
-            savingRecording: false,
-        };
+ class RecordingScreen extends Component {
+     constructor(props) {
+         super(props);
+         this.state = {
+             startTime: new Date(),
+             lastUpdateTime: new Date(),
+             dataSource: [0],
+             labelSource: ['0'],
+             currentLabel: null,
+             labels: props.route.params.labels,
+             sensorIds: props.route.params.sensors,
+             checkedStatus: {},
+             currentSensor: -1,
+             recorderzIndex: -1,
+             terminating: false
+         };
 
-        // A dictionary corresponding to the hue value for the colour of each label
-        this.labelsPallet = new Map();
-        for (let i = 0; i < this.state.labels.length; i++) {
-            let hue_step = Math.floor(360 / this.state.labels.length);
-            this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
-        }
+         // A dictionary corresponding to the hue value for the colour of each label
+         this.labelsPallet = new Map();
+         for (let i = 0; i < this.state.labels.length; i++) {
+             let hue_step = Math.floor(360 / this.state.labels.length);
+             this.labelsPallet[this.state.labels[i].labelName] = i * hue_step;
+         }
 
-        //set the checked status of the first sensor to be true
-        this.state.checkedStatus[this.state.sensorIds[0]] = 'checked'
-        this.state.currentSensor = this.state.sensorIds[0]
+         //set the checked status of the first sensor to be true
+         this.state.checkedStatus[this.state.sensorIds[0]] = 'checked'
+         this.state.currentSensor = this.state.sensorIds[0]
 
-        // Ensure the recording class has been initialised
-        if (RecordingManager.currentRecording == null) {
-            throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
-        }
-    }
+         // Ensure the recording class has been initialised
+         if (RecordingManager.currentRecording == null) {
+             throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
+         }
 
-    // Funtion to create each item in the list
-    Item({title, onSelect}) {
-        return (
-            <View style={styles.listItem} onPress={() => onSelect()}>
-                <Text style={styles.listItemText}>{title}</Text>
-            </View>
-        );
-    }
+         // Enable all sensors and start all recorders
+         RecordingManager.currentRecording.start();
+     }
 
-    /**
-     * Created by Chathura Galappaththi
-     *
-     * Sets the current label
-     * @param label The new label to set as current
-     */
-    setLabel(label) {
-        let newLabel = null;
-        // Update the label if a different button is pressed
-        if (label.labelName !== this.state.currentLabel) {
-            newLabel = label.labelName;
-        }
-        // Update the label
-        // TODO: Change this to use the current `Recording` instance
-        RecordingManager.currentRecording.setLabel(newLabel);
-        this.state.currentLabel = newLabel;
-        // Output a debug message
-        console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
-    }
+     // Funtion to create each item in the list
+     Item({title, onSelect}) {
+         return (
+             <View style={styles.listItem} onPress={() => onSelect()}>
+                 <Text style={styles.listItemText}>{title}</Text>
+             </View>
+         );
+     }
 
-    /**
-     * Written by ?, Modified by Chathura Galappaththi
-     * @param sensorId The ID of the sensor to show the graph data for
-     */
-    toggleGraphDisplay(sensorId) {
-        // Unselect the current button
-        this.state.checkedStatus[this.state.currentSensor] = 'unchecked';
-        // Select the new button
-        this.state.currentSensor = sensorId
-        this.state.checkedStatus[sensorId] = 'checked';
+     /**
+      * Created by Chathura Galappaththi
+      *
+      * Sets the current label
+      * @param label The new label to set as current
+      */
+     setLabel(label) {
+         let newLabel = null;
+         // Update the label if a different button is pressed
+         if (label.labelName !== this.state.currentLabel) {
+             newLabel = label.labelName;
+         }
+         // Update the label
+         // TODO: Change this to use the current `Recording` instance
+         RecordingManager.currentRecording.setLabel(newLabel);
+         this.state.currentLabel = newLabel;
+         // Output a debug message
+         console.log(newLabel == null ? "Cleared " + label.labelName + " label" : "Set label to " + newLabel);
+     }
 
-        // toggles whether the camera is infront of the graph or behind it
-        if (sensorId == SensorType.BACK_CAMERA) {
-            this.setState({recorderzIndex: 1})
-        } else {
-            this.setState({recorderzIndex: -1})
-        }
-    }
+     /**
+      * Written by ?, Modified by Chathura Galappaththi
+      * @param sensorId The ID of the sensor to show the graph data for
+      */
+     toggleGraphDisplay(sensorId) {
+         // Unselect the current button
+         this.state.checkedStatus[this.state.currentSensor] = 'unchecked';
+         // Select the new button
+         this.state.currentSensor = sensorId
+         this.state.checkedStatus[sensorId] = 'checked';
 
-    // Displays a toast when a button is long pressed
-    displayToast(sensorName) {
-        // Making the toast (delicious)
-        this.toast.show('Sensor: ' + sensorName, 2000);
-    }
+         if (sensorId == SensorType.BACK_CAMERA) {
+             this.setState({recorderzIndex: 1});
+         }
+         else {
+             this.setState({recorderzIndex: -1});
+         }
+     }
 
-    takeVideo = async () => {
-        const {isRecording} = this.state;
-        if (this.camera && !isRecording) {
-            try {
-                const promise = this.camera.recordAsync(this.state.recordOptions);
+     // Displays a toast when a button is long pressed
+     displayToast(sensorName) {
+         // Making the toast (delicious)
+         this.toast.show('Sensor: ' + sensorName, 2000);
+     }
 
-                if (promise) {
-                    this.setState({isRecording: true});
-                    const data = await promise;
-                    console.warn('takeVideo', data);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    };
+     render() {
+         const updateGraphData = () => {
+             let maxPoints = 10;
+             // Add a new point
+             let sample = null;
 
-    stopVideo = async () => {
-        await this.camera.stopRecording();
-        this.setState({isRecording: false});
-    };
+             if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
+                 return;
+             }
 
-    // Displays the visulisation of the curent data.
-    // If the camera is a part of the current recording session, it will display the camera otherwise
-    // it will display an empty view
-    displayCamera() {
+             sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
+             yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
 
-        // check if the back camera value is present in the sensor array
-        if (this.state.sensorIds.indexOf(String(SensorType.BACK_CAMERA)) > -1) {
-            return (
-                <RNCamera
-                    ref={ref => {
-                        this.camera = ref;
-                    }}
-                    style={{
-                        width: Dimensions.get('window').width - 20,
-                        height: 220,
-                        justifyContent: 'space-between',
-                        padding: 20
-                    }}
-                    type="back"
-                    flashMode="false"
-                    autoFocus="true"
-                    zoom={0}
-                    whiteBalance="auto"
-                    ratio="16:9"
-                    androidCameraPermissionOptions={{
-                        title: 'Permission to use camera',
-                        message: 'We need your permission to use your camera',
-                        buttonPositive: 'Ok',
-                        buttonNegative: 'Cancel',
-                    }}>
+             // Don't update the graph if a new sample hasn't come in
+             if (sample == null) {
+                 return;
+             }
 
-                </RNCamera>
-            );
-        } else {
-            return (
-                <View></View>
-            )
-        }
-    }
+             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
+             // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+             this.state.dataSource.push(sample.getData()[0]);
+             // Add the corresponding x-value
+             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
+             if (timeElapsed >= 1) {
+                 this.state.lastUpdateTime = new Date();
+                 let label = Math.round((new Date() - this.state.startTime) / 1000);
+                 this.state.labelSource.push(label.toString());
+             } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
+                 let labelText = this.state.currentLabel;
+                 labelText = labelText ? labelText : '';
+                 this.state.labelSource.push(labelText);
+             } else {
+                 this.state.labelSource.push('');
+             }
 
-    render() {
-        const updateGraphData = () => {
-            let maxPoints = 10;
-            // Add a new point
-            let sample = null;
+             // Remove the first point (from the front)
+             if (this.state.dataSource.length >= maxPoints) {
+                 this.state.dataSource.shift();
+                 this.state.labelSource.shift();
+             }
 
-            // TODO: Implement this for the camera and GPS
-            if (this.state.currentSensor == SensorType.BACK_CAMERA || this.state.currentSensor == SensorType.GPS) {
-                return;
-            }
+             if (this.state.currentLabel) {
+                 chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
+                 chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+             } else {
+                 chartConfig.backgroundGradientTo = "#000000";
+                 chartConfig.backgroundGradientFrom = "#000000";
+             }
+         };
 
-            sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
-            yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
+         const updateGraphUI = () => {
+             this.forceUpdate();
+         };
 
-            // Don't update the graph if a new sample hasn't come in
-            if (sample == null) {
-                return;
-            }
+         // these get called with every update
+         updateGraphData();
+         var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
 
-            // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-            // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-            this.state.dataSource.push(sample.getData()[0]);
-            // Add the corresponding x-value
-            let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
-            if (timeElapsed >= 1) {
-                this.state.lastUpdateTime = new Date();
-                let label = Math.round((new Date() - this.state.startTime) / 1000);
-                this.state.labelSource.push(label.toString());
-            } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
-                let labelText = this.state.currentLabel;
-                labelText = labelText ? labelText : '';
-                this.state.labelSource.push(labelText);
-            } else {
-                this.state.labelSource.push('');
-            }
+         data.datasets[0].data = this.state.dataSource.map(value => value);
+         data.labels = this.state.labelSource.map(value => value);
 
-            // Remove the first point (from the front)
-            if (this.state.dataSource.length >= maxPoints) {
-                this.state.dataSource.shift();
-                this.state.labelSource.shift();
-            }
+         let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
+             return <ToggleButton
+                 key={sensorId}
+                 icon={SensorInfo[sensorId].imageSrc}
+                 value={SensorInfo[sensorId].name}
+                 status={this.state.checkedStatus[sensorId]}
+                 onPress={() => {
+                     this.toggleGraphDisplay(sensorId)
+                 }}
+                 onLongPress={() => {
+                     this.displayToast(SensorInfo[sensorId].name)
+                 }}
+                 delayPressIn={500}
+             />
+         })
 
-            if (this.state.currentLabel) {
-                chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
-                chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
-            } else {
-                chartConfig.backgroundGradientTo = "#000000";
-                chartConfig.backgroundGradientFrom = "#000000";
-            }
-        };
+         return (
 
-        const updateGraphUI = () => {
-            this.forceUpdate();
-        };
+             <View style={[styles.container, {flexDirection: 'column'}]}>
 
-        // these get called with every update
-        updateGraphData();
-        var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
+                 <Appbar.Header>
+                     <Appbar.Content title={RecordingManager.currentRecording.name}/>
+                 </Appbar.Header>
 
-        data.datasets[0].data = this.state.dataSource.map(value => value);
-        data.labels = this.state.labelSource.map(value => value);
+                 <View style={styles.content}>
+                     <View>
+                         <View style={{flex: 1, zIndex: this.state.recorderzIndex}}>
+                             {
+                                 RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA] &&
+                                 RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
+                             }
+                         </View>
 
-        if (!this.state.isRecording) {
-            this.takeVideo()
-        }
+                         <View>
+                             <View style={styles.graphStyling}>
+                                 <Text style={styles.yLabel}>{yAxisTitle}</Text>
+                                 <LineChart
+                                     data={data}
+                                     width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                                     height={220}
+                                     verticalLabelRotation={17}
+                                     chartConfig={chartConfig}
+                                     style={{
+                                         marginVertical: 0,
+                                         marginHorizontal: 0,
+                                     }}
+                                     withDots={false}
+                                     withVerticalLines={false}
+                                     withHorizontalLines={false}
+                                     bezier
+                                 />
+                             </View>
+                             <Text style={styles.xLabel}>Time (Seconds)</Text>
+                         </View>
+                     </View>
 
-        let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
-            return <ToggleButton
-                key={sensorId}
-                icon={SensorInfo[sensorId].imageSrc}
-                value={SensorInfo[sensorId].name}
-                status={this.state.checkedStatus[sensorId]}
-                onPress={() => {
-                    this.toggleGraphDisplay(sensorId)
-                }}
-                onLongPress={() => {
-                    this.displayToast(SensorInfo[sensorId].name)
-                }}
-                delayPressIn={500}
-            />
-        })
+                     <View style={{flexDirection: "row", paddingBottom: 10, backgroundColor: "#efefef", zIndex: 2}}>
+                         {sensorButtonIcons}
+                     </View>
 
-        return (
+                     <FlatList style={styles.list}
+                               data={this.state.labels}
+                               keyExtractor={item => item.labelName}
+                               renderItem={({item, index}) => (
+                                   <TouchableOpacity onPress={() => this.setLabel(item)}>
+                                       <View elevation={5} style={styles.listItem}>
+                                           <Text style={styles.listItemText}> {item.labelName} </Text>
+                                       </View>
+                                   </TouchableOpacity>
+                               )}
+                     />
 
-            <View style={[styles.container, {flexDirection: 'column'}]}>
+                     <View>
+                         <Button title="Finish" color="#6200F2"
+                                 disabled={this.state.terminating}
+                                 onPress={async () => {
+                                     clearTimeout(subscription);
+                                     this.setState({terminating: true});
+                                     await RecordingManager.currentRecording.finish();
+                                     this.props.navigation.navigate('HomeScreen', {
+                                         complete: true,
+                                     });
+                                 }}/>
+                         <Button title="Cancel" color="#6200F2"
+                                 disabled={this.state.terminating}
+                                 onPress={async () => {
+                                     clearTimeout(subscription);
+                                     this.setState({terminating: true});
+                                     await RecordingManager.currentRecording.finish(true);
+                                     this.props.navigation.navigate('HomeScreen', {
+                                         complete: false,
+                                     });
+                                 }}/>
+                     </View>
+                 </View>
+                 <Toast ref={(toast) => this.toast = toast}
+                        position='top'
+                        positionValue={70}
+                        style={{backgroundColor: 'white'}}
+                        textStyle={{color: 'black'}}
+                        opacity={0.8}
+                     // fadeInDuration={1000} Not sure these work, computer's a bit laggy
+                     // fadeOutDuration={1000}
+                 />
+             </View>
+         );
+     }
 
-                <Appbar.Header>
-                    <Appbar.Content title={RecordingManager.currentRecording.name}/>
-                </Appbar.Header>
+ }
 
-                <View style={styles.content}>
-                    <View>
-                        <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}>
-                            {this.displayCamera()}
-                        </View>
+ const styles = StyleSheet.create({
+     yLabel: {
+         transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length + 60 / yAxisTitle.length}],
+         fontWeight: "bold",
+     },
+     xLabel: {
+         fontWeight: "bold",
+         textAlign: "center",
+     },
+     container: {
+         flex: 1,
+         padding: 0,
+     },
+     content: {
+         flex: 1,
+         padding: 10
+     },
+     heading: {
+         padding: 0,
+         backgroundColor: '#6200F2',
+     },
+     headingText: {
+         color: '#FFFFFF',
+         fontSize: 20,
+         padding: 20,
+     },
+     graphStyling: {
+         flexDirection: 'row',
+         justifyContent: 'flex-end',
+         alignItems: 'center',
+     },
+     list: {
+         flex: 1,
+         paddingTop: 10,
+         backgroundColor: "#efefef",
+         zIndex: 2
+     },
+     listItem: {
+         borderRadius: 5,
+         height: 80,
+         backgroundColor: '#FFFFFF',
+         marginTop: '5%',
+         marginLeft: 10,
+         marginRight: 10,
+         justifyContent: 'center',
+         shadowColor: '#000000',
+         shadowOffset: {
+             width: 2,
+             height: 3
+         },
+         shadowRadius: 5,
+         shadowOpacity: 1.0
+     },
+     listItemText: {
+         color: 'black',
+         textAlignVertical: 'center',
+         fontWeight: 'bold',
+         fontSize: 20,
+         padding: 10,
+     },
+ });
 
-                        <View>
-                            <View style={styles.graphStyling}>
-                                <Text style={styles.yLabel}>{yAxisTitle}</Text>
-                                <LineChart
-                                    data={data}
-                                    width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
-                                    height={220}
-                                    verticalLabelRotation={17}
-                                    chartConfig={chartConfig}
-                                    style={{
-                                        marginVertical: 0,
-                                        marginHorizontal: 0,
-                                    }}
-                                    withDots={false}
-                                    withVerticalLines={false}
-                                    withHorizontalLines={false}
-                                    bezier
-                                />
-                            </View>
-                            <Text style={styles.xLabel}>Time (Seconds)</Text>
-                        </View>
-                    </View>
-
-                    <View style={{backgroundColor: '#efefef', flexDirection: "row", paddingBottom: 10, zIndex: 2}}>
-                        {sensorButtonIcons}
-                    </View>
-
-                    <FlatList style={styles.list, {backgroundColor: '#efefef', zIndex: 2}}
-                        data={this.state.labels}
-                        keyExtractor={item => item.labelName}
-                        renderItem={({item, index}) => (
-                            <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                <View elevation={5} style={styles.listItem}>
-                                    <Text style={styles.listItemText}> {item.labelName} </Text>
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                    />
-
-                    <View>
-                        <Button title="Finish" color="#6200F2"
-                            disabled={this.state.savingRecording}
-                            onPress={async () => {
-                                clearTimeout(subscription);
-                                this.state.savingRecording = true;
-                                RecordingManager.currentRecording.finish();
-                                
-                                if (this.state.isRecording) {
-                                    this.stopVideo()
-                                }
-
-                                this.props.navigation.navigate('HomeScreen', {
-                                    complete: true,
-                                });
-                            }}/>
-
-                        <Button title="Cancel" color="#6200F2"
-                            disabled={this.state.savingRecording}
-                            onPress={async () => {
-                                this.state.savingRecording = true;
-                                clearTimeout(subscription);
-                                RecordingManager.currentRecording.finish(true);
-
-                                if (this.state.isRecording) {
-                                    this.stopVideo();
-                                }
-
-                                this.props.navigation.navigate('HomeScreen', {
-                                    complete: false,
-                                });
-                            }}/>
-                    </View>
-                </View>
-                <Toast ref={(toast) => this.toast = toast}
-                       position='top'
-                       positionValue={70}
-                       style={{backgroundColor: 'white'}}
-                       textStyle={{color: 'black'}}
-                       opacity={0.8}
-                    // fadeInDuration={1000} Not sure these work, computer's a bit laggy
-                    // fadeOutDuration={1000}
-                />
-            </View>
-        );
-    }
-
-}
-
-const styles = StyleSheet.create({
-    yLabel: {
-        transform: [{rotate: "-90deg"}, {translateY: 1.8 ** yAxisTitle.length + 60 / yAxisTitle.length}],
-        fontWeight: "bold",
-    },
-    xLabel: {
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    container: {
-        flex: 1,
-        padding: 0,
-    },
-    content: {
-        flex: 1,
-        padding: 10
-    },
-    heading: {
-        padding: 0,
-        backgroundColor: '#6200F2',
-    },
-    headingText: {
-        color: '#FFFFFF',
-        fontSize: 20,
-        padding: 20,
-    },
-    graphStyling: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    list: {
-        flex: 1,
-        paddingTop: 10,
-    },
-    listItem: {
-        borderRadius: 5,
-        height: 80,
-        backgroundColor: '#FFFFFF',
-        marginTop: '5%',
-        marginLeft: 10,
-        marginRight: 10,
-        justifyContent: 'center',
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 2,
-            height: 3
-        },
-        shadowRadius: 5,
-        shadowOpacity: 1.0
-    },
-    listItemText: {
-        color: 'black',
-        textAlignVertical: 'center',
-        fontWeight: 'bold',
-        fontSize: 20,
-        padding: 10,
-    },
-});
-
-export default RecordingScreen;
+ export default RecordingScreen;

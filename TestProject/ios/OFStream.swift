@@ -30,13 +30,6 @@ class OFStream : NSObject {
     
     let fileManager = FileManager.default
     resolve(fileManager.fileExists(atPath: path))
-    /*if () {
-      print("file exists")
-      resolve(true)
-    } else {
-      print("file does not exist")
-      resolve(false)
-    }*/
   }
   
   /**
