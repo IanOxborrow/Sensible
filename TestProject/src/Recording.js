@@ -311,11 +311,9 @@ export default class Recording {
         for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
             this.enabledSensors[sensorType].disable();
-            // TODO: Make this platform independent!
-            if (Platform.OS !== 'ios') {
-                // Close all the write streams
-                await ofstream.close(fileStreamIndex);
-            }
+            
+            await ofstream.close(fileStreamIndex);
+            
         }
 
         // Stop all recorders

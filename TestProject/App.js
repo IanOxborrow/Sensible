@@ -25,9 +25,11 @@ export default class App extends React.Component {
      * @return {Promise<void>}
      */
     async requestStoragePermission() {
-        // TODO: Implement this for iOS
-        //check(PERMISSIONS.IOS.STOREKIT)
-        // The store in storekit is the app store im not sure about this reminder
+
+        //ios does not require permission to write to the file system, so we can return early
+        if (Platform.OS == 'ios') {
+            return
+        }
 
         // Get saving permission (Android Only!)
         try {

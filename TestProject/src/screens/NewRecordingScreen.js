@@ -68,7 +68,7 @@ class NewRecordingScreen extends Component {
             if (!selected) {
                 continue;
             }
-
+            
             // For sensors that aren't implemented
             if (sensorId == null) {
                 continue;
@@ -76,7 +76,11 @@ class NewRecordingScreen extends Component {
 
             selectedSensors.push(sensorId);
             if (SensorInfo[sensorId].type == HardwareType.SENSOR) {
-                await RecordingManager.currentRecording.addSensor(sensorId, 200);
+
+                const selectedSampleRate = parseInt(this.state.sensorSampleRates[sensorId])
+
+                //TODO update this part with the sample rate
+                await RecordingManager.currentRecording.addSensor(sensorId, selectedSampleRate);
             }
             else if (SensorInfo[sensorId].type == HardwareType.RECORDER) {
                 await RecordingManager.currentRecording.addRecorder(sensorId);
