@@ -26,7 +26,7 @@ export default class HomeScreen extends Component {
 
         this.state = {
             recordings_list: RecordingManager.recordings,
-            availableSensors: null,
+            availableSensors: [],
             loading: true,
             modalVisible: false,
         };
@@ -77,7 +77,11 @@ export default class HomeScreen extends Component {
                     keyExtractor={item => item.id}
                     renderItem={({item}) => (
                         <TouchableOpacity onPress={() => {
-                            this.setState({modalVisible: true})
+                            RecordingManager.currentRecording = item.info;
+                            this.setState({
+                                modalVisible: true,
+                                availableSensors: Object.keys(item.info.enabledSensors).concat(Object.keys(item.info.enabledRecorders)).sort()
+                            })
                         }}>
                             <View elevation={5} style={styles.listItem}>
                                 <Text style={styles.listItemText}> {item.title} </Text>
@@ -100,7 +104,7 @@ export default class HomeScreen extends Component {
                             <ModalDropdown
                                 defaultValue={'Press to select the sensor data you want to export'}
                                 // TODO: Only show sensors that were active during the recording
-                                options={Object.values(SensorInfo).map(x => x.name)}
+                                options={this.state.availableSensors.map(x => SensorInfo[x].name)}
                                 style={{alignItems: 'center', alignContent: 'center'}}
                                 textStyle={{fontWeight: 'bold', textAlign: 'right'}}
                                 dropdownStyle={{width: '70%'}}
@@ -109,7 +113,7 @@ export default class HomeScreen extends Component {
                                     // Share selected sensor file
                                     // TODO: make sure this actually works! (uncomment shareSensorFile)
                                     this.setState({modalVisible: false})
-                                    item.info.shareSensorFile(Object.entries(SensorType)[key][1])
+                                    RecordingManager.currentRecording.shareSensorFile(this.state.availableSensors[key])
                                 }}/>
                             <FAB
                                 style={styles.closeModal}

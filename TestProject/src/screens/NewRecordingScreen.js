@@ -82,6 +82,7 @@ class NewRecordingScreen extends Component {
                 await RecordingManager.currentRecording.addRecorder(sensorId);
             }
         }
+        await RecordingManager.currentRecording.createMetadataFile()
 
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
