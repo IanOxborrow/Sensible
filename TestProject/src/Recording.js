@@ -13,6 +13,7 @@ import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Share from 'react-native-share';
 import RecordingManager from "./RecordingManager";
+import Geolocation from 'react-native-geolocation-service';
 
 const { ofstream } = NativeModules;
 
@@ -103,10 +104,13 @@ export default class Recording {
             case SensorType.GPS:
                 // request GPS permission
                 if (Platform.OS == 'ios') {
-                    const authorisation = await requestAuthorization('whenInUse');
+                    const authorisation = await Geolocation.requestAuthorization("whenInUse");
+                    console.log('Im here!')
                     if (authorisation == 'granted' || authorisation == 'restricted') {
                         console.log('iOS - You can use the GPS');
                     } else {
+                        console.log('iOS - GPS permission not granted');
+                        console.log(authorisation);
                         // TODO: Stop the initialisation if permission is denied
                     }
                 } else {
