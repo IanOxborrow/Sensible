@@ -19,7 +19,7 @@ export default class BackCameraRecorder extends Recorder {
             }}
             style={{
                 width: Dimensions.get('window').width - 30,
-                height: 220,
+                height: 200,
                 justifyContent: 'space-between',
                 padding: 20
             }}
