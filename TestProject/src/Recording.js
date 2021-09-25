@@ -81,9 +81,6 @@ export default class Recording {
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
-
-            // Append to the recording list
-            ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
         }
     }
 
@@ -297,6 +294,23 @@ export default class Recording {
         // Stop all recorders
         for (const sensorType of Object.keys(this.enabledRecorders)) {
             await this.enabledRecorders[sensorType].stop();
+        }
+
+        // Clear files
+        if (clear) {
+            try {
+                del = ofstream.delete(RecordingManager.SAVE_FILE_PATH, true);
+            } catch (e) {
+                throw new Error("Recording.finish: " + e);
+            }
+        }
+        // Update listing
+        else {
+            try {
+                ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+            } catch (e) {
+                throw new Error("Recording.finish: " + e);
+            }
         }
     }
 
