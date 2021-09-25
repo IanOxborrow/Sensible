@@ -11,7 +11,7 @@ export default class BackCameraRecorder extends Recorder {
      */
     constructor(recording) {
         super(recording);
-        this.filePath = this.recording.folderPath + "Microphone.mp4";
+        this.filePath = this.recording.folderPath + "Microphone.mp3";
         this.audioRecorderPlayer = new AudioRecorderPlayer();
         this.isRecording = false;
         this.duration = 0;
