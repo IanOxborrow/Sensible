@@ -19,6 +19,18 @@ export default class BackCameraRecorder extends Recorder {
     }
 
     /**
+     * Created by ?
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        // TODO: Check whether this sensor is working!
+        return true
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Record from the microphone and save it to file

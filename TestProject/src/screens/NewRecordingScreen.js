@@ -6,7 +6,7 @@ import {FloatingAction} from "react-native-floating-action";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
 import IconButton from "../react-native-paper-src/components/Button"
 import Appbar from '../react-native-paper-src/components/Appbar'
-import {HardwareType, SensorInfo, SensorType} from "../Sensors";
+import {getSensorClass, HardwareType, SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
 import {KeyboardAwareFlatList, KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
@@ -126,14 +126,21 @@ class NewRecordingScreen extends Component {
                     <CheckBox
                         style={{flexDirection: "row"}}
                         isChecked={this.state.usedSensors[sensorId]}
-                        onClick={() => {
-                            //make sure that a sample rate has been speciified before allowing the check box to be selected
-                            if (sensorId in this.state.sensorSampleRates && this.state.sensorSampleRates[sensorId] > -1) {
-
-                                //modifiy the state to record that a checkbox has been pressed
-                                this.state.usedSensors[sensorId] = !this.state.usedSensors[sensorId]
-                                this.setState(this.state.usedSensors)
+                        onClick={async () => {
+                            // Make sure that a sample rate has been speciified before allowing the check box to be selected
+                            if (!(sensorId in this.state.sensorSampleRates) || this.state.sensorSampleRates[sensorId] < 0) {
+                                return;
                             }
+                            // Prevent the sensor from being added if it doesn't work
+                            // TODO: Perform this check before getting to this screen
+                            else if (!(await getSensorClass(sensorId).isSensorWorking())) {
+                                console.log("Sensor is not working!");
+                                return;
+                            }
+
+                            //modifiy the state to record that a checkbox has been pressed
+                            this.state.usedSensors[sensorId] = !this.state.usedSensors[sensorId]
+                            this.setState(this.state.usedSensors)
                         }}
                     />
                 </View>

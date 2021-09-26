@@ -138,12 +138,12 @@ export const SensorInfo = {
     }
 }
 
-export const getSensorClass = (type) => {
-    if (!(type in SensorInfo)) {
-        throw new Error('Sensors.getSensorClass: Received an unknown type, ' + type);
+export const getSensorClass = (sensorId) => {
+    if (!(sensorId in SensorInfo)) {
+        throw new Error('Sensors.getSensorClass: Received an unknown type, ' + sensorId);
     }
 
-    return SensorInfo[type].class;
+    return SensorInfo[sensorId].class;
 };
 
 export const getSensorFileName = (type) => {
