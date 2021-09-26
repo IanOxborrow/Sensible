@@ -29,6 +29,7 @@ export default class HomeScreen extends Component {
             availableSensors: [],
             loading: true,
             modalVisible: false,
+            activeItem: 0,
         };
 
         // Perform any initialisation required then update the state
@@ -122,6 +123,15 @@ export default class HomeScreen extends Component {
                                     this.setState({modalVisible: false})
                                 }}
                             />
+                            <FAB
+                                style={styles.deleteModal}
+                                label="Delete"
+                                onPress={() => {
+                                    // TODO: Delete recording data here
+                                    const newList = this.state.recordings_list.splice(this.state.activeItem, 1);
+                                    this.setState({modalVisible: false, recordings_list: newList})
+                                }}
+                            />
                         </View>
                     </View>
 
@@ -212,8 +222,16 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     closeModal: {
+        position: 'relative',
+        top: 25,
         marginTop: 10,
-        alignSelf: 'center'
+        alignSelf: 'flex-start'
+    },
+    deleteModal: {
+        position: 'relative',
+        top: -23,
+        marginTop: 0,
+        alignSelf: 'flex-end'
     },
     modalOverlay: {
         position: 'absolute',

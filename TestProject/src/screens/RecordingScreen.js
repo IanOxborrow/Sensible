@@ -22,6 +22,7 @@
      Button,
      FlatList,
      TouchableOpacity,
+     Image,
  } from 'react-native';
  import RecordingManager from "../RecordingManager";
 
@@ -73,6 +74,7 @@
              terminating: false
          };
 
+         console.log(this.state.sensorIds);
          // A dictionary corresponding to the hue value for the colour of each label
          this.labelsPallet = new Map();
          for (let i = 0; i < this.state.labels.length; i++) {
@@ -131,6 +133,7 @@
          this.state.checkedStatus[this.state.currentSensor] = 'unchecked';
          // Select the new button
          this.state.currentSensor = sensorId
+         console.log(this.state.currentSensor)
          this.state.checkedStatus[sensorId] = 'checked';
 
          if (sensorId == SensorType.BACK_CAMERA) {
@@ -146,6 +149,14 @@
          // Making the toast (delicious)
          this.toast.show('Sensor: ' + sensorName, 2000);
      }
+
+     sensorIndicators() {
+         return (
+            <View>
+                <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/>
+            </View>
+         );
+     };
 
      render() {
          const updateGraphData = () => {
@@ -230,11 +241,16 @@
 
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
+                     <View style={[styles.indicators]}>
+                        {this.state.sensorIds.includes("9") ? <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
+                        {this.state.sensorIds.includes("12") ? <Image source={SensorInfo[12].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
+                     </View>
                  </Appbar.Header>
 
                  <View style={styles.content}>
                      <View>
-                         <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}>
+                         <View style={{backgroundColor: 'red',
+                         flex: 1, zIndex: this.state.recorderzIndex}}>
                              {
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA] &&
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
@@ -376,6 +392,17 @@
          fontSize: 20,
          padding: 10,
      },
+     sensorIndicator: {
+         flex: 1,
+         margin: 0,
+         width: 30,
+         height: 30,
+     },
+     indicators: {
+        justifyContent: 'flex-end',
+        marginTop: 5,
+
+     }
  });
 
  export default RecordingScreen;
