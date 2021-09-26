@@ -22,7 +22,7 @@ export default class Recording {
         this.savedRecording = true // Determines whether the recording has been loaded from file
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
         this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
-        this.sampleRate = 40000; // in Hz
+        this.sampleRate = 200; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
         this.enabledSensors = enabledRecorders === undefined ? {} : enabledRecorders;
