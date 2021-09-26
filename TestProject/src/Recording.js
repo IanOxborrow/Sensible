@@ -6,7 +6,7 @@ import {
     getSensorFileName,
     SensorType,
     MicrophoneRecorder,
-    BackCameraRecorder
+    BackCameraRecorder, SensorInfo
 } from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
@@ -18,42 +18,69 @@ import Geolocation from 'react-native-geolocation-service';
 const { ofstream } = NativeModules;
 
 export default class Recording {
-    constructor(name, folderPath) {
+    constructor(name, folderPath, enabledSensors, enabledRecorders) {
+        this.savedRecording = true // Determines whether the recording has been loaded from file
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
         this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
-        this.sampleRate = 40000; // in Hz
+        this.sampleRate = 200; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
-        this.enabledSensors = {};
-        this.enabledRecorders = {};
+        this.enabledSensors = enabledRecorders === undefined ? {} : enabledRecorders;
+        this.enabledRecorders = enabledSensors === undefined ? {} : enabledSensors;
         this.graphableData = {};
         this.fileStreamIndices = {};
         this.logicalTime = 0;
         this.labels = [];
 
         // TODO: Make this platform independent!
-        if (folderPath === undefined && Platform.OS !== 'ios') {
-            // Create the folder if it doesn't already exist
-            ofstream.mkdir(this.folderPath)
-                .then(() => {
-                    console.log('Successfully created folder ' + this.folderPath);
-                })
-                .catch(err => {
-                    throw Error(err);
-                });
+        if (folderPath === undefined) {
+            this.savedRecording = false;
 
-            // Create the metadata file
-            const infoFilePath = this.folderPath + 'info.txt';
-            ofstream.writeOnce(infoFilePath, false, 'Recording name: ' + this.name)
+            if (Platform.OS !== 'ios') {
+                // Create the folder if it doesn't already exist
+                ofstream.mkdir(this.folderPath)
+                    .then(() => {
+                        console.log('Successfully created folder ' + this.folderPath);
+                    })
+                    .catch(err => {
+                        throw Error(err);
+                    });
+            }
+        }
+    }
+
+    async createMetadataFile() {
+        if (this.folderPath === undefined) {
+            throw new Error("Recording.createMetadataFile: Attempted to create a metadata file with an undefined folder path");
+        }
+
+        // TODO: Make this platform independent!
+        if (Platform.OS !== 'ios') {
+            // TODO: Write this in a cleaner format
+            // Create the metadata
+            let metadata = '{"name":"' + this.name + '","sensors":[';
+            let hasSensors = false
+            let hasRecorders = false;
+            for (const type of Object.keys(this.enabledSensors)) {
+                hasSensors = true
+                metadata += '{"id":' + type + ',"name":"' + SensorInfo[type].name + '"},'
+            }
+            metadata = (hasSensors ? metadata.slice(0, -1) : metadata) + '],"recorders":[';
+            for (const type of Object.keys(this.enabledRecorders)) {
+                hasRecorders = true
+                metadata += '{"id":' + type + ',"name":"' + SensorInfo[type].name + '"},'
+            }
+            metadata = (hasRecorders ? metadata.slice(0, -1) : metadata) + ']}\n';
+
+            // Write the metadata to file
+            const infoFilePath = this.folderPath + 'info.json';
+            ofstream.writeOnce(infoFilePath, false, metadata)
                 .then(() => {
                     console.log('Successfully created ' + infoFilePath);
                 })
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
-
-            // Append to the recording list
-            ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
         }
     }
 
@@ -139,41 +166,6 @@ export default class Recording {
                  }
                 await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
                 break;
-            // case SensorType.MICROPHONE:
-            //     // console.warn('Recording.addSensor(SensorType.MICROPHONE) has not been implemented');
-            //
-            //     // request microphone permission
-            //     if (Platform.OS === 'ios') {
-            //         const granted = await check(PERMISSIONS.IOS.MICROPHONE);
-            //         if (granted == RESULTS.GRANTED) {
-            //             console.log('iOS - You can use the microphone');
-            //         }
-            //     } else {
-            //         try {
-            //             const granted = await PermissionsAndroid.request(
-            //                 PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-            //                 {
-            //                     title: 'Microphone Permission',
-            //                     message:
-            //                         'This app needs access to your microphone ' +
-            //                         'in order to collect microphone data',
-            //                     buttonNeutral: 'Ask Me Later',
-            //                     buttonNegative: 'Cancel',
-            //                     buttonPositive: 'OK',
-            //                 }
-            //             );
-            //             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            //                 console.log('You can use the microphone');
-            //             } else {
-            //                 console.log('Microphone permission denied');
-            //             }
-            //         } catch (err) {
-            //             console.warn(err);
-            //         }
-            //     }
-            //
-            //     await this.initialiseGenericSensor(SensorType.MICROPHONE);
-            //     break;
             default:
                 throw new Error(this.constructor.name + '.addSensor: Received an unrecognised sensor type with id=' + type);
         }
@@ -245,13 +237,15 @@ export default class Recording {
             return;
         }
 
-        const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
-        const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
-        // Make sure the writing stream has been closed before accessing the file
-        if (fileOpened)
-        {
-            throw new Error("Recording.shareSensorFile: File cannot be shared as it is " +
-                "currently opened. File type: " + type);
+        // File stream will not exist if a saved recording is loaded
+        if (!this.savedRecording) {
+            const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
+            const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
+            // Make sure the writing stream has been closed before accessing the file
+            if (fileOpened) {
+                throw new Error("Recording.shareSensorFile: File cannot be shared as it is " +
+                    "currently opened. File type: " + type);
+            }
         }
 
         // Open the share menu to allow downloading the file
@@ -300,6 +294,23 @@ export default class Recording {
         // Stop all recorders
         for (const sensorType of Object.keys(this.enabledRecorders)) {
             await this.enabledRecorders[sensorType].stop();
+        }
+
+        // Clear files
+        if (clear) {
+            try {
+                del = ofstream.delete(RecordingManager.SAVE_FILE_PATH, true);
+            } catch (e) {
+                throw new Error("Recording.finish: " + e);
+            }
+        }
+        // Update listing
+        else {
+            try {
+                ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+            } catch (e) {
+                throw new Error("Recording.finish: " + e);
+            }
         }
     }
 

@@ -2,6 +2,8 @@
 import Sensor from './Sensor';
 import { GPSSample } from '../Sensors';
 import Geolocation from 'react-native-geolocation-service';
+import {accelerometer} from "react-native-sensors";
+import {sleep} from "../Utilities";
 
 export default class GPS extends Sensor
 {
@@ -29,6 +31,18 @@ export default class GPS extends Sensor
             let sample = new GPSSample(latitude, longitude, accuracy, altitude, heading, speed, timestamp);
             latestTimeframe.addSample(sample);
         }
+    }
+
+    /**
+     * Created by ?
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        // TODO: Check whether this sensor is working!
+        return true
     }
 
     /**
