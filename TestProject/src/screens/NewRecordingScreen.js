@@ -268,6 +268,13 @@ class NewRecordingScreen extends Component {
                     disabled={this.state.startingRecording}
                     label="Start Recording"
                     onPress={() => {
+                        // Prevent the recording from being started if no sensors have been selected
+                        if (Object.entries(this.state.usedSensors).length === 0) {
+                            // TODO: Display a toast with the following
+                            console.log("Please select at least one sensor");
+                            return;
+                        }
+
                         this.startRecording();
                         this.setState({startingRecording: true})
                     }}
