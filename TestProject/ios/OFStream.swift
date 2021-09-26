@@ -131,7 +131,7 @@ class OFStream : NSObject {
       resolve(false)
     } else {
       //resolve(outputStreams[streamIndex] != nil)
-      resolve(true)
+      resolve(false)
     }
   }
 

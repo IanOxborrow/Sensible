@@ -261,15 +261,12 @@ export default class Recording {
      */
     async shareSensorFile(type)
     {
-        // TODO: Make the platform independent!
-        if (Platform.OS === 'ios') {
-            return;
-        }
 
         const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
         const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
+        
         // Make sure the writing stream has been closed before accessing the file
-        if (fileOpened)
+        if (fileOpened && Platform.OS != 'ios')
         {
             throw new Error("Recording.shareSensorFile: File cannot be shared as it is " +
                 "currently opened. File type: " + type);
