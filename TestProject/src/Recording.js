@@ -299,7 +299,7 @@ export default class Recording {
         // Clear files
         if (clear) {
             try {
-                del = ofstream.delete(RecordingManager.SAVE_FILE_PATH, true);
+                del = ofstream.delete(this.folderPath, true);
             } catch (e) {
                 throw new Error("Recording.finish: " + e);
             }
