@@ -13,6 +13,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		3C56657526F12B0300A6B251 /* OFStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C56657426F12B0300A6B251 /* OFStream.swift */; };
+		3C56657726F12BAC00A6B251 /* OFStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C56657626F12BAC00A6B251 /* OFStream.m */; };
+		3C6DF6D626F373300011E748 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6DF6D526F373300011E748 /* Queue.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		DF4D3395C18B9A8DC67468A8 /* libPods-TestProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DC9E75C5C278190C57CD19 /* libPods-TestProject.a */; };
 /* End PBXBuildFile section */
@@ -41,6 +44,10 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TestProject/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TestProject/main.m; sourceTree = "<group>"; };
 		151C19E046B6FA75FA9ABA8D /* Pods-TestProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestProject.release.xcconfig"; path = "Target Support Files/Pods-TestProject/Pods-TestProject.release.xcconfig"; sourceTree = "<group>"; };
+		3C56657326F12B0200A6B251 /* TestProject-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestProject-Bridging-Header.h"; sourceTree = "<group>"; };
+		3C56657426F12B0300A6B251 /* OFStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OFStream.swift; sourceTree = "<group>"; };
+		3C56657626F12BAC00A6B251 /* OFStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OFStream.m; sourceTree = "<group>"; };
+		3C6DF6D526F373300011E748 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TestProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AED740EAFE4485783775903C /* Pods-TestProject-TestProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestProject-TestProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-TestProject-TestProjectTests/Pods-TestProject-TestProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1DC9E75C5C278190C57CD19 /* libPods-TestProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TestProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,14 +137,16 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				0025F8B726FF13F600689919 /* SensibleTestProject.swift */,
+				3C56657426F12B0300A6B251 /* OFStream.swift */,
+				3C6DF6D526F373300011E748 /* Queue.swift */,
+				3C56657626F12BAC00A6B251 /* OFStream.m */,
 				13B07FAE1A68108700A75B9A /* TestProject */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* TestProjectTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4472DDA4D6AEDAAB215E251E /* Pods */,
-				0025F8B626FF13F500689919 /* TestProject-Bridging-Header.h */,
+				3C56657326F12B0200A6B251 /* TestProject-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -212,7 +221,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1300;
+						LastSwiftMigration = 1250;
 					};
 				};
 			};
@@ -415,8 +424,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0025F8B826FF13F600689919 /* SensibleTestProject.swift in Sources */,
+				3C6DF6D626F373300011E748 /* Queue.swift in Sources */,
+				3C56657526F12B0300A6B251 /* OFStream.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				3C56657726F12BAC00A6B251 /* OFStream.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
