@@ -68,7 +68,6 @@ export default class GenericTimeframe extends SensorTimeframe
             return;
         }
 
-        console.log(sample)
         const label = this.label == null ? "" : this.label.toString();
         ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
     }
