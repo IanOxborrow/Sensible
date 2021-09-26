@@ -32,6 +32,9 @@ export default class Recording {
         this.logicalTime = 0;
         this.labels = [];
 
+        console.log("recording")
+        console.log(this.folderPath)
+
         // TODO: Make this platform independent!
         if (folderPath === undefined) {
             this.savedRecording = false;
@@ -90,8 +93,9 @@ export default class Recording {
      * @param type       The type of the sensor to initialise
      * @param sampleRate The rate at which barometer data should be sampled
      */
-    async initialiseGenericSensor(type, sampleRate)
-    {
+
+    async initialiseGenericSensor(type, sampleRate) {
+
         const sensorClass = getSensorClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
@@ -99,12 +103,9 @@ export default class Recording {
         // Create a new sensor instance to track and enable it
         this.enabledSensors[type] = new sensorClass(this.graphableData[type], sampleRate);
 
-        // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
-            // Create a new file and store the stream index for later
-            this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
-        }
-
+        // Create a new file and store the stream index for later
+        this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
+        
     }
 
     /**
@@ -232,15 +233,11 @@ export default class Recording {
      */
     async shareSensorFile(type)
     {
-        // TODO: Make the platform independent!
-        if (Platform.OS === 'ios') {
-            return;
-        }
 
         // File stream will not exist if a saved recording is loaded
         if (!this.savedRecording) {
-            const streamIndex = this.fileStreamIndices[SensorType.ACCELEROMETER]
-            const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[SensorType.ACCELEROMETER]);
+            const streamIndex = this.fileStreamIndices[type]
+            const fileOpened = streamIndex == null ? false : await ofstream.isOpen(this.fileStreamIndices[type]);
             // Make sure the writing stream has been closed before accessing the file
             if (fileOpened) {
                 throw new Error("Recording.shareSensorFile: File cannot be shared as it is " +
@@ -284,11 +281,9 @@ export default class Recording {
         for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
             this.enabledSensors[sensorType].disable();
-            // TODO: Make this platform independent!
-            if (Platform.OS !== 'ios') {
-                // Close all the write streams
-                await ofstream.close(fileStreamIndex);
-            }
+            
+            await ofstream.close(fileStreamIndex);
+            
         }
 
         // Stop all recorders
