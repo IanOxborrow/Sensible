@@ -2,6 +2,8 @@
 import Sensor from './Sensor';
 import { GPSSample } from '../Sensors';
 import Geolocation from 'react-native-geolocation-service';
+import {accelerometer} from "react-native-sensors";
+import {sleep} from "../Utilities";
 
 export default class GPS extends Sensor
 {
@@ -32,6 +34,18 @@ export default class GPS extends Sensor
     }
 
     /**
+     * Created by ?
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        // TODO: Check whether this sensor is working!
+        return true
+    }
+
+    /**
      * Enable the GPS
      */
     enable()
@@ -45,7 +59,7 @@ export default class GPS extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = setInterval(() => {this.getSample()}, this.frequencyToPeriod(this.sampleRate))
+            this.subscription = setInterval(() => {this.getSample()}, this.sampleRate)
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
@@ -106,7 +120,7 @@ export default class GPS extends Sensor
            },
            (error) => {
              // See error code charts below.
-             console.log(error.code, error.message);
+             //console.log(error.code, error.message);
            },
            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );

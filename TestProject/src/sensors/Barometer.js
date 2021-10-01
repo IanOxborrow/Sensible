@@ -2,6 +2,7 @@
 import Sensor from './Sensor';
 import { BarometerSample } from '../Sensors';
 import { barometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import { sleep } from "../Utilities";
 
 export default class Barometer extends Sensor
 {
@@ -24,6 +25,32 @@ export default class Barometer extends Sensor
             const sample = new BarometerSample(pressure);
             latestTimeframe.addSample(sample);
         }
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        let status = null;
+        const subscription = await barometer.subscribe({
+            next: () => {
+                status = true;
+            },
+            error: () => {
+                status = false;
+            }
+        });
+
+        while (status == null) {
+            await sleep(1);
+        }
+        subscription.unsubscribe();
+
+        return status
     }
 
     /**

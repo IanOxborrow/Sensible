@@ -22,6 +22,7 @@
      Button,
      FlatList,
      TouchableOpacity,
+     Image,
  } from 'react-native';
  import RecordingManager from "../RecordingManager";
 
@@ -73,6 +74,7 @@
              terminating: false
          };
 
+         console.log(this.state.sensorIds);
          // A dictionary corresponding to the hue value for the colour of each label
          this.labelsPallet = new Map();
          for (let i = 0; i < this.state.labels.length; i++) {
@@ -131,6 +133,7 @@
          this.state.checkedStatus[this.state.currentSensor] = 'unchecked';
          // Select the new button
          this.state.currentSensor = sensorId
+         console.log(this.state.currentSensor)
          this.state.checkedStatus[sensorId] = 'checked';
 
          if (sensorId == SensorType.BACK_CAMERA) {
@@ -146,6 +149,14 @@
          // Making the toast (delicious)
          this.toast.show('Sensor: ' + sensorName, 2000);
      }
+
+     sensorIndicators() {
+         return (
+            <View>
+                <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/>
+            </View>
+         );
+     };
 
      render() {
          const updateGraphData = () => {
@@ -230,11 +241,15 @@
 
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
+                     <View style={[styles.indicators]}>
+                        {this.state.sensorIds.includes("9") ? <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
+                        {this.state.sensorIds.includes("12") ? <Image source={SensorInfo[12].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
+                     </View>
                  </Appbar.Header>
 
                  <View style={styles.content}>
                      <View>
-                         <View style={{backgroundColor: 'red', flex: 1, zIndex: this.state.recorderzIndex}}>
+                         <View style={{flex: 1, zIndex: this.state.recorderzIndex}}>
                              {
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA] &&
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
@@ -246,7 +261,7 @@
                                  <Text style={styles.yLabel}>{yAxisTitle}</Text>
                                  <LineChart
                                      data={data}
-                                     width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                                     width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                                      height={220}
                                      verticalLabelRotation={17}
                                      chartConfig={chartConfig}
@@ -264,7 +279,7 @@
                          </View>
                      </View>
 
-                     <View style={{flexDirection: "row", paddingBottom: 10}}>
+                     <View style={{flexDirection: "row", paddingBottom: 10, backgroundColor: "#efefef", zIndex: 2}}>
                          {sensorButtonIcons}
                      </View>
 
@@ -352,6 +367,8 @@
      list: {
          flex: 1,
          paddingTop: 10,
+         backgroundColor: "#efefef",
+         zIndex: 2
      },
      listItem: {
          borderRadius: 5,
@@ -376,6 +393,17 @@
          fontSize: 20,
          padding: 10,
      },
+     sensorIndicator: {
+         flex: 1,
+         margin: 0,
+         width: 30,
+         height: 30,
+     },
+     indicators: {
+        justifyContent: 'flex-end',
+        marginTop: 5,
+
+     }
  });
 
  export default RecordingScreen;
