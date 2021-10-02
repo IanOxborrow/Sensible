@@ -3,6 +3,7 @@ import {RNCamera} from "react-native-camera";
 import {Dimensions} from "react-native";
 import React from "react";
 import Recorder from "./Recorder";
+import {sleep} from "../Utilities";
 
 export default class BackCameraRecorder extends Recorder {
     /**
@@ -21,7 +22,7 @@ export default class BackCameraRecorder extends Recorder {
                 width: Dimensions.get('window').width - 30,
                 height: 200,
                 justifyContent: 'space-between',
-                padding: 20
+                padding: 0
             }}
             type="back"
             flashMode="false"
@@ -51,6 +52,18 @@ export default class BackCameraRecorder extends Recorder {
     }
 
     /**
+     * Created by ?
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        // TODO: Check whether this sensor is working!
+        return true
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Record from the back camera and save it to file
@@ -73,17 +86,21 @@ export default class BackCameraRecorder extends Recorder {
             path: this.filePath
         };
 
+        // Start the recording
         if (!this.isRecording) {
+            // Keep trying until the recording has started (this is needed due to the delay in initialising the camera)
             while (!this.recordedData) {
                 console.log("Camera: Recording has started...")
                 try {
+                    // Start the recording and wait
                     this.isRecording = true;
                     this.recordedData = await this.camera.recordAsync(options);
                 } catch (error) {
-                    this.isRecording = false;
                     console.log(error);
                 }
-                console.log(this.recordedData ? "Camera: Recording has stopped" + this.camera : "Camera: Recording failed! Trying again...");
+                // Display a message based on whether the recording was started successfully
+                console.log(this.recordedData ? "Camera: Recording has stopped" : "Camera: Recording failed! Trying again...");
+                this.isRecording = false;
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
         }
@@ -98,9 +115,12 @@ export default class BackCameraRecorder extends Recorder {
      */
     async stop() {
         if (this.isRecording) {
+            // Send the signal to stop recording and wait
             console.log("Camera: Stopping recording...");
             await this.camera.stopRecording();
-            this.isRecording = false;
+            while (this.isRecording) {
+                await sleep(1);
+            }
         }
     }
 }

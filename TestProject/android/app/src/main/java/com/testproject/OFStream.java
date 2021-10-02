@@ -30,6 +30,18 @@ public class OFStream extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Check if a file exists. An boolean value will be returned indicating if the file exsts
+     *
+     * @param path    The path of the file to read from
+     * @param promise Returns the contents of the file on success, otherwise returns an error
+     */
+    @ReactMethod
+    public void exists(String path, Promise promise) {
+        File file = new File(path);
+        promise.resolve(file.exists());
+    }
+
+    /**
      * Creates a new file stream (a buffered file stream) which can later be used
      * to write to a file
      *

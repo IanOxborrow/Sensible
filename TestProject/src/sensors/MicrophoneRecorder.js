@@ -11,11 +11,23 @@ export default class BackCameraRecorder extends Recorder {
      */
     constructor(recording) {
         super(recording);
-        this.filePath = this.recording.folderPath + "Microphone.mp4";
+        this.filePath = this.recording.folderPath + "Microphone.mp3";
         this.audioRecorderPlayer = new AudioRecorderPlayer();
         this.isRecording = false;
         this.duration = 0;
         this.loudness = 0;
+    }
+
+    /**
+     * Created by ?
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        // TODO: Check whether this sensor is working!
+        return true
     }
 
     /**

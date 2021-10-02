@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { GyroscopeSample } from '../Sensors';
-import { gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import {gyroscope, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
+import {sleep} from "../Utilities";
 
 export default class Gyroscope extends Sensor
 {
@@ -26,6 +27,32 @@ export default class Gyroscope extends Sensor
             const sample = new GyroscopeSample(x, y, z);
             latestTimeframe.addSample(sample);
         }
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        let status = null;
+        const subscription = await gyroscope.subscribe({
+            next: () => {
+                status = true;
+            },
+            error: () => {
+                status = false;
+            }
+        });
+
+        while (status == null) {
+            await sleep(1);
+        }
+        subscription.unsubscribe();
+
+        return status
     }
 
     /**

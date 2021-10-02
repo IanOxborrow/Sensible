@@ -270,8 +270,7 @@
 
                  <View style={styles.content}>
                      <View>
-                         <View style={{backgroundColor: 'red',
-                         flex: 1, zIndex: this.state.recorderzIndex}}>
+                         <View style={{flex: 1, zIndex: this.state.recorderzIndex}}>
                              {
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA] &&
                                  RecordingManager.currentRecording.enabledRecorders[SensorType.BACK_CAMERA].getView()
@@ -283,7 +282,7 @@
                                  <Text style={styles.yLabel}>{yAxisTitle}</Text>
                                  <LineChart
                                      data={data}
-                                     width={Dimensions.get('window').width - 40} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
+                                     width={Dimensions.get('window').width - 20} // from react-native. 20 here means that the width of the graph will be 20 padding less than the width of the screen
                                      height={220}
                                      verticalLabelRotation={17}
                                      chartConfig={chartConfig}
@@ -301,7 +300,7 @@
                          </View>
                      </View>
 
-                     <View style={{flexDirection: "row", paddingBottom: 10}}>
+                     <View style={{flexDirection: "row", paddingBottom: 10, backgroundColor: "#efefef", zIndex: 2}}>
                          {sensorButtonIcons}
                      </View>
 
@@ -395,6 +394,8 @@
      list: {
          flex: 1,
          paddingTop: 10,
+         backgroundColor: "#efefef",
+         zIndex: 2
      },
      listItem: {
          borderRadius: 5,
