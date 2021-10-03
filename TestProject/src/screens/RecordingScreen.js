@@ -288,7 +288,8 @@
                                keyExtractor={item => item.labelName}
                                renderItem={({item, index}) => (
                                    <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                       <View elevation={5} style={styles.listItem}>
+                                       <View elevation={5} style={styles.listItem,
+                                       {backgroundColor : this.state.currentLabel ? hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50) : 'white'}}>
                                            <Text style={styles.listItemText}> {item.labelName} </Text>
                                        </View>
                                    </TouchableOpacity>
