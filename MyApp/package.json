@@ -10,9 +10,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@flyskywhy/react-native-gcanvas": "^2.3.7",
+    
+    "lodash": "^4.17.21",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-share": "^7.1.1",
     "webgl-plot": "^0.6.3"
   },
   "devDependencies": {
