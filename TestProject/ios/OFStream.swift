@@ -32,6 +32,18 @@ class OFStream : NSObject {
     resolve(fileManager.fileExists(atPath: path))
   }
   
+  @objc
+  func directoryExists(_ directory: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    
+    let fileManager = FileManager.default
+
+    if fileManager.fileExists(atPath: directory, isDirectory:&isDir) {
+      resolve(true)
+    } else {
+      resolve(false)
+    }
+  }
+
   /**
    * Creates a new file stream (a buffered file stream) which can later be used
    * to write to a file
@@ -71,7 +83,7 @@ class OFStream : NSObject {
    * @param text        The content to write to file
    */
   @objc
-  func write(streamIndex: Int, text: String) {
+  func write(_ streamIndex: Int, text: String) {
     //let outputStream = outputStreams[streamIndex]
     let bytesWritten = outputStreams[streamIndex].write(text)
   
@@ -214,6 +226,21 @@ class OFStream : NSObject {
         print("[iOS] OFStream.mkdir: Could not create directory \(path)" )
       }
     }
+  }
+
+
+  /**
+   * Create a folder if it doesn't exist
+   *
+   * @param path    The path of the folder to create
+   * @param promise Returns nothing on success, otherwise returns an error
+   */
+  @objc
+  func copyFile(_ origin: String, destination: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    
+    let fileManager = FileManager.default
+    
+    fileManager.copyItem(atPath: origin, toPath: destination)
   }
 }
 

@@ -19,7 +19,6 @@ export default class RecordingManager {
      * @return {Promise<void>}
      */
     static async loadRecordings() {
-        console.log("loading recordings")
 
         //make sure that the recordings file actually exists
         const recordingExists = await ofstream.exists(this.SAVE_FILE_PATH + "recordings.config")
@@ -40,6 +39,7 @@ export default class RecordingManager {
 
         //split the string so that it can be displayed more easily
         const recordings = content.split("\n");
+        console.log(recordings)
 
         for (let i = 0; i < recordings.length - 1; i++) {
             const params = recordings[i].split(";");

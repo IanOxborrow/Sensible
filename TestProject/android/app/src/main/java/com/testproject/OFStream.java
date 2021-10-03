@@ -9,6 +9,10 @@ import com.facebook.react.bridge.Promise;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 import android.util.Log;
 
@@ -39,6 +43,18 @@ public class OFStream extends ReactContextBaseJavaModule {
     public void exists(String path, Promise promise) {
         File file = new File(path);
         promise.resolve(file.exists());
+    }
+
+    /**
+     * Check if a file exists. An boolean value will be returned indicating if the file exsts
+     *
+     * @param path    The path of the file to read from
+     * @param promise Returns the contents of the file on success, otherwise returns an error
+     */
+    @ReactMethod
+    public void directoryExists(String path, Promise promise) {
+        File file = new File(path);
+        promise.resolve(file.isDirectory());
     }
 
     /**
@@ -240,6 +256,9 @@ public class OFStream extends ReactContextBaseJavaModule {
         }
     }
 
+
+
+
     /**
      * Create a folder if it doesn't exist
      *
@@ -258,6 +277,24 @@ public class OFStream extends ReactContextBaseJavaModule {
                 promise.reject(new Error(error));
                 Log.e("AndroidRuntime", error);
             }
+        }
+    }
+
+        /**
+     * Create a folder if it doesn't exist
+     *
+     * @param origin    The file that is to be copied
+     * @param destination The destination of the cloned file
+     * @param promise Returns nothing on success, otherwise returns an error
+     */
+    @ReactMethod
+    public void copyFile(String origin, String destination, Promise promise) {
+        //Path originPath = Paths.getPath(origin);
+        //Path destinationPath = Paths.getPath(destination);
+        try {
+            Files.copy(Paths.get(origin), Paths.get(destination));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

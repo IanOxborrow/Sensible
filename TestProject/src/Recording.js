@@ -228,6 +228,14 @@ export default class Recording {
     }
 
     /**
+     * 
+     * @returns returns the path of a recording
+     */
+    getFolderPath() {
+        return this.folderPath;
+    }
+
+    /**
      * Open the share menu to download the sensor file
      * @param type The type of sensor they would like to get the timeframe for
      */
@@ -247,6 +255,8 @@ export default class Recording {
 
         // Open the share menu to allow downloading the file
         const fileName = getSensorFileName(type);
+        console.log(this.folderPath + fileName)
+
         const path = 'file://' + this.folderPath + fileName;
         Share.open({
             url: path,
