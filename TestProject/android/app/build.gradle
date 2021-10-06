@@ -154,12 +154,6 @@ android {
             keyPassword 'android'
         }
         release {
-            /*release {
-                storeFile file('Sensible.keystore')
-                storePassword 'renewYourSensibilities'
-                keyAlias 'Sensible'
-                keyPassword 'renewYourSensibilities'
-            }*/
             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
                 storePassword MYAPP_UPLOAD_STORE_PASSWORD
