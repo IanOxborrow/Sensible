@@ -20,6 +20,14 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 
+import {
+    Accelerometer,
+    Barometer,
+    GPS,
+    Gyroscope,
+    Magnetometer
+} from "../Sensors";
+
 export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
@@ -41,6 +49,7 @@ export default class HomeScreen extends Component {
      * @return {Promise<void>}
      */
     async init() {
+        await RecordingManager.loadConfig();
         await RecordingManager.loadRecordings();
         this.state.loading = false;
     }

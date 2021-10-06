@@ -6,6 +6,9 @@ import {sleep} from "../Utilities";
 
 export default class Accelerometer extends Sensor
 {
+    static sensorWorking = null;
+    static maxSampleRate = -1;
+
     constructor(dataStore, sampleRate)
     {
         super(dataStore, sampleRate);
@@ -34,25 +37,68 @@ export default class Accelerometer extends Sensor
      *
      * Checks whether the sensor is able to be used
      *
-     * @return True if the sensor is working, False otherwise
+     * @return {Promise<boolean>} True if the sensor is working, False otherwise
      */
     static async isSensorWorking() {
-        let status = null;
+        if (Accelerometer.sensorWorking != null) {
+            return Accelerometer.sensorWorking;
+        }
+
         const subscription = await accelerometer.subscribe({
             next: () => {
-                status = true;
+                Accelerometer.sensorWorking = true;
             },
             error: () => {
-                status = false;
+                Accelerometer.sensorWorking = false;
             }
         });
 
-        while (status == null) {
+        while (Accelerometer.sensorWorking == null) {
             await sleep(1);
         }
         subscription.unsubscribe();
 
-        return status
+        return Accelerometer.sensorWorking;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Tests the maximum possible sample rate (requires ~3min to run)
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        if (!await Accelerometer.isSensorWorking()) {
+            return -1;
+        }
+        else if (Accelerometer.maxSampleRate > -1) {
+            return Accelerometer.maxSampleRate;
+        }
+
+        let testing = true;
+        let samples = 0
+        let start = null;
+        let duration = 0;
+        const subscription = await accelerometer.subscribe(({x, y, z, timestamp}) => {
+            if (start == null) {
+                start = timestamp;
+            }
+
+            samples++;
+            duration = (timestamp - start)/1000
+            if (duration >= 3*60) {
+                subscription.unsubscribe();
+                testing = false
+            }
+        });
+
+        while (testing) {
+            await sleep(1);
+        }
+
+        Accelerometer.maxSampleRate = samples/duration
+        return Accelerometer.maxSampleRate;
     }
 
     /**

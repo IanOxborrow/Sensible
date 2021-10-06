@@ -8,7 +8,7 @@
  */
 
 import React, {useEffect} from "react";
-import {PermissionsAndroid, Platform} from 'react-native';
+import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 import SplashScreen from 'react-native-splash-screen'
 import RecordingManager from "./src/RecordingManager";
@@ -62,6 +62,8 @@ export default class App extends React.Component {
      */
     async init() {
         RecordingManager.RecordingClass = Recording;
+
+        // TODO: Test the above and read from saved file
         await this.requestStoragePermission();
     }
 

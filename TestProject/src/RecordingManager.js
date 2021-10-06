@@ -1,6 +1,6 @@
 import {NativeModules, Platform} from 'react-native';
 import RNFetchBlob from "rn-fetch-blob";
-import {SensorType} from "./Sensors";
+import {getSensorClass, HardwareType, SensorInfo, SensorType} from "./Sensors";
 
 const { ofstream } = NativeModules;
 
@@ -19,8 +19,6 @@ export default class RecordingManager {
      * @return {Promise<void>}
      */
     static async loadRecordings() {
-        console.log("loading recordings")
-
         //make sure that the recordings file actually exists
         const recordingExists = await ofstream.exists(this.SAVE_FILE_PATH + "recordings.config")
             .then((exists) => {
@@ -62,6 +60,38 @@ export default class RecordingManager {
                 id: this.recordings.length + 1,
                 info: recording
             });
+        }
+    }
+
+    static async loadConfig() {
+        // TODO: Hard-code the values
+        const configPath = RecordingManager.SAVE_FILE_PATH + "config.json"
+        const configData = await ofstream.read(configPath);
+        if (configData === "") {
+            let output = "";
+            for (const type of Object.values(SensorType)) {
+                if (SensorInfo[type].type != HardwareType.SENSOR) {
+                    continue;
+                }
+
+                const rate = await getSensorClass(type).getMaxSampleRate();
+                output += type + "," + rate + "\n";
+                console.log("The max sample rate of " + type + " is " + rate);
+            }
+            await ofstream.writeOnce(configPath, false, output);
+        }
+        else {
+            for (const line of configData.split("\n")) {
+                if (line === "") {
+                    continue;
+                }
+
+                const data = line.split(",");
+                const sensorId = Number(data[0]);
+                const rate = Number(data[1]);
+                getSensorClass(sensorId).maxSampleRate = rate;
+                getSensorClass(sensorId).sensorWorking = rate > -1;
+            }
         }
     }
 }

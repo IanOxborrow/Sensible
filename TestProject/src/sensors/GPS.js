@@ -2,11 +2,14 @@
 import Sensor from './Sensor';
 import { GPSSample } from '../Sensors';
 import Geolocation from 'react-native-geolocation-service';
-import {accelerometer} from "react-native-sensors";
+import {accelerometer, barometer} from "react-native-sensors";
 import {sleep} from "../Utilities";
 
 export default class GPS extends Sensor
 {
+    static sensorWorking = null;
+    static maxSampleRate = -1;
+
     constructor(dataStore, sampleRate)
     {
         super(dataStore, sampleRate);
@@ -43,6 +46,17 @@ export default class GPS extends Sensor
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
         return true
+    }
+
+    /**
+     * Created by ?
+     *
+     * Tests the maximum possible sample rate
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        return 200;
     }
 
     /**

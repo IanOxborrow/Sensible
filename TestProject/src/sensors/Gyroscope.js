@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { GyroscopeSample } from '../Sensors';
-import {gyroscope, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
+import {gyroscope, setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
 import {sleep} from "../Utilities";
 
 export default class Gyroscope extends Sensor
 {
+    static sensorWorking = null;
+    static maxSampleRate = -1;
+
     constructor(dataStore, sampleRate)
     {
         super(dataStore, sampleRate);
@@ -37,22 +40,65 @@ export default class Gyroscope extends Sensor
      * @return True if the sensor is working, False otherwise
      */
     static async isSensorWorking() {
-        let status = null;
+        if (Gyroscope.sensorWorking != null) {
+            return Gyroscope.sensorWorking;
+        }
+
         const subscription = await gyroscope.subscribe({
             next: () => {
-                status = true;
+                Gyroscope.sensorWorking = true;
             },
             error: () => {
-                status = false;
+                Gyroscope.sensorWorking = false;
             }
         });
 
-        while (status == null) {
+        while (Gyroscope.sensorWorking == null) {
             await sleep(1);
         }
         subscription.unsubscribe();
 
-        return status
+        return Gyroscope.sensorWorking;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Tests the maximum possible sample rate (requires ~3min to run)
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        if (!await Gyroscope.isSensorWorking()) {
+            return -1;
+        }
+        else if (Gyroscope.maxSampleRate > -1) {
+            return Gyroscope.maxSampleRate;
+        }
+
+        let testing = true;
+        let samples = 0
+        let start = null;
+        let duration = 0;
+        const subscription = await gyroscope.subscribe(({x, y, z, timestamp}) => {
+            if (start == null) {
+                start = timestamp;
+            }
+
+            samples++;
+            duration = (timestamp - start)/1000
+            if (duration >= 3*60) {
+                subscription.unsubscribe();
+                testing = false
+            }
+        });
+
+        while (testing) {
+            await sleep(1);
+        }
+
+        Gyroscope.maxSampleRate = samples/duration
+        return Gyroscope.maxSampleRate;
     }
 
     /**

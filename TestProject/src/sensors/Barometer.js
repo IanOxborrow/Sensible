@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { BarometerSample } from '../Sensors';
-import { barometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import {barometer, setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
 import { sleep } from "../Utilities";
 
 export default class Barometer extends Sensor
 {
+    static sensorWorking = null;
+    static maxSampleRate = -1;
+
     constructor(dataStore, sampleRate)
     {
         super(dataStore, sampleRate);
@@ -32,25 +35,68 @@ export default class Barometer extends Sensor
      *
      * Checks whether the sensor is able to be used
      *
-     * @return True if the sensor is working, False otherwise
+     * @return {Promise<boolean>} True if the sensor is working, False otherwise
      */
     static async isSensorWorking() {
-        let status = null;
+        if (Barometer.sensorWorking != null) {
+            return Barometer.sensorWorking;
+        }
+
         const subscription = await barometer.subscribe({
             next: () => {
-                status = true;
+                Barometer.sensorWorking = true;
             },
             error: () => {
-                status = false;
+                Barometer.sensorWorking = false;
             }
         });
 
-        while (status == null) {
+        while (Barometer.sensorWorking == null) {
             await sleep(1);
         }
         subscription.unsubscribe();
 
-        return status
+        return Barometer.sensorWorking;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Tests the maximum possible sample rate (requires ~3min to run)
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        if (!await Barometer.isSensorWorking()) {
+            return -1;
+        }
+        else if (Barometer.maxSampleRate > -1) {
+            return Barometer.maxSampleRate;
+        }
+
+        let testing = true;
+        let samples = 0
+        let start = null;
+        let duration = 0;
+        const subscription = await barometer.subscribe(({x, y, z, timestamp}) => {
+            if (start == null) {
+                start = timestamp;
+            }
+
+            samples++;
+            duration = (timestamp - start)/1000
+            if (duration >= 3*60) {
+                subscription.unsubscribe();
+                testing = false
+            }
+        });
+
+        while (testing) {
+            await sleep(1);
+        }
+
+        Barometer.maxSampleRate = samples/duration
+        return Barometer.maxSampleRate;
     }
 
     /**
