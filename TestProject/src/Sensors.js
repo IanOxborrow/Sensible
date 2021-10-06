@@ -52,7 +52,7 @@ export const SensorInfo = {
         units: "m/s^2",
         description: {
             measure: "Rate of change of velocity (how fast you move the phone)",
-            output: "x per sample rate, representing current velocity (m/s^2)"
+            output: "x per sample, representing current velocity (m/s^2)"
         }
     },
     [SensorType.GYROSCOPE]: {
@@ -64,8 +64,8 @@ export const SensorInfo = {
         measure: "Angular velocity",
         units: "RPS",
         description: {
-            measure: "Orientation and angular velocity (rate of change of movement in each axis)",
-            output: "x, y, z per sample rate, representing each vector's change in velocity (m/s^2)"
+            measure: "Angular velocity (how fast you rotate the phone)",
+            output: "x, y, z per sample, representing each vector's angular velocity (m/s^2)"
         }
     },
     [SensorType.MAGNETOMETER]: {
@@ -76,9 +76,8 @@ export const SensorInfo = {
         class: Magnetometer,
         measure: "Magnetic Field Direction",
         units: "μT",
-        // TODO: Update description!
         description: {
-            measure: "ADD MEASURE HERE",
+            measure: "Magnetic field direction (how strong a magnetic field is)",
             output: "ADD OUTPUT HERE"
         }
     },
@@ -90,10 +89,9 @@ export const SensorInfo = {
         class: Barometer,
         measure: "Atmospheric Pressure",
         units: "psi",
-        // TODO: Update description!
         description: {
-            measure: "ADD MEASURE HERE",
-            output: "ADD OUTPUT HERE"
+            measure: "Atmospheric pressure (pressure of your environment)",
+            output: "Pressure per sample, representing the atmospheric pressure"
         }
     },
     [SensorType.MICROPHONE]: {
@@ -105,8 +103,8 @@ export const SensorInfo = {
         measure: "Amplitude",
         units: "dB",
         description: {
-            measure: "Sound, amplitude representing decibels",
-            output: "MP3 file, saved to device"
+            measure: "Audio (what your phone hears)",
+            output: "MP3 file"
         }
     },
     [SensorType.GPS]: {
@@ -119,7 +117,7 @@ export const SensorInfo = {
         units: "°",
         description: {
             measure: "Your current location on the globe",
-            output: "lat and long per sample rate, representing current global position"
+            output: "Latitude and longitude per sample, representing current global position"
         }
     },
     [SensorType.BACK_CAMERA]: {
@@ -127,13 +125,12 @@ export const SensorInfo = {
         type: HardwareType.RECORDER,
         imageSrc: require('./assets/camera_icon.png'),
         fileExt: ".mp4",
-        class: BackCameraRecorder, // TODO: Set correct class!
-        // TODO: Update description!
+        class: BackCameraRecorder,
         measure: "Video",
         units: "",
         description: {
             measure: "Video feed of the back camera",
-            output: "MP4 file, saved to device"
+            output: "MP4 file"
         }
     }
 }
