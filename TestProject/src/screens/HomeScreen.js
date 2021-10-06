@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {SensorInfo, SensorType} from '../Sensors';
+import {getSensorClass, SensorInfo, SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -50,6 +50,11 @@ export default class HomeScreen extends Component {
      */
     async init() {
         await RecordingManager.loadConfig();
+        // Check whether each sensor is working (this makes it faster for next time)
+        for (const sensorId of Object.values(SensorType)) {
+            await getSensorClass(sensorId).isSensorWorking();
+        }
+        // Load the recordings
         await RecordingManager.loadRecordings();
         this.state.loading = false;
     }

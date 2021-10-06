@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { AccelerometerSample } from '../Sensors';
-import {accelerometer, setUpdateIntervalForType, SensorTypes, barometer} from 'react-native-sensors';
+import {accelerometer, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
 import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class Accelerometer extends Sensor
 {
     static sensorWorking = null;
-    static maxSampleRate = -1;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = false;
 
     constructor(dataStore, sampleRate)
     {
@@ -50,6 +53,7 @@ export default class Accelerometer extends Sensor
             },
             error: () => {
                 Accelerometer.sensorWorking = false;
+                Accelerometer.sampleRateCalculated = true;
             }
         });
 
@@ -72,32 +76,7 @@ export default class Accelerometer extends Sensor
         if (!await Accelerometer.isSensorWorking()) {
             return -1;
         }
-        else if (Accelerometer.maxSampleRate > -1) {
-            return Accelerometer.maxSampleRate;
-        }
 
-        let testing = true;
-        let samples = 0
-        let start = null;
-        let duration = 0;
-        const subscription = await accelerometer.subscribe(({x, y, z, timestamp}) => {
-            if (start == null) {
-                start = timestamp;
-            }
-
-            samples++;
-            duration = (timestamp - start)/1000
-            if (duration >= 3*60) {
-                subscription.unsubscribe();
-                testing = false
-            }
-        });
-
-        while (testing) {
-            await sleep(1);
-        }
-
-        Accelerometer.maxSampleRate = samples/duration
         return Accelerometer.maxSampleRate;
     }
 
@@ -115,7 +94,27 @@ export default class Accelerometer extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = accelerometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            let samples = 0;
+            let start = null;
+            let duration = 0;
+            this.subscription = accelerometer.subscribe(({ x, y, z, timestamp }) => {
+                this.pushSample(x, y, z);
+
+                // Calculate the max sample rate if it is currently using the default
+                if (RecordingManager.sampleRatesCalculated === 0 && !Accelerometer.sampleRateCalculated) {
+                    if (start == null) {
+                        start = timestamp;
+                    }
+
+                    samples++;
+                    duration = (timestamp - start)/1000;
+                    if (duration >= 3*60) {
+                        Accelerometer.maxSampleRate = samples/duration;
+                        Accelerometer.sampleRateCalculated = true;
+                        RecordingManager.saveConfig();
+                    }
+                }
+            });
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}

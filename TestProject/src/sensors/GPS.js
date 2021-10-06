@@ -2,13 +2,14 @@
 import Sensor from './Sensor';
 import { GPSSample } from '../Sensors';
 import Geolocation from 'react-native-geolocation-service';
-import {accelerometer, barometer} from "react-native-sensors";
-import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class GPS extends Sensor
 {
     static sensorWorking = null;
-    static maxSampleRate = -1;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = true; // TODO: Change this to false once getMaxSampleRate() has been implemented
 
     constructor(dataStore, sampleRate)
     {

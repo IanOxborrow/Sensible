@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { MagnetometerSample } from '../Sensors';
-import {magnetometer, setUpdateIntervalForType, SensorTypes, accelerometer, gyroscope} from 'react-native-sensors';
+import {magnetometer, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
 import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class Magnetometer extends Sensor
 {
     static sensorWorking = null;
-    static maxSampleRate = -1;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = false;
 
     constructor(dataStore, sampleRate)
     {
@@ -50,6 +53,7 @@ export default class Magnetometer extends Sensor
             },
             error: () => {
                 Magnetometer.sensorWorking = false;
+                Magnetometer.sampleRateCalculated = true;
             }
         });
 
@@ -72,32 +76,7 @@ export default class Magnetometer extends Sensor
         if (!await Magnetometer.isSensorWorking()) {
             return -1;
         }
-        else if (Magnetometer.maxSampleRate > -1) {
-            return Magnetometer.maxSampleRate;
-        }
 
-        let testing = true;
-        let samples = 0
-        let start = null;
-        let duration = 0;
-        const subscription = await gyroscope.subscribe(({x, y, z, timestamp}) => {
-            if (start == null) {
-                start = timestamp;
-            }
-
-            samples++;
-            duration = (timestamp - start)/1000
-            if (duration >= 3*60) {
-                subscription.unsubscribe();
-                testing = false
-            }
-        });
-
-        while (testing) {
-            await sleep(1);
-        }
-
-        Magnetometer.maxSampleRate = samples/duration
         return Magnetometer.maxSampleRate;
     }
 
@@ -115,7 +94,27 @@ export default class Magnetometer extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = magnetometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            let samples = 0;
+            let start = null;
+            let duration = 0;
+            this.subscription = magnetometer.subscribe(({ x, y, z, timestamp }) => {
+                this.pushSample(x, y, z);
+
+                // Calculate the max sample rate if it is currently using the default
+                if (RecordingManager.sampleRatesCalculated === 0 && !Magnetometer.sampleRateCalculated) {
+                    if (start == null) {
+                        start = timestamp;
+                    }
+
+                    samples++;
+                    duration = (timestamp - start)/1000;
+                    if (duration >= 3*60) {
+                        Magnetometer.maxSampleRate = samples/duration;
+                        Magnetometer.sampleRateCalculated = true;
+                        RecordingManager.saveConfig();
+                    }
+                }
+            });
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}

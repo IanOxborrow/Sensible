@@ -10,6 +10,10 @@ export default class RecordingManager {
     // Store the current recording (ie. any new recordings that haven't been finalised)
     static currentRecording = null;
     static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
+    static CONFIG_FILE_PATH = RecordingManager.SAVE_FILE_PATH + "config.json";
+    static DEFAULT_MAX_SAMPLE_RATE = 180; // in Hz
+    static DEFAULT_MIN_SAMPLE_RATE = 1; // in Hz
+    static sampleRatesCalculated = 1;
     // A reference to the class which holds a recording
     static RecordingClass;
 
@@ -63,24 +67,49 @@ export default class RecordingManager {
         }
     }
 
-    static async loadConfig() {
-        // TODO: Hard-code the values
-        const configPath = RecordingManager.SAVE_FILE_PATH + "config.json"
-        const configData = await ofstream.read(configPath);
-        if (configData === "") {
+    /**
+     * Saves the sampling rates of each sensor
+     *
+     * THIS FUNCTION HAS BEEN DISABLED
+     * This has been disabled  due to the extra time (3 mins of running time) required to
+     * calculate the maximum sampling. Instead a fixed maximum sampling rate will be used.
+     * To enable this function again set RecordingManager.sampleRatesCalculated to 0.
+     * Then the next time a recording is run for 3 minutes, a config function with the
+     * "maximum" rates will be generated. One issue with this function is that if the
+     * recording is started with a sampling rate that is not the maximum, that will be
+     * set as the "maximum". This function will get called by the enable() function of
+     * each sensor and once the sampling rate of each sensor has been calculated, the
+     * file will be generated.
+     *
+     * @return {Promise<void>}
+     */
+    static async saveConfig() {
+        // Save the config data if it doesn't already exist
+        console.log("gamer")
+        if (RecordingManager.sampleRatesCalculated === 0) {
             let output = "";
-            for (const type of Object.values(SensorType)) {
-                if (SensorInfo[type].type != HardwareType.SENSOR) {
+            for (const sensorId of Object.values(SensorType)) {
+                if (SensorInfo[sensorId].type != HardwareType.SENSOR) {
                     continue;
                 }
 
-                const rate = await getSensorClass(type).getMaxSampleRate();
-                output += type + "," + rate + "\n";
-                console.log("The max sample rate of " + type + " is " + rate);
+                // Exit if the sample rate of all sensors haven't been calculated
+                const sensorClass = getSensorClass(sensorId);
+                if (!sensorClass.sampleRateCalculated) {
+                    return;
+                }
+
+                const rate = await sensorClass.getMaxSampleRate(true);
+                output += sensorId + "," + rate + "\n";
+                console.log("The max sample rate of " + sensorId + " is " + rate);
             }
-            await ofstream.writeOnce(configPath, false, output);
+            await ofstream.writeOnce(RecordingManager.CONFIG_FILE_PATH, false, output);
         }
-        else {
+    }
+
+    static async loadConfig() {
+        const configData = await ofstream.read(RecordingManager.CONFIG_FILE_PATH);
+        if (configData !== "") {
             for (const line of configData.split("\n")) {
                 if (line === "") {
                     continue;
@@ -91,6 +120,7 @@ export default class RecordingManager {
                 const rate = Number(data[1]);
                 getSensorClass(sensorId).maxSampleRate = rate;
                 getSensorClass(sensorId).sensorWorking = rate > -1;
+                RecordingManager.sampleRatesCalculated++;
             }
         }
     }

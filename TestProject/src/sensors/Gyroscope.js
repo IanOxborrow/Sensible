@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { GyroscopeSample } from '../Sensors';
-import {gyroscope, setUpdateIntervalForType, SensorTypes, accelerometer} from 'react-native-sensors';
+import {gyroscope, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
 import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class Gyroscope extends Sensor
 {
     static sensorWorking = null;
-    static maxSampleRate = -1;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = false;
 
     constructor(dataStore, sampleRate)
     {
@@ -50,6 +53,7 @@ export default class Gyroscope extends Sensor
             },
             error: () => {
                 Gyroscope.sensorWorking = false;
+                Gyroscope.sampleRateCalculated = true;
             }
         });
 
@@ -72,32 +76,7 @@ export default class Gyroscope extends Sensor
         if (!await Gyroscope.isSensorWorking()) {
             return -1;
         }
-        else if (Gyroscope.maxSampleRate > -1) {
-            return Gyroscope.maxSampleRate;
-        }
 
-        let testing = true;
-        let samples = 0
-        let start = null;
-        let duration = 0;
-        const subscription = await gyroscope.subscribe(({x, y, z, timestamp}) => {
-            if (start == null) {
-                start = timestamp;
-            }
-
-            samples++;
-            duration = (timestamp - start)/1000
-            if (duration >= 3*60) {
-                subscription.unsubscribe();
-                testing = false
-            }
-        });
-
-        while (testing) {
-            await sleep(1);
-        }
-
-        Gyroscope.maxSampleRate = samples/duration
         return Gyroscope.maxSampleRate;
     }
 
@@ -115,7 +94,27 @@ export default class Gyroscope extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            let samples = 0;
+            let start = null;
+            let duration = 0;
+            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => {
+                this.pushSample(x, y, z);
+
+                // Calculate the max sample rate if it is currently using the default
+                if (RecordingManager.sampleRatesCalculated === 0 && !Gyroscope.sampleRateCalculated) {
+                    if (start == null) {
+                        start = timestamp;
+                    }
+
+                    samples++;
+                    duration = (timestamp - start)/1000;
+                    if (duration >= 3*60) {
+                        Gyroscope.maxSampleRate = samples/duration;
+                        Gyroscope.sampleRateCalculated = true;
+                        RecordingManager.saveConfig();
+                    }
+                }
+            });
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
