@@ -48,6 +48,10 @@ class NewRecordingScreen extends Component {
         if (RecordingManager.currentRecording == null) {
             throw new Error("NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised");
         }
+
+        for (const sensorId of Object.values(SensorType)) {
+            this.state.sensorSampleRates[sensorId] = 100;
+        }
     }
 
     componentDidMount = () => {
@@ -112,26 +116,50 @@ class NewRecordingScreen extends Component {
                 </View>
 
                 <View style={{alignSelf: 'center', flexDirection: "row"}}>
-                    <TextInput
-                        scrollEnabled={false}
-                        placeholder="sample rate"
-                        style={{paddingRight: 10}}
-                        ref={input => {
-                            this.sampleRateInput = input;
-                        }}
-                        onChangeText={
-                            text => {
-                                this.state.sensorSampleRates[sensorId] = text
+                    {
+                        SensorInfo[sensorId].type == HardwareType.SENSOR &&
+                        <TextInput
+                            scrollEnabled={false}
+                            placeholder="sample rate"
+                            style={{paddingRight: 10}}
+                            ref={input => {
+                                this.sampleRateInput = input;
+                            }}
+                            keyboardType="numeric"
+                            value={this.state.sensorSampleRates[sensorId].toString()}
+                            onChangeText={
+                                text => {
+                                    if (text === "") {
+                                        this.state.sensorSampleRates[sensorId] = text
+                                        this.state.usedSensors[sensorId] = false;
+                                    }
+                                    else {
+                                        text = Number(text.replace(/[^0-9]/g, ''));
+                                        const maxSampleRate = getSensorClass(sensorId).maxSampleRate
+                                        const minSampleRate = getSensorClass(sensorId).minSampleRate
+                                        if (text > maxSampleRate) {
+                                            this.state.sensorSampleRates[sensorId] = maxSampleRate;
+                                        }
+                                        else if (text < minSampleRate) {
+                                            this.state.sensorSampleRates[sensorId] = minSampleRate;
+                                        }
+                                        else {
+                                            this.state.sensorSampleRates[sensorId] = text;
+                                        }
+                                        this.state.usedSensors[sensorId] = true;
+                                    }
+                                    this.setState({});
+                                }
                             }
-                        }
-                    />
+                        />
+                    }
 
                     <CheckBox
                         style={{flexDirection: "row"}}
                         isChecked={this.state.usedSensors[sensorId]}
                         onClick={async () => {
-                            // Make sure that a sample rate has been speciified before allowing the check box to be selected
-                            if (!(sensorId in this.state.sensorSampleRates) || this.state.sensorSampleRates[sensorId] < 0) {
+                            // Make sure that a sample rate has been specified before allowing the check box to be selected
+                            if (SensorInfo[sensorId].type == HardwareType.SENSOR && this.state.sensorSampleRates[sensorId] === "") {
                                 return;
                             }
                             // Prevent the sensor from being added if it doesn't work
