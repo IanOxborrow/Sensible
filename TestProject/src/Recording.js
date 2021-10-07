@@ -194,8 +194,9 @@ export default class Recording {
     /**
      * Set the label for all incoming data from hereon
      * @param name The name of the label
+     * @param flushOnly True to only update the labels file
      */
-    setLabel(name)
+    setLabel(name, flushOnly)
     {
         // Finalise the old label
         const lastLabel = this.labels[this.labels.length - 1];
@@ -205,6 +206,11 @@ export default class Recording {
             this.labels[this.labels.length - 1].endTime = Date.now();
             ofstream.write(this.fileStreamIndices[-1], lastLabel.name + ',' + (lastLabel.startTime - this.startTime) + ',' + (lastLabel.endTime - this.startTime) + '\n');
         }
+
+        if (flushOnly) {
+            return;
+        }
+
         // Create the new label
         let label = new Label(name, Date.now());
         this.labels.push(label);
@@ -283,6 +289,8 @@ export default class Recording {
      */
     async finish(clear = false)
     {
+        // Flush out the last label
+        this.setLabel(null, true);
         // Disable each sensor and its file stream
         for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
@@ -299,8 +307,6 @@ export default class Recording {
             await this.enabledRecorders[sensorType].stop();
         }
 
-        // Flush out the last label
-        this.setLabel(null);
         // Clear files
         if (clear) {
             try {
