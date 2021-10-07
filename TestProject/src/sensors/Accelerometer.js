@@ -11,6 +11,7 @@ export default class Accelerometer extends Sensor
     static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
     static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
     static sampleRateCalculated = false;
+    static permissionsSatisfied = false;
 
     constructor(dataStore, sampleRate)
     {
@@ -36,6 +37,13 @@ export default class Accelerometer extends Sensor
     }
 
     /**
+     * Requests any permissions required for this sensor
+     */
+    static async requestPermissions() {
+        Accelerometer.permissionsSatisfied = true;
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Checks whether the sensor is able to be used
@@ -43,7 +51,9 @@ export default class Accelerometer extends Sensor
      * @return {Promise<boolean>} True if the sensor is working, False otherwise
      */
     static async isSensorWorking() {
-        if (Accelerometer.sensorWorking != null) {
+        if (!Accelerometer.permissionsSatisfied) {
+            return false;
+        } else if (Accelerometer.sensorWorking != null) {
             return Accelerometer.sensorWorking;
         }
 

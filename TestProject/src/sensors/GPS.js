@@ -3,6 +3,7 @@ import Sensor from './Sensor';
 import { GPSSample } from '../Sensors';
 import Geolocation from 'react-native-geolocation-service';
 import RecordingManager from "../RecordingManager";
+import {PermissionsAndroid, Platform} from "react-native";
 
 export default class GPS extends Sensor
 {
@@ -10,6 +11,7 @@ export default class GPS extends Sensor
     static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
     static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
     static sampleRateCalculated = true; // TODO: Change this to false once getMaxSampleRate() has been implemented
+    static permissionsSatisfied = false;
 
     constructor(dataStore, sampleRate)
     {
@@ -38,6 +40,49 @@ export default class GPS extends Sensor
     }
 
     /**
+     * Requests any permissions required for this sensor
+     */
+    static async requestPermissions() {
+        // request GPS permission
+        if (Platform.OS == 'ios') {
+            const authorisation = await Geolocation.requestAuthorization("whenInUse");
+            console.log('Im here!')
+            if (authorisation == 'granted' || authorisation == 'restricted') {
+                console.log('iOS - You can use the GPS');
+                GPS.permissionsSatisfied = true;
+            } else {
+                console.log('iOS - GPS permission not granted');
+                console.log(authorisation);
+                // TODO: Stop the initialisation if permission is denied
+            }
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: 'Location Permission',
+                        message:
+                            'This app needs access to your location ' +
+                            'in order to collect location data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('You can use the GPS');
+                    GPS.permissionsSatisfied = true;
+                } else {
+                    console.log('GPS permission denied');
+                    // TODO: Stop the initialisation if permission is denied
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    }
+
+    /**
      * Created by ?
      *
      * Checks whether the sensor is able to be used
@@ -46,7 +91,7 @@ export default class GPS extends Sensor
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return true
+        return GPS.permissionsSatisfied;
     }
 
     /**
@@ -57,6 +102,10 @@ export default class GPS extends Sensor
      * @return {Promise<number>} The maximum sampling rate
      */
     static async getMaxSampleRate() {
+        if (!await GPS.isSensorWorking()) {
+            return -1;
+        }
+
         return 200;
     }
 

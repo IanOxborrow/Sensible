@@ -6,6 +6,8 @@ import Recorder from "./Recorder";
 import {sleep} from "../Utilities";
 
 export default class BackCameraRecorder extends Recorder {
+    static permissionsSatisfied = false;
+
     /**
      * @param recording A reference to the recording class that this recorder is stored under
      */
@@ -41,6 +43,13 @@ export default class BackCameraRecorder extends Recorder {
     }
 
     /**
+     * Requests any permissions required for this sensor
+     */
+    static async requestPermissions() {
+        BackCameraRecorder.permissionsSatisfied = true;
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Returns the camera view which can be directly rendered
@@ -60,7 +69,7 @@ export default class BackCameraRecorder extends Recorder {
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return true
+        return BackCameraRecorder.permissionsSatisfied;
     }
 
     /**

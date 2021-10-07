@@ -134,41 +134,6 @@ export default class Recording {
                 await this.initialiseGenericSensor(SensorType.BAROMETER, sampleRate);
                 break;
             case SensorType.GPS:
-                // request GPS permission
-                if (Platform.OS == 'ios') {
-                    const authorisation = await Geolocation.requestAuthorization("whenInUse");
-                    console.log('Im here!')
-                    if (authorisation == 'granted' || authorisation == 'restricted') {
-                        console.log('iOS - You can use the GPS');
-                    } else {
-                        console.log('iOS - GPS permission not granted');
-                        console.log(authorisation);
-                        // TODO: Stop the initialisation if permission is denied
-                    }
-                } else {
-                    try {
-                        const granted = await PermissionsAndroid.request(
-                            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                            {
-                                title: 'Location Permission',
-                                message:
-                                    'This app needs access to your location ' +
-                                    'in order to collect location data',
-                                buttonNeutral: 'Ask Me Later',
-                                buttonNegative: 'Cancel',
-                                buttonPositive: 'OK',
-                            }
-                        );
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                            console.log('You can use the GPS');
-                        } else {
-                            console.log('GPS permission denied');
-                            // TODO: Stop the initialisation if permission is denied
-                        }
-                    } catch (err) {
-                        console.warn(err);
-                    }
-                }
                 await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
                 break;
             default:

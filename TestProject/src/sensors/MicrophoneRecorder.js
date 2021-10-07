@@ -1,11 +1,13 @@
-import Sensor from './Sensor';
-import {RNCamera} from "react-native-camera";
-import {Dimensions} from "react-native";
+import {PermissionsAndroid, Platform} from "react-native";
 import React from "react";
 import Recorder from "./Recorder";
 import AudioRecorderPlayer from "react-native-audio-recorder-player";
+import {MicrophoneRecorder} from "../Sensors";
+import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
 
 export default class BackCameraRecorder extends Recorder {
+    static permissionsSatisfied = false;
+
     /**
      * @param recording A reference to the recording class that this recorder is stored under
      */
@@ -19,6 +21,43 @@ export default class BackCameraRecorder extends Recorder {
     }
 
     /**
+     * Requests any permissions required for this sensor
+     */
+    static async requestPermissions() {
+        // request microphone permission
+        if (Platform.OS === 'ios') {
+            const granted = await check(PERMISSIONS.IOS.MICROPHONE);
+            if (granted == RESULTS.GRANTED) {
+                console.log('iOS - You can use the microphone');
+                BackCameraRecorder.permissionsSatisfied = true;
+            }
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                    {
+                        title: 'Microphone Permission',
+                        message:
+                            'This app needs access to your microphone ' +
+                            'in order to collect microphone data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('You can use the microphone');
+                    BackCameraRecorder.permissionsSatisfied = true;
+                } else {
+                    console.log('Microphone permission denied');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    }
+
+    /**
      * Created by ?
      *
      * Checks whether the sensor is able to be used
@@ -27,7 +66,7 @@ export default class BackCameraRecorder extends Recorder {
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return true
+        return MicrophoneRecorder.permissionsSatisfied;
     }
 
     /**

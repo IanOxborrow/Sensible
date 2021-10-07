@@ -50,9 +50,11 @@ export default class HomeScreen extends Component {
      */
     async init() {
         await RecordingManager.loadConfig();
-        // Check whether each sensor is working (this makes it faster for next time)
+        // Request permissions and check whether each sensor is working (this makes it faster for next time)
         for (const sensorId of Object.values(SensorType)) {
-            await getSensorClass(sensorId).isSensorWorking();
+            const sensorClass = getSensorClass(sensorId);
+            await sensorClass.requestPermissions();
+            await sensorClass.isSensorWorking();
         }
         // Load the recordings
         await RecordingManager.loadRecordings();
