@@ -85,7 +85,6 @@ export default class RecordingManager {
      */
     static async saveConfig() {
         // Save the config data if it doesn't already exist
-        console.log("gamer")
         if (RecordingManager.sampleRatesCalculated === 0) {
             let output = "";
             for (const sensorId of Object.values(SensorType)) {

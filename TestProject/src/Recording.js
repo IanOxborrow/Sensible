@@ -6,7 +6,7 @@ import {
     getSensorFileName,
     SensorType,
     MicrophoneRecorder,
-    BackCameraRecorder, SensorInfo
+    BackCameraRecorder, SensorInfo, getSensorSampleClass
 } from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
@@ -29,11 +29,8 @@ export default class Recording {
         this.enabledRecorders = enabledSensors === undefined ? {} : enabledSensors;
         this.graphableData = {};
         this.fileStreamIndices = {};
-        this.logicalTime = 0;
+        this.startTime = null;
         this.labels = [];
-
-        console.log("recording")
-        console.log(this.folderPath)
 
         // TODO: Make this platform independent!
         if (folderPath === undefined) {
@@ -48,6 +45,13 @@ export default class Recording {
                     .catch(err => {
                         throw Error(err);
                     });
+
+                // Create the file stream for the labels
+                const createLabelsFile = async () => {
+                    this.fileStreamIndices[-1] = await ofstream.open(this.folderPath + "labels.csv", false);
+                    await ofstream.write(this.fileStreamIndices[-1], 'label,start_time,end_time\n');
+                }
+                createLabelsFile();
             }
         }
     }
@@ -61,7 +65,7 @@ export default class Recording {
         if (Platform.OS !== 'ios') {
             // TODO: Write this in a cleaner format
             // Create the metadata
-            let metadata = '{"name":"' + this.name + '","sensors":[';
+            let metadata = '{"name":"' + this.name + '", "startTime":' + this.startTime + ',"sensors":[';
             let hasSensors = false
             let hasRecorders = false;
             for (const type of Object.keys(this.enabledSensors)) {
@@ -95,8 +99,8 @@ export default class Recording {
      */
 
     async initialiseGenericSensor(type, sampleRate) {
-
         const sensorClass = getSensorClass(type);
+        const sensorSampleClass = getSensorSampleClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
         this.graphableData[type] = [new GenericTimeframe(this, this.timeframeSize, this.bufferSize, type)];
@@ -105,7 +109,7 @@ export default class Recording {
 
         // Create a new file and store the stream index for later
         this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
-        
+        ofstream.write(this.fileStreamIndices[type], sensorSampleClass.getComponents().toString() + ',label\n');
     }
 
     /**
@@ -142,29 +146,29 @@ export default class Recording {
                         // TODO: Stop the initialisation if permission is denied
                     }
                 } else {
-                   try {
-                      const granted = await PermissionsAndroid.request(
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                         {
-                             title: 'Location Permission',
-                             message:
-                                 'This app needs access to your location ' +
-                                 'in order to collect location data',
-                             buttonNeutral: 'Ask Me Later',
-                             buttonNegative: 'Cancel',
-                             buttonPositive: 'OK',
-                         }
-                         );
-                         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                             console.log('You can use the GPS');
-                         } else {
-                             console.log('GPS permission denied');
-                             // TODO: Stop the initialisation if permission is denied
-                         }
-                     } catch (err) {
-                         console.warn(err);
-                     }
-                 }
+                    try {
+                        const granted = await PermissionsAndroid.request(
+                            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                            {
+                                title: 'Location Permission',
+                                message:
+                                    'This app needs access to your location ' +
+                                    'in order to collect location data',
+                                buttonNeutral: 'Ask Me Later',
+                                buttonNegative: 'Cancel',
+                                buttonPositive: 'OK',
+                            }
+                        );
+                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                            console.log('You can use the GPS');
+                        } else {
+                            console.log('GPS permission denied');
+                            // TODO: Stop the initialisation if permission is denied
+                        }
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                }
                 await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
                 break;
             default:
@@ -194,9 +198,12 @@ export default class Recording {
     setLabel(name)
     {
         // Finalise the old label
-        if (this.labels.length > 0 && this.labels[this.labels.length - 1].endTime == null)
+        const lastLabel = this.labels[this.labels.length - 1];
+        if (this.labels.length > 0 && lastLabel.endTime == null)
         {
+            // TODO: Figure out why the initial null label isn't here -- may want to create a new label class at the start
             this.labels[this.labels.length - 1].endTime = Date.now();
+            ofstream.write(this.fileStreamIndices[-1], lastLabel.name + ',' + (lastLabel.startTime - this.startTime) + ',' + (lastLabel.endTime - this.startTime) + '\n');
         }
         // Create the new label
         let label = new Label(name, Date.now());
@@ -276,14 +283,15 @@ export default class Recording {
      */
     async finish(clear = false)
     {
-        // TODO: Do something for clear
         // Disable each sensor and its file stream
         for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
-            this.enabledSensors[sensorType].disable();
-            
+            if (sensorType > -1) {
+                this.enabledSensors[sensorType].disable();
+            }
+
             await ofstream.close(fileStreamIndex);
-            
+
         }
 
         // Stop all recorders
@@ -291,6 +299,8 @@ export default class Recording {
             await this.enabledRecorders[sensorType].stop();
         }
 
+        // Flush out the last label
+        this.setLabel(null);
         // Clear files
         if (clear) {
             try {
@@ -302,7 +312,7 @@ export default class Recording {
         // Update listing
         else {
             try {
-                ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+                await ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
             } catch (e) {
                 throw new Error("Recording.finish: " + e);
             }

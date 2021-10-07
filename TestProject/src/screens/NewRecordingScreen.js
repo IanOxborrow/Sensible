@@ -68,7 +68,7 @@ class NewRecordingScreen extends Component {
             if (!selected) {
                 continue;
             }
-            
+
             // For sensors that aren't implemented
             if (sensorId == null) {
                 continue;
@@ -86,7 +86,6 @@ class NewRecordingScreen extends Component {
                 await RecordingManager.currentRecording.addRecorder(sensorId);
             }
         }
-        await RecordingManager.currentRecording.createMetadataFile()
 
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
@@ -251,7 +250,7 @@ class NewRecordingScreen extends Component {
                 </Appbar.Header>
 
                 <View style={styles.content}>
-                    
+
                     <FlatList
                         styles={{flex: 1}}
                         removeClippedSubviews={false}
@@ -269,7 +268,7 @@ class NewRecordingScreen extends Component {
                             }
                         ListFooterComponent={this.labelListFooter}/>
                 </View>
-                
+
                 <FAB
                     style={styles.fab}
                     loading={this.state.startingRecording}

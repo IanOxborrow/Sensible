@@ -93,6 +93,10 @@
 
          // Enable all sensors and start all recorders
          RecordingManager.currentRecording.start();
+         // Set an empty label and the meta file
+         RecordingManager.currentRecording.startTime = Date.now();
+         RecordingManager.currentRecording.setLabel(null);
+         RecordingManager.currentRecording.createMetadataFile();
      }
 
      // Funtion to create each item in the list
@@ -117,7 +121,6 @@
              newLabel = label.labelName;
          }
          // Update the label
-         // TODO: Change this to use the current `Recording` instance
          RecordingManager.currentRecording.setLabel(newLabel);
          this.state.currentLabel = newLabel;
          // Output a debug message
