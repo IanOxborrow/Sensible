@@ -263,7 +263,9 @@ class NewRecordingScreen extends Component {
 
     render() {
         let sensorRows = Object.entries(SensorInfo).map(([sensorId, sensorInfo]) => {
-            return this.sensorRow(sensorInfo, sensorId);
+            if (getSensorClass(sensorId).isSensorWorkingSync()) {
+                return this.sensorRow(sensorInfo, sensorId);
+            }
         })
 
 

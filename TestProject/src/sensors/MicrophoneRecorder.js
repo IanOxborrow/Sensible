@@ -2,10 +2,10 @@ import {PermissionsAndroid, Platform} from "react-native";
 import React from "react";
 import Recorder from "./Recorder";
 import AudioRecorderPlayer from "react-native-audio-recorder-player";
-import {MicrophoneRecorder} from "../Sensors";
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
 
-export default class BackCameraRecorder extends Recorder {
+export default class MicrophoneRecorder extends Recorder {
+    static sensorWorking = null;
     static permissionsSatisfied = false;
 
     /**
@@ -29,7 +29,7 @@ export default class BackCameraRecorder extends Recorder {
             const granted = await check(PERMISSIONS.IOS.MICROPHONE);
             if (granted == RESULTS.GRANTED) {
                 console.log('iOS - You can use the microphone');
-                BackCameraRecorder.permissionsSatisfied = true;
+                MicrophoneRecorder.permissionsSatisfied = true;
             }
         } else {
             try {
@@ -47,7 +47,7 @@ export default class BackCameraRecorder extends Recorder {
                 );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     console.log('You can use the microphone');
-                    BackCameraRecorder.permissionsSatisfied = true;
+                    MicrophoneRecorder.permissionsSatisfied = true;
                 } else {
                     console.log('Microphone permission denied');
                 }
@@ -66,7 +66,23 @@ export default class BackCameraRecorder extends Recorder {
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return MicrophoneRecorder.permissionsSatisfied;
+        MicrophoneRecorder.sensorWorking = MicrophoneRecorder.permissionsSatisfied;
+        return MicrophoneRecorder.sensorWorking;
+    }
+
+    /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (MicrophoneRecorder.sensorWorking == null) {
+            console.warn("MicrophoneRecorder.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return MicrophoneRecorder.sensorWorking;
     }
 
     /**

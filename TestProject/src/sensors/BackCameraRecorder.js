@@ -1,11 +1,13 @@
 import Sensor from './Sensor';
 import {RNCamera} from "react-native-camera";
-import {Dimensions} from "react-native";
+import {Dimensions, PermissionsAndroid, Platform} from "react-native";
 import React from "react";
 import Recorder from "./Recorder";
 import {sleep} from "../Utilities";
+import {check, PERMISSIONS, RESULTS} from "react-native-permissions";
 
 export default class BackCameraRecorder extends Recorder {
+    static sensorWorking = null;
     static permissionsSatisfied = false;
 
     /**
@@ -46,7 +48,37 @@ export default class BackCameraRecorder extends Recorder {
      * Requests any permissions required for this sensor
      */
     static async requestPermissions() {
-        BackCameraRecorder.permissionsSatisfied = true;
+        // request microphone permission
+        if (Platform.OS === 'ios') {
+            const granted = await check(PERMISSIONS.IOS.CAMERA);
+            if (granted == RESULTS.GRANTED) {
+                console.log('iOS - You can use the camera');
+                BackCameraRecorder.permissionsSatisfied = true;
+            }
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message:
+                            'This app needs access to your camera ' +
+                            'in order to collect camera data',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('You can use the camera');
+                    BackCameraRecorder.permissionsSatisfied = true;
+                } else {
+                    console.log('Camera permission denied');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
     }
 
     /**
@@ -69,7 +101,23 @@ export default class BackCameraRecorder extends Recorder {
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return BackCameraRecorder.permissionsSatisfied;
+        BackCameraRecorder.sensorWorking = BackCameraRecorder.permissionsSatisfied;
+        return BackCameraRecorder.sensorWorking;
+    }
+
+    /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (BackCameraRecorder.sensorWorking == null) {
+            console.warn("BackCameraRecorder.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return BackCameraRecorder.sensorWorking;
     }
 
     /**

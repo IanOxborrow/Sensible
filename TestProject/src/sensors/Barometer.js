@@ -74,6 +74,21 @@ export default class Barometer extends Sensor
     }
 
     /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (Barometer.sensorWorking == null) {
+            console.warn("Barometer.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return Barometer.sensorWorking;
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Tests the maximum possible sample rate (requires ~3min to run)

@@ -91,7 +91,23 @@ export default class GPS extends Sensor
      */
     static async isSensorWorking() {
         // TODO: Check whether this sensor is working!
-        return GPS.permissionsSatisfied;
+        GPS.sensorWorking = GPS.permissionsSatisfied;
+        return GPS.sensorWorking;
+    }
+
+    /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (GPS.sensorWorking == null) {
+            console.warn("GPS.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return GPS.sensorWorking;
     }
 
     /**
