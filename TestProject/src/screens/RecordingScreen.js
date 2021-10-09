@@ -71,7 +71,9 @@
              checkedStatus: {},
              currentSensor: -1,
              recorderzIndex: -1,
-             terminating: false
+             terminating: false,
+             subscriptions: [],
+             indicatorStatus: true,
          };
 
          console.log(this.state.sensorIds);
@@ -97,6 +99,25 @@
          RecordingManager.currentRecording.startTime = Date.now();
          RecordingManager.currentRecording.setLabel(null);
          RecordingManager.currentRecording.createMetadataFile();
+
+         this.state.subscriptions.push(setInterval(() => {this.toggleIndicators()}, 1000))
+
+     }
+
+     componentWillUnmount() {
+        for (let i = 0; i < this.state.subscriptions.length; i++) {
+            clearTimeout(this.state.subscriptions[i])
+        }
+     }
+
+     /**
+       * Created by Ryan Turner
+       *
+       * Toggles the display of the indicators
+       */
+     toggleIndicators() {
+        console.log("Toggling")
+        this.setState({indicatorStatus: !this.state.indicatorStatus})
      }
 
      // Funtion to create each item in the list
@@ -244,7 +265,7 @@
 
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
-                     <View style={[styles.indicators]}>
+                     <View id="indicators" style={[this.state.indicatorStatus ? styles.indicators : styles.indicatorsOff]}>
                         {this.state.sensorIds.includes("9") ? <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
                         {this.state.sensorIds.includes("12") ? <Image source={SensorInfo[12].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
                      </View>
@@ -304,6 +325,9 @@
                                  onPress={async () => {
                                      clearTimeout(subscription);
                                      this.setState({terminating: true});
+                                     for (let i = 0; i < this.state.subscriptions.length; i++) {
+                                         clearTimeout(this.state.subscriptions[i])
+                                     }
                                      await RecordingManager.currentRecording.finish();
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: true,
@@ -314,6 +338,9 @@
                                  onPress={async () => {
                                      clearTimeout(subscription);
                                      this.setState({terminating: true});
+                                     for (let i = 0; i < this.state.subscriptions.length; i++) {
+                                         clearTimeout(this.state.subscriptions[i])
+                                     }
                                      await RecordingManager.currentRecording.finish(true);
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: false,
@@ -405,8 +432,12 @@
      indicators: {
         justifyContent: 'flex-end',
         marginTop: 5,
-
-     }
+     },
+     indicatorsOff: {
+        justifyContent: 'flex-end',
+        marginTop: 5,
+        display: 'none',
+     },
  });
 
  export default RecordingScreen;
