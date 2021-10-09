@@ -36,6 +36,7 @@ class OFStream : NSObject {
   func directoryExists(_ directory: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
     
     let fileManager = FileManager.default
+    var isDir : ObjCBool = false
 
     if fileManager.fileExists(atPath: directory, isDirectory:&isDir) {
       resolve(true)
@@ -126,7 +127,8 @@ class OFStream : NSObject {
   func close(_ streamIndex: Int, resolve: RCTPromiseResolveBlock,
              rejecter reject: RCTPromiseRejectBlock) {
     outputStreams[streamIndex].close()
-    outputStreams.remove(at: streamIndex)
+    // outputStreams.remove(at: streamIndex)
+    outputStream[streamIndex] = nil
     resolve(nil)
   }
   
@@ -188,7 +190,7 @@ class OFStream : NSObject {
     // make sure that the folder is meant to be recursivley deleted
     let fileURLs = try! fileManager.contentsOfDirectory(atPath: path)
     if (fileURLs.count == 0 && !recursive) {
-      let error = "[iOS] OFStream.delete: Received a folder with no recursive flag. Path: \(path)";
+      let _ = "[iOS] OFStream.delete: Received a folder with no recursive flag. Path: \(path)";
       
       //reject(error)
       return
@@ -198,7 +200,7 @@ class OFStream : NSObject {
     do {
       try fileManager.removeItem(atPath: path)
     } catch {
-      let error = "[iOS] OFStream.delete: Could not delete \(path)";
+      let _ = "[iOS] OFStream.delete: Could not delete \(path)";
       //reject(error);
     }
     
@@ -215,7 +217,6 @@ class OFStream : NSObject {
   func mkdir(_ path: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
     
     let fileManager = FileManager.default
-    
     
     if (!fileManager.fileExists(atPath: path)) {
       
@@ -240,7 +241,12 @@ class OFStream : NSObject {
     
     let fileManager = FileManager.default
     
-    fileManager.copyItem(atPath: origin, toPath: destination)
+    do {
+      try fileManager.copyItem(atPath: origin, toPath: destination)
+    } catch {
+      print("error copying file")
+    }
+    
   }
 }
 
