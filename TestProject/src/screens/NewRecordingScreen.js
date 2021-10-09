@@ -50,7 +50,7 @@ class NewRecordingScreen extends Component {
         }
 
         for (const sensorId of Object.values(SensorType)) {
-            this.state.sensorSampleRates[sensorId] = 100;
+            this.state.sensorSampleRates[sensorId] = Math.trunc((getSensorClass(sensorId).maxSampleRate - getSensorClass(sensorId).minSampleRate)/2);
         }
     }
 
@@ -160,7 +160,7 @@ class NewRecordingScreen extends Component {
                         onClick={async () => {
                             // Make sure that a sample rate has been specified before allowing the check box to be selected
                             if (SensorInfo[sensorId].type == HardwareType.SENSOR && this.state.sensorSampleRates[sensorId] === "") {
-                                return;
+                                this.state.sensorSampleRates[sensorId] = Math.trunc((getSensorClass(sensorId).maxSampleRate - getSensorClass(sensorId).minSampleRate)/2);
                             }
                             // Prevent the sensor from being added if it doesn't work
                             // TODO: Perform this check before getting to this screen
