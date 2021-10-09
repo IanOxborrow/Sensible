@@ -5,7 +5,6 @@ import Appbar from '../react-native-paper-src/components/Appbar';
 import {SensorInfo, getSensorFileName} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
-import ModalDropdown from 'react-native-modal-dropdown';
 import Share from 'react-native-share';
 import CheckBox from 'react-native-check-box';
 import { zip } from 'react-native-zip-archive'
@@ -117,7 +116,6 @@ export default class HomeScreen extends Component {
                 <Appbar.Header>
                     <Appbar.Content title="Sensible"/>
                 </Appbar.Header>
-
                 {
                     // Only show whilst recordings are being loaded
                     this.state.loading &&
@@ -142,7 +140,7 @@ export default class HomeScreen extends Component {
                             </View>
                         </TouchableOpacity>
                     )}
-                />
+                />    
 
                 <Modal
                     animationType="fade"

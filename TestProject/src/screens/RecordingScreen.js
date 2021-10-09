@@ -7,24 +7,28 @@
  * @flow strict-local
  */
 
- import React, {Component} from 'react';
- import {HardwareType, SensorInfo, SensorType} from '../Sensors';
- import {LineChart} from 'react-native-chart-kit';
- import Appbar from '../react-native-paper-src/components/Appbar';
- import ToggleButton from '../react-native-paper-src/components/ToggleButton';
- import Toast, {DURATION} from 'react-native-easy-toast';
+import React, {Component} from 'react';
+import {HardwareType, SensorInfo, SensorType} from '../Sensors';
+import {LineChart} from 'react-native-chart-kit';
+import Appbar from '../react-native-paper-src/components/Appbar';
+import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+import Toast, {DURATION} from 'react-native-easy-toast';
+import ModalDropdown from 'react-native-modal-dropdown';
 
- import {
-     StyleSheet,
-     View,
-     Text,
-     Dimensions,
-     Button,
-     FlatList,
-     TouchableOpacity,
-     Image,
- } from 'react-native';
- import RecordingManager from "../RecordingManager";
+
+import {
+    ActivityIndicator,
+    StyleSheet,
+    View,
+    Modal,
+    Text,
+    Dimensions,
+    Button,
+    FlatList,
+    TouchableOpacity,
+    Image,
+} from 'react-native';
+import RecordingManager from "../RecordingManager";
 
  const data = {
      labels: [],
@@ -71,7 +75,8 @@
              checkedStatus: {},
              currentSensor: -1,
              recorderzIndex: -1,
-             terminating: false
+             terminating: false,
+             showLoadingSymbol: true
          };
 
          console.log(this.state.sensorIds);
@@ -91,8 +96,14 @@
              throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
          }
 
-         // Enable all sensors and start all recorders
-         RecordingManager.currentRecording.start();
+        //stop the loading symbol from showing and start the recording
+        setTimeout(() => { 
+            this.setState({showLoadingSymbol: false})
+                    
+            // Enable all sensors and start all recorders
+            RecordingManager.currentRecording.start();
+
+            }, 3000)
      }
 
      // Funtion to create each item in the list
@@ -247,6 +258,12 @@
                      </View>
                  </Appbar.Header>
 
+                <Modal transparent={false} visible={this.state.showLoadingSymbol}>  
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}>
+                        <ActivityIndicator size="large" animating={this.state.showLoadingSymbol} color={'#6200ee'} />
+                    </View>
+                </Modal>
+
                  <View style={styles.content}>
                      <View>
                          <View style={{flex: 1, zIndex: this.state.recorderzIndex}}>
@@ -284,48 +301,48 @@
                      </View>
 
                      <FlatList style={styles.list}
-                               data={this.state.labels}
-                               keyExtractor={item => item.labelName}
-                               renderItem={({item, index}) => (
-                                   <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                       <View elevation={5} style={styles.listItem}>
-                                           <Text style={styles.listItemText}> {item.labelName} </Text>
-                                       </View>
-                                   </TouchableOpacity>
-                               )}
+                        data={this.state.labels}
+                        keyExtractor={item => item.labelName}
+                        renderItem={({item, index}) => (
+                            <TouchableOpacity onPress={() => this.setLabel(item)}>
+                                <View elevation={5} style={styles.listItem}>
+                                    <Text style={styles.listItemText}> {item.labelName} </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                      />
 
                      <View>
                          <Button title="Finish" color="#6200F2"
-                                 disabled={this.state.terminating}
-                                 onPress={async () => {
-                                     clearTimeout(subscription);
-                                     this.setState({terminating: true});
-                                     await RecordingManager.currentRecording.finish();
-                                     this.props.navigation.navigate('HomeScreen', {
-                                         complete: true,
-                                     });
-                                 }}/>
+                            disabled={this.state.terminating}
+                            onPress={async () => {
+                                clearTimeout(subscription);
+                                this.setState({terminating: true});
+                                await RecordingManager.currentRecording.finish();
+                                this.props.navigation.navigate('HomeScreen', {
+                                    complete: true,
+                                });
+                            }}/>
                          <Button title="Cancel" color="#6200F2"
-                                 disabled={this.state.terminating}
-                                 onPress={async () => {
-                                     clearTimeout(subscription);
-                                     this.setState({terminating: true});
-                                     await RecordingManager.currentRecording.finish(true);
-                                     this.props.navigation.navigate('HomeScreen', {
-                                         complete: false,
-                                     });
-                                 }}/>
+                            disabled={this.state.terminating}
+                            onPress={async () => {
+                                clearTimeout(subscription);
+                                this.setState({terminating: true});
+                                await RecordingManager.currentRecording.finish(true);
+                                this.props.navigation.navigate('HomeScreen', {
+                                    complete: false,
+                                });
+                            }}/>
                      </View>
                  </View>
                  <Toast ref={(toast) => this.toast = toast}
-                        position='top'
-                        positionValue={70}
-                        style={{backgroundColor: 'white'}}
-                        textStyle={{color: 'black'}}
-                        opacity={0.8}
-                     // fadeInDuration={1000} Not sure these work, computer's a bit laggy
-                     // fadeOutDuration={1000}
+                    position='top'
+                    positionValue={70}
+                    style={{backgroundColor: 'white'}}
+                    textStyle={{color: 'black'}}
+                    opacity={0.8}
+                    // fadeInDuration={1000} Not sure these work, computer's a bit laggy
+                    // fadeOutDuration={1000}
                  />
              </View>
          );
