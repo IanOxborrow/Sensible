@@ -3,6 +3,7 @@ import React from "react";
 import Recorder from "./Recorder";
 import AudioRecorderPlayer from "react-native-audio-recorder-player";
 import {PERMISSIONS, check, request, RESULTS} from 'react-native-permissions';
+import {getSensorFileName, SensorType} from "../Sensors";
 
 export default class MicrophoneRecorder extends Recorder {
     static sensorWorking = null;
@@ -13,7 +14,7 @@ export default class MicrophoneRecorder extends Recorder {
      */
     constructor(recording) {
         super(recording);
-        this.filePath = this.recording.folderPath + "Microphone.mp3";
+        this.filePath = recording.folderPath + getSensorFileName(SensorType.MICROPHONE);
         this.audioRecorderPlayer = new AudioRecorderPlayer();
         this.isRecording = false;
         this.duration = 0;

@@ -5,6 +5,7 @@ import React from "react";
 import Recorder from "./Recorder";
 import {sleep} from "../Utilities";
 import {check, PERMISSIONS, RESULTS} from "react-native-permissions";
+import {getSensorFileName, SensorType} from "../Sensors";
 
 export default class BackCameraRecorder extends Recorder {
     static sensorWorking = null;
@@ -15,7 +16,7 @@ export default class BackCameraRecorder extends Recorder {
      */
     constructor(recording) {
         super(recording);
-        this.filePath = this.recording.folderPath + "Camera.mp4";
+        this.filePath = recording.folderPath + getSensorFileName(SensorType.BACK_CAMERA);
         this.isRecording = false;
         this.recordedData = null;
         this.view = (<RNCamera

@@ -1,24 +1,28 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {FloatingAction} from 'react-native-floating-action';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
-import {getSensorClass, SensorInfo, SensorType} from '../Sensors';
+import {getSensorClass, getSensorFileName, SensorInfo, SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
 import ModalDropdown from 'react-native-modal-dropdown';
-
+import Share from 'react-native-share';
+import CheckBox from 'react-native-check-box';
+import { zip } from 'react-native-zip-archive'
 import {
     StyleSheet,
     View,
     Text,
-    Button,
     FlatList,
     TouchableOpacity,
-    StatusBar,
     Modal,
     TouchableWithoutFeedback,
+    Alert,
+    NativeModules
 } from 'react-native';
+import sensors from 'react-native-sensors';
+
+const { ofstream } = NativeModules;
 
 import {
     Accelerometer,
@@ -35,6 +39,7 @@ export default class HomeScreen extends Component {
         this.state = {
             recordings_list: RecordingManager.recordings,
             availableSensors: [],
+            selectedSensors: {},
             loading: true,
             modalVisible: false,
             activeItem: 0,
@@ -75,7 +80,55 @@ export default class HomeScreen extends Component {
         return null;
     }
 
+    // returns a row for each sensor. It is used in the modal
+    sensorRow(name, sensorID) {
+
+        return (
+            <View key={sensorID} style={{flexDirection: "row", alignItems: "center", justifyContent: 'flex-end'}}>
+
+                <Text style={{paddingLeft: 10}}>{name}</Text>
+
+                <CheckBox
+                    isChecked={this.state.selectedSensors[sensorID]}
+                    onClick={async () => {
+
+                        //modifiy the state to record that a checkbox has been pressed
+                        this.state.selectedSensors[sensorID] = !this.state.selectedSensors[sensorID]
+                        this.setState(this.state.selectedSensors)
+                    }}
+                />
+            </View>
+        )
+    }
+
+    showAlert() {
+        return Alert.alert(
+            "Alert Title",
+            "My Alert Msg",
+            [
+            {
+                text: "Cancel",
+                onPress: () => Alert.alert("Cancel Pressed"),
+                style: "cancel",
+            },
+            ],
+            {
+            cancelable: true,
+            onDismiss: () =>
+                Alert.alert(
+                "This alert was dismissed by tapping outside of the alert dialog."
+                ),
+            }
+        );
+    }
+
     render() {
+
+        let sensorRows = this.state.availableSensors.map((id) => {
+            return this.sensorRow(SensorInfo[id].name, id);
+        })
+
+
         return (
             <View style={[styles.container, {flexDirection: 'column'}]}>
                 <Appbar.Header>
@@ -95,6 +148,7 @@ export default class HomeScreen extends Component {
                     renderItem={({item}) => (
                         <TouchableOpacity onPress={() => {
                             RecordingManager.currentRecording = item.info;
+
                             this.setState({
                                 modalVisible: true,
                                 availableSensors: Object.keys(item.info.enabledSensors).concat(Object.keys(item.info.enabledRecorders)).sort()
@@ -111,41 +165,140 @@ export default class HomeScreen extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisible}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        this.setState({modalVisible: false})
-                    }}>
+                    <TouchableWithoutFeedback onPress={() => {this.setState({modalVisible: false})}}>
                         <View style={styles.modalOverlay}/>
                     </TouchableWithoutFeedback>
+
                     <View style={styles.parentView}>
                         <View style={styles.modalView}>
-                            <ModalDropdown
-                                defaultValue={'Press to select the sensor data you want to export'}
-                                // TODO: Only show sensors that were active during the recording
-                                options={this.state.availableSensors.map(x => SensorInfo[x].name)}
-                                style={{alignItems: 'center', alignContent: 'center'}}
-                                textStyle={{fontWeight: 'bold', textAlign: 'right'}}
-                                dropdownStyle={{width: '70%'}}
-                                dropdownTextStyle={{fontWeight: 'bold', textAlign: 'center'}}
-                                onSelect={(key) => {
-                                    // Share selected sensor file
-                                    // TODO: make sure this actually works! (uncomment shareSensorFile)
-                                    this.setState({modalVisible: false})
-                                    RecordingManager.currentRecording.shareSensorFile(this.state.availableSensors[key])
-                                }}/>
+
+                            {sensorRows}
+                            {this.sensorRow("Labels", -1)}
+                            {this.sensorRow("Metadata", -2)}
+
                             <FAB
                                 style={styles.closeModal}
                                 label="Close"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
+
+                                    // deselect all the selected sensors
+                                    for (const [key, value] of Object.entries(this.state.selectedSensors)) {
+                                        this.state.selectedSensors[key] = false;
+                                    }
+                                }}
+                            />
+                           <FAB
+                                style={styles.closeModal}
+                                label="Export"
+                                onPress={async () => {
+                                    this.setState({modalVisible: false})
+
+                                    // delete the contents of the share folder
+                                    ofstream.delete(RecordingManager.SAVE_FILE_PATH + "sharing", true);
+
+                                    // write new share folder
+                                    ofstream.mkdir(RecordingManager.SAVE_FILE_PATH + "sharing")
+
+                                    // copy each of the files into the sharing folder
+                                    for (const [sensorId, value] of Object.entries(this.state.selectedSensors)) {
+                                        if (value) {
+                                            let filePath = RecordingManager.currentRecording.folderPath;
+                                            let sharePath = RecordingManager.SAVE_FILE_PATH + "sharing/";
+                                            // Export the sensor files
+                                            if (SensorInfo[sensorId]) {
+                                                const sensorFileName = getSensorFileName(sensorId);
+                                                filePath += sensorFileName;
+                                                sharePath += sensorFileName;
+                                            }
+                                            // Export the labels
+                                            else if (sensorId == -1) {
+                                                filePath += "labels.csv";
+                                                sharePath += "labels.csv";
+                                            }
+                                            // Export the metadata
+                                            else if (sensorId == -2) {
+                                                filePath += "info.json";
+                                                sharePath += "info.json";
+                                            }
+                                            await ofstream.copyFile(filePath, sharePath);
+                                        }
+                                    }
+
+                                    // create the zip file with all the contents
+                                    const shareFolder = RecordingManager.SAVE_FILE_PATH + "sharing/"
+                                    const zipFile = RecordingManager.SAVE_FILE_PATH + RecordingManager.currentRecording.name + ".zip"
+
+                                    zip(shareFolder, zipFile)
+                                        .then((path) => {
+                                            console.log(`zip completed at ${path}`)
+                                        })
+                                        .catch((error) => {
+                                            console.error(error)
+                                        })
+
+                                    // open the share dialogue
+                                    Share.open({
+                                        url: "file://" + zipFile,
+                                        subject: RecordingManager.currentRecording.name,
+                                    });
+
+
+                                    // deselect all the selected sensors
+                                    for (const [key, value] of Object.entries(this.state.selectedSensors)) {
+                                        this.state.selectedSensors[key] = false;
+                                    }
+
                                 }}
                             />
                             <FAB
                                 style={styles.deleteModal}
                                 label="Delete"
                                 onPress={() => {
-                                    // TODO: Delete recording data here
-                                    const newList = this.state.recordings_list.splice(this.state.activeItem, 1);
-                                    this.setState({modalVisible: false, recordings_list: newList})
+
+
+                                    const showAlert = () =>
+                                    Alert.alert(
+                                        "Delete this recording?",
+                                        "This will delete all files ascociated with this recording",
+                                        [
+                                            {text: 'Cancel', onPress: () => {}},
+                                            {text: 'Delete', onPress: () => {
+
+                                                // deselect all the selected sensors
+                                                for (const [key, value] of Object.entries(this.state.selectedSensors)) {
+                                                    this.state.selectedSensors[key] = false;
+                                                }
+
+                                                //construct the new recordings file and save it
+                                                var newRecordingList = "";
+                                                for (var recording of this.state.recordings_list)  {
+                                                    console.log("recording" + recording.title + " " + recording.id)
+                                                    if (recording.title != RecordingManager.currentRecording.name) {
+                                                        newRecordingList = newRecordingList + recording.title + ";" + recording.info.folderPath + "\n";
+                                                    }
+                                                }
+
+                                                ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", false, newRecordingList)
+
+                                                //delete the recording from the file system
+                                                const deletePath = RecordingManager.currentRecording.getFolderPath();
+                                                ofstream.delete(deletePath, true);
+
+
+                                                console.log("setting new list")
+                                                const newList = this.state.recordings_list.splice(this.state.activeItem, 1);
+                                                this.setState({modalVisible: false, recordings_list: newList})
+
+                                            }},
+                                        ],
+                                        {
+                                        cancelable: false,
+                                        onDismiss: () => {}}
+                                    );
+
+                                    showAlert();
+
                                 }}
                             />
                         </View>
@@ -217,6 +370,7 @@ const styles = StyleSheet.create({
         margin: 30,
         backgroundColor: "white",
         borderRadius: 20,
+        width: "70%",
         padding: 20,
         alignItems: "flex-start",
         shadowColor: "#000000",
