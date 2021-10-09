@@ -116,7 +116,6 @@
        * Toggles the display of the indicators
        */
      toggleIndicators() {
-        console.log("Toggling")
         this.setState({indicatorStatus: !this.state.indicatorStatus})
      }
 

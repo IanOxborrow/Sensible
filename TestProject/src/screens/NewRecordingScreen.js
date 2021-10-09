@@ -42,6 +42,8 @@ class NewRecordingScreen extends Component {
             modalVisible: false,
             currentSensorInfo: null,
             startingRecording: false,
+            errorVisible: false,
+            currentError: "",
         };
 
         // Ensure the recording class has been initialised
@@ -165,7 +167,11 @@ class NewRecordingScreen extends Component {
                             // Prevent the sensor from being added if it doesn't work
                             // TODO: Perform this check before getting to this screen
                             else if (!(await getSensorClass(sensorId).isSensorWorking())) {
-                                console.log("Sensor is not working!");
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: sensorInfo.name + " could not be set. Your phone may not have access to this sensor.",
+                                })
+                                // TODO: Uncheck box
                                 return;
                             }
 
@@ -308,7 +314,10 @@ class NewRecordingScreen extends Component {
                         // Prevent the recording from being started if no sensors have been selected
                         if (Object.entries(this.state.usedSensors).length === 0) {
                             // TODO: Display a toast with the following
-                            console.log("Please select at least one sensor");
+                            this.setState({
+                                errorVisible: true,
+                                currentError: "No sensors selected! Please select a sensor."
+                            })
                             return;
                         }
 
@@ -340,6 +349,29 @@ class NewRecordingScreen extends Component {
                                 label="Close"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
+                                }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.errorVisible}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({errorVisible: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.errorView}>
+                            <Text>Error: {this.state.currentError}</Text>
+                            <FAB
+                                style={styles.closeModal}
+                                label="Close"
+                                onPress={() => {
+                                    this.setState({errorVisible: false})
                                 }}
                             />
                         </View>
@@ -478,6 +510,27 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+
+    errorView: {
+        margin: 30,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+
+    errorText: {
+        alignItems: "center",
+        textAlign: "center",
     },
 });
 
