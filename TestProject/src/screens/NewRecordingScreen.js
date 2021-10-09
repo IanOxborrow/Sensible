@@ -155,6 +155,10 @@ class NewRecordingScreen extends Component {
                             }
                         />
                     }
+                    {
+                        SensorInfo[sensorId].type == HardwareType.RECORDER &&
+                        <Text style={styles.descriptionText}>Sample rate set</Text>
+                    }
 
                     <CheckBox
                         style={{flexDirection: "row"}}
@@ -171,7 +175,7 @@ class NewRecordingScreen extends Component {
                                     errorVisible: true,
                                     currentError: sensorInfo.name + " could not be set. Your phone may not have access to this sensor.",
                                 })
-                                // TODO: Uncheck box
+                                // Box will be unchecked automatically
                                 return;
                             }
 
@@ -271,9 +275,10 @@ class NewRecordingScreen extends Component {
         let sensorRows = Object.entries(SensorInfo).map(([sensorId, sensorInfo]) => {
             if (getSensorClass(sensorId).isSensorWorkingSync()) {
                 return this.sensorRow(sensorInfo, sensorId);
+            } else {
+                return <Text key={sensorId} style={styles.sensorInactive}>{sensorInfo.name} not active - check settings</Text>;
             }
         })
-
 
         return (
             <View style={styles.container}>
@@ -531,6 +536,17 @@ const styles = StyleSheet.create({
     errorText: {
         alignItems: "center",
         textAlign: "center",
+    },
+
+    descriptionText: {
+        color: "lightgray",
+        position: "relative",
+        left: -25,
+    },
+
+    sensorInactive: {
+        height: 25,
+        color: "red",
     },
 });
 
