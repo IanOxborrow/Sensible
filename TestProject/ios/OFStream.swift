@@ -11,7 +11,7 @@ import React
 @objc(OFStream)
 class OFStream : NSObject {
   
-  var outputStreams: [OutputStream]
+  var outputStreams: [OutputStream?]
   //var isOpen: [Bool]
   
   override init () {
@@ -86,7 +86,7 @@ class OFStream : NSObject {
   @objc
   func write(_ streamIndex: Int, text: String) {
     //let outputStream = outputStreams[streamIndex]
-    let bytesWritten = outputStreams[streamIndex].write(text)
+    let bytesWritten = outputStreams[streamIndex]!.write(text)
   
     if bytesWritten < 0 {
       print("write failure")
@@ -126,9 +126,9 @@ class OFStream : NSObject {
   @objc
   func close(_ streamIndex: Int, resolve: RCTPromiseResolveBlock,
              rejecter reject: RCTPromiseRejectBlock) {
-    outputStreams[streamIndex].close()
+    outputStreams[streamIndex]!.close()
     // outputStreams.remove(at: streamIndex)
-    outputStream[streamIndex] = nil
+    outputStreams[streamIndex] = nil
     resolve(nil)
   }
   
