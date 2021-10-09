@@ -17,7 +17,7 @@
                     rejecter:(RCTPromiseRejectBlock)reject
                     )
 
-RCT_EXTERN_METHOD(directoryExists: (NSString *)path
+  RCT_EXTERN_METHOD(directoryExists: (NSString *)path
                   resolve: (RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
@@ -55,7 +55,7 @@ RCT_EXTERN_METHOD(directoryExists: (NSString *)path
                     )
 
   RCT_EXTERN_METHOD(delete: (NSString *)path
-                    recursive: (NSBoolean *)recursive
+                    recursive: (BOOL *)recursive
                     resolve: (RCTPromiseResolveBlock)resolve
                     rejecter: (RCTPromiseRejectBlock)reject
                     )

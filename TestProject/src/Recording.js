@@ -35,20 +35,28 @@ export default class Recording {
         console.log("recording")
         console.log(this.folderPath)
 
-        // TODO: Make this platform independent!
-        if (folderPath === undefined) {
-            this.savedRecording = false;
 
-            if (Platform.OS !== 'ios') {
-                // Create the folder if it doesn't already exist
-                ofstream.mkdir(this.folderPath)
-                    .then(() => {
-                        console.log('Successfully created folder ' + this.folderPath);
-                    })
-                    .catch(err => {
-                        throw Error(err);
-                    });
-            }
+        ofstream.mkdir(this.folderPath)
+        .then(() => {
+            console.log('Successfully created folder ' + this.folderPath);
+        })
+        .catch(err => {
+            throw Error(err);
+        });
+
+        var directoryExists;
+        ofstream.directoryExists(this.folderPath)
+            .then((v) => {
+                directoryExists = v
+            })
+
+        if (!directoryExists) {
+            this.savedRecording = false;
+            console.log("folder did not exists")
+            // Create the folder if it doesn't already exist
+            
+        } else{
+            console.log(folderExists)
         }
     }
 
@@ -58,7 +66,7 @@ export default class Recording {
         }
 
         // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
+        //if (Platform.OS !== 'ios') {
             // TODO: Write this in a cleaner format
             // Create the metadata
             let metadata = '{"name":"' + this.name + '","sensors":[';
@@ -84,7 +92,7 @@ export default class Recording {
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
-        }
+        //}
     }
 
     /**
