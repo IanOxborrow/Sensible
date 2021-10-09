@@ -243,19 +243,22 @@
          data.labels = this.state.labelSource.map(value => value);
 
          let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
-             return <ToggleButton
-                 key={sensorId}
-                 icon={SensorInfo[sensorId].imageSrc}
-                 value={SensorInfo[sensorId].name}
-                 status={this.state.checkedStatus[sensorId]}
-                 onPress={() => {
-                     this.toggleGraphDisplay(sensorId)
-                 }}
-                 onLongPress={() => {
-                     this.displayToast(SensorInfo[sensorId].name)
-                 }}
-                 delayPressIn={500}
-             />
+             // Mic does not get a button (#9)
+             if (sensorId != 9) {
+                 return <ToggleButton
+                     key={sensorId}
+                     icon={SensorInfo[sensorId].imageSrc}
+                     value={SensorInfo[sensorId].name}
+                     status={this.state.checkedStatus[sensorId]}
+                     onPress={() => {
+                         this.toggleGraphDisplay(sensorId)
+                     }}
+                     onLongPress={() => {
+                         this.displayToast(SensorInfo[sensorId].name)
+                     }}
+                     delayPressIn={500}
+                 />
+             }
          })
 
          return (
