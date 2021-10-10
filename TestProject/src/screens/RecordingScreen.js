@@ -55,6 +55,7 @@
      backgroundColor: '#000000',
      backgroundGradientFrom: "#000000",
      backgroundGradientTo: "#000000",
+     button: "#000000",
      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
  };
 
@@ -230,6 +231,7 @@
          if (this.state.currentLabel) {
              chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
              chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+             chartConfig.button = hslToHex((this.labelsPallet[this.state.currentLabel] + 5) % 360, 50, 50);
          } else {
              chartConfig.backgroundGradientTo = "#000000";
              chartConfig.backgroundGradientFrom = "#000000";
@@ -322,9 +324,15 @@
                                keyExtractor={item => item.labelName}
                                renderItem={({item, index}) => (
                                    <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                       <View elevation={5} style={styles.listItem}>
+                                       {this.state.currentLabel == item.labelName ?
+                                       <View elevation={5} style={[styles.listItem, {backgroundColor: chartConfig.button}]}>
                                            <Text style={styles.listItemText}> {item.labelName} </Text>
                                        </View>
+                                       :
+                                       <View elevation={5} style={[styles.listItem, {backgroundColor: "#FFFFFF"}]}>
+                                           <Text style={styles.listItemText}> {item.labelName} </Text>
+                                       </View>
+                                       }
                                    </TouchableOpacity>
                                )}
                      />
