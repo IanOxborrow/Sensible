@@ -13,7 +13,7 @@
  import Appbar from '../react-native-paper-src/components/Appbar';
  import ToggleButton from '../react-native-paper-src/components/ToggleButton';
  import Toast, {DURATION} from 'react-native-easy-toast';
-
+ import FAB from '../react-native-paper-src/components/FAB/FAB';
  import {
      StyleSheet,
      View,
@@ -23,6 +23,8 @@
      FlatList,
      TouchableOpacity,
      Image,
+     Modal,
+     TouchableWithoutFeedback,
  } from 'react-native';
  import RecordingManager from "../RecordingManager";
 
@@ -76,6 +78,7 @@
              terminating: false,
              subscriptions: [],
              indicatorStatus: true,
+             helpShown: false,
          };
 
          console.log(this.state.sensorIds);
@@ -270,6 +273,8 @@
 
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
+                     <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                          onPress={() => {this.setState({helpShown: true})}}/>
                      <View id="indicators" style={[this.state.indicatorStatus ? styles.indicators : styles.indicatorsOff]}>
                         {this.state.sensorIds.includes("9") ? <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
                         {this.state.sensorIds.includes("12") ? <Image source={SensorInfo[12].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
@@ -360,6 +365,29 @@
                      // fadeInDuration={1000} Not sure these work, computer's a bit laggy
                      // fadeOutDuration={1000}
                  />
+                 <Modal
+                     animationType="fade"
+                     transparent={true}
+                     visible={this.state.helpShown}>
+                     <TouchableWithoutFeedback onPress={() => {
+                         this.setState({helpShown: false})
+                     }}>
+                         <View style={styles.modalOverlay}/>
+                     </TouchableWithoutFeedback>
+
+                     <View style={styles.parentView}>
+                         <View style={styles.modalView}>
+                             <Text>A tutorial video can be found here: link</Text>
+                             <FAB
+                                 style={{marginTop: 10}}
+                                 label="Close"
+                                 onPress={() => {
+                                     this.setState({helpShown: false})
+                                 }}
+                             />
+                         </View>
+                     </View>
+                 </Modal>
              </View>
          );
      }
@@ -440,6 +468,43 @@
         justifyContent: 'flex-end',
         marginTop: 5,
         display: 'none',
+     },
+     modalView: {
+         margin: 30,
+         backgroundColor: "white",
+         borderRadius: 20,
+         padding: 20,
+         alignItems: "flex-start",
+         shadowColor: "#000000",
+         shadowOffset: {
+             width: 0,
+             height: 2
+         },
+         shadowOpacity: 0.25,
+         shadowRadius: 4,
+         elevation: 5
+     },
+
+     parentView: {
+         flex: 1,
+         justifyContent: "flex-end",
+         alignItems: "center",
+     },
+
+     closeModal: {
+         marginTop: 10,
+         alignSelf: 'center'
+         //marginLeft: 100,
+         //marginRight: 100,
+     },
+
+     modalOverlay: {
+         position: 'absolute',
+         top: 0,
+         bottom: 0,
+         left: 0,
+         right: 0,
+         backgroundColor: 'rgba(0,0,0,0.5)'
      },
  });
 

@@ -44,7 +44,8 @@ class NewRecordingScreen extends Component {
             startingRecording: false,
             errorVisible: false,
             currentError: "",
-            recordingTitle: "Recording " + props.route.params.recording_number,
+            recordingTitle: "Recording " + (props.route.params.recording_number + 1),
+            helpShown: false,
         };
 
         // Ensure the recording class has been initialised
@@ -294,6 +295,8 @@ class NewRecordingScreen extends Component {
                         }
                     }} />
                     <Appbar.Content/>
+                    <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                                            onPress={() => {this.setState({helpShown: true})}}/>
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')}
                                    onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
@@ -385,6 +388,29 @@ class NewRecordingScreen extends Component {
                                 label="Close"
                                 onPress={() => {
                                     this.setState({errorVisible: false})
+                                }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.helpShown}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({helpShown: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text>A tutorial video can be found here: link</Text>
+                            <FAB
+                                style={{marginTop: 10}}
+                                label="Close"
+                                onPress={() => {
+                                    this.setState({helpShown: false})
                                 }}
                             />
                         </View>
@@ -563,7 +589,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 20,
         marginLeft: 10,
-        width: "70%",
+        width: "60%",
     }
 });
 

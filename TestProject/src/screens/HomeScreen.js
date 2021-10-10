@@ -18,7 +18,9 @@ import {
     Modal,
     TouchableWithoutFeedback,
     Alert,
-    NativeModules
+    NativeModules,
+    Image,
+    TouchableWithFeedback,
 } from 'react-native';
 import sensors from 'react-native-sensors';
 
@@ -43,6 +45,7 @@ export default class HomeScreen extends Component {
             loading: true,
             modalVisible: false,
             activeItem: 0,
+            helpShown: false,
         };
 
         // Perform any initialisation required then update the state
@@ -133,6 +136,8 @@ export default class HomeScreen extends Component {
             <View style={[styles.container, {flexDirection: 'column'}]}>
                 <Appbar.Header>
                     <Appbar.Content title="Sensible"/>
+                    <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                        onPress={() => {this.setState({helpShown: true})}}/>
                 </Appbar.Header>
 
                 {
@@ -307,6 +312,29 @@ export default class HomeScreen extends Component {
                     </View>
 
                 </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.helpShown}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({helpShown: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text>A tutorial video can be found here: link</Text>
+                            <FAB
+                                style={{marginTop: 10}}
+                                label="Close"
+                                onPress={() => {
+                                    this.setState({helpShown: false})
+                                }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
 
                 {
                     // Only show once the recordings have been loaded
@@ -417,5 +445,5 @@ const styles = StyleSheet.create({
         position: 'relative',
         textAlign: 'center',
         marginTop: 30,
-    }
+    },
 });
