@@ -22,7 +22,7 @@ export default class GPSSample extends SensorSample
      *
      * @returns The name of each component in an array
      */
-    getComponents()
+    static getComponents()
     {
         return ['latitude', 'longitude', 'accuracy', 'altitude', 'heading', 'speed', 'timestamp'];
     }

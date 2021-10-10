@@ -3,10 +3,14 @@ import Accelerometer from './sensors/Accelerometer';
 import Gyroscope from './sensors/Gyroscope';
 import Magnetometer from './sensors/Magnetometer';
 import Barometer from './sensors/Barometer';
-import Mic from './sensors/Mic';
 import GPS from './sensors/GPS';
 import BackCameraRecorder from "./sensors/BackCameraRecorder";
 import MicrophoneRecorder from "./sensors/MicrophoneRecorder";
+import AccelerometerSample from "./sensors/AccelerometerSample";
+import GyroscopeSample from "./sensors/GyroscopeSample";
+import MagnetometerSample from "./sensors/MagnetometerSample";
+import BarometerSample from "./sensors/BarometerSample";
+import GPSSample from "./sensors/GPSSample";
 
 export {default as GenericTimeframe} from './sensors/GenericTimeframe';
 export {default as Accelerometer} from './sensors/Accelerometer';
@@ -48,11 +52,12 @@ export const SensorInfo = {
         imageSrc: require('./assets/accelerometer_icon.png'),
         fileExt: ".csv",
         class: Accelerometer,
+        sampleClass: AccelerometerSample,
         measure: "Acceleration",
         units: "m/s^2",
         description: {
             measure: "Rate of change of velocity (how fast you move the phone)",
-            output: "x per sample rate, representing current velocity (m/s^2)"
+            output: "x per sample, representing current velocity (m/s^2)"
         }
     },
     [SensorType.GYROSCOPE]: {
@@ -61,11 +66,12 @@ export const SensorInfo = {
         imageSrc: require('./assets/gyroscope_icon.png'),
         fileExt: ".csv",
         class: Gyroscope,
+        sampleClass: GyroscopeSample,
         measure: "Angular velocity",
         units: "RPS",
         description: {
-            measure: "Orientation and angular velocity (rate of change of movement in each axis)",
-            output: "x, y, z per sample rate, representing each vector's change in velocity (m/s^2)"
+            measure: "Angular velocity (how fast you rotate the phone)",
+            output: "x, y, z per sample, representing each vector's angular velocity (m/s^2)"
         }
     },
     [SensorType.MAGNETOMETER]: {
@@ -74,12 +80,12 @@ export const SensorInfo = {
         imageSrc: require('./assets/magnetometer_icon.png'),
         fileExt: ".csv",
         class: Magnetometer,
+        sampleClass: MagnetometerSample,
         measure: "Magnetic Field Direction",
         units: "μT",
-        // TODO: Update description!
         description: {
-            measure: "ADD MEASURE HERE",
-            output: "ADD OUTPUT HERE"
+            measure: "Magnetic field direction (how strong a magnetic field is)",
+            output: "x, y, z per sample, representing the strength of the magnetic field"
         }
     },
     [SensorType.BAROMETER]: {
@@ -88,12 +94,12 @@ export const SensorInfo = {
         imageSrc: require('./assets/barometer_icon.png'),
         fileExt: ".csv",
         class: Barometer,
+        sampleClass: BarometerSample,
         measure: "Atmospheric Pressure",
         units: "psi",
-        // TODO: Update description!
         description: {
-            measure: "ADD MEASURE HERE",
-            output: "ADD OUTPUT HERE"
+            measure: "Atmospheric pressure (pressure of your environment)",
+            output: "Pressure per sample, representing the atmospheric pressure"
         }
     },
     [SensorType.MICROPHONE]: {
@@ -105,8 +111,8 @@ export const SensorInfo = {
         measure: "Amplitude",
         units: "dB",
         description: {
-            measure: "Sound, amplitude representing decibels",
-            output: "MP3 file, saved to device"
+            measure: "Audio (what your phone hears) Note: Will not be graphed.",
+            output: "MP3 file"
         }
     },
     [SensorType.GPS]: {
@@ -115,11 +121,12 @@ export const SensorInfo = {
         imageSrc: require('./assets/gps_icon.png'),
         fileExt: ".csv",
         class: GPS,
+        sampleClass: GPSSample,
         measure: "Coordinates",
         units: "°",
         description: {
             measure: "Your current location on the globe",
-            output: "lat and long per sample rate, representing current global position"
+            output: "Latitude and longitude per sample, representing current global position"
         }
     },
     [SensorType.BACK_CAMERA]: {
@@ -127,13 +134,12 @@ export const SensorInfo = {
         type: HardwareType.RECORDER,
         imageSrc: require('./assets/camera_icon.png'),
         fileExt: ".mp4",
-        class: BackCameraRecorder, // TODO: Set correct class!
-        // TODO: Update description!
+        class: BackCameraRecorder,
         measure: "Video",
         units: "",
         description: {
-            measure: "Video feed of the back camera",
-            output: "MP4 file, saved to device"
+            measure: "Video feed of the back camera. Note: Will not be graphed",
+            output: "MP4 file"
         }
     }
 }
@@ -144,6 +150,14 @@ export const getSensorClass = (sensorId) => {
     }
 
     return SensorInfo[sensorId].class;
+};
+
+export const getSensorSampleClass = (sensorId) => {
+    if (!(sensorId in SensorInfo)) {
+        throw new Error('Sensors.getSensorClass: Received an unknown type, ' + sensorId);
+    }
+
+    return SensorInfo[sensorId].sampleClass;
 };
 
 export const getSensorFileName = (type) => {
