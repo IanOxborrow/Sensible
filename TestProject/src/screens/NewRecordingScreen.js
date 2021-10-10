@@ -4,7 +4,7 @@ import React, {Component, useState, useRef} from "react";
 import {FloatingAction} from "react-native-floating-action";
 //import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
-import IconButton from "../react-native-paper-src/components/Button"
+import PaperButton from "../react-native-paper-src/components/Button";
 import Appbar from '../react-native-paper-src/components/Appbar'
 import {getSensorClass, HardwareType, SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
@@ -328,15 +328,6 @@ class NewRecordingScreen extends Component {
                     label="Start Recording"
                     onPress={() => {
                         // Prevent the recording from being started if no sensors have been selected
-                        for (sensor in Object.entries(this.state.usedSensors)) {
-                            if (!Object.entries(this.state.usedSensors)[sensor][1]) {
-                                this.setState({
-                                    errorVisible: true,
-                                    currentError: "No sensors selected! Please select a sensor."
-                                })
-                                return;
-                            }
-                        }
                         if (Object.entries(this.state.usedSensors).length === 0) {
                             this.setState({
                                 errorVisible: true,
@@ -344,7 +335,15 @@ class NewRecordingScreen extends Component {
                             })
                             return;
                         }
-
+                        for (var i = 0; i < Object.entries(this.state.usedSensors).length; i++) {
+                            if (!Object.entries(this.state.usedSensors)[i][1]) {
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: "No sensors selected! Please select a sensor."
+                                })
+                                return;
+                            }
+                        }
                         this.startRecording();
                         this.setState({startingRecording: true})
                     }}
@@ -368,13 +367,13 @@ class NewRecordingScreen extends Component {
                                 style={styles.sensorDescriptions}>Measures: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.measure : ""}</Text>
                             <Text
                                 style={styles.sensorDescriptions}>Output: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.output : ""}</Text>
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
                                 }}
-                            />
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -391,13 +390,13 @@ class NewRecordingScreen extends Component {
                     <View style={styles.parentView}>
                         <View style={styles.errorView}>
                             <Text>Error: {this.state.currentError}</Text>
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({errorVisible: false})
                                 }}
-                            />
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -414,13 +413,13 @@ class NewRecordingScreen extends Component {
                     <View style={styles.parentView}>
                         <View style={styles.modalView}>
                             <Text>A tutorial video can be found here: link</Text>
-                            <FAB
+                            <PaperButton
                                 style={{marginTop: 10}}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({helpShown: false})
                                 }}
-                            />
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>

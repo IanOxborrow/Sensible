@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
+import PaperButton from "../react-native-paper-src/components/Button";
 import {getSensorClass, getSensorFileName, SensorInfo, SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
@@ -183,9 +184,9 @@ export default class HomeScreen extends Component {
                             {this.sensorRow("Labels", -1)}
                             {this.sensorRow("Metadata", -2)}
 
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
 
@@ -194,10 +195,10 @@ export default class HomeScreen extends Component {
                                         this.state.selectedSensors[key] = false;
                                     }
                                 }}
-                            />
-                           <FAB
+                            >Close</PaperButton>
+                           <PaperButton
                                 style={styles.closeModal}
-                                label="Export"
+                                mode="contained"
                                 onPress={async () => {
                                     this.setState({modalVisible: false})
 
@@ -257,10 +258,10 @@ export default class HomeScreen extends Component {
                                     }
 
                                 }}
-                            />
-                            <FAB
+                            >Export</PaperButton>
+                            <PaperButton
                                 style={styles.deleteModal}
-                                label="Delete"
+                                mode="contained"
                                 onPress={() => {
 
 
@@ -307,7 +308,7 @@ export default class HomeScreen extends Component {
                                     showAlert();
 
                                 }}
-                            />
+                            >Delete</PaperButton>
                         </View>
                     </View>
 
@@ -325,13 +326,13 @@ export default class HomeScreen extends Component {
                     <View style={styles.parentView}>
                         <View style={styles.modalView}>
                             <Text>A tutorial video can be found here: link</Text>
-                            <FAB
+                            <PaperButton
                                 style={{marginTop: 10}}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({helpShown: false})
                                 }}
-                            />
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -429,7 +430,7 @@ const styles = StyleSheet.create({
     },
     deleteModal: {
         position: 'relative',
-        top: -23,
+        top: -12,
         marginTop: 0,
         alignSelf: 'flex-end'
     },

@@ -13,7 +13,7 @@
  import Appbar from '../react-native-paper-src/components/Appbar';
  import ToggleButton from '../react-native-paper-src/components/ToggleButton';
  import Toast, {DURATION} from 'react-native-easy-toast';
- import FAB from '../react-native-paper-src/components/FAB/FAB';
+ import PaperButton from "../react-native-paper-src/components/Button";
  import {
      StyleSheet,
      View,
@@ -378,13 +378,13 @@
                      <View style={styles.parentView}>
                          <View style={styles.modalView}>
                              <Text>A tutorial video can be found here: link</Text>
-                             <FAB
-                                 style={{marginTop: 10}}
-                                 label="Close"
-                                 onPress={() => {
+                             <PaperButton
+                                style={{marginTop: 10}}
+                                mode="contained"
+                                onPress={() => {
                                      this.setState({helpShown: false})
                                  }}
-                             />
+                             >Close</PaperButton>
                          </View>
                      </View>
                  </Modal>
