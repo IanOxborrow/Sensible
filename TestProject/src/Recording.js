@@ -169,7 +169,7 @@ export default class Recording {
         {
             // TODO: Figure out why the initial null label isn't here -- may want to create a new label class at the start
             this.labels[this.labels.length - 1].endTime = Date.now();
-            ofstream.write(this.fileStreamIndices[-1], lastLabel.name + ',' + (lastLabel.startTime - this.startTime) + ',' + (lastLabel.endTime - this.startTime) + '\n');
+            ofstream.write(this.fileStreamIndices[-1], lastLabel.name + ',' + lastLabel.startTime + ',' + lastLabel.endTime + '\n');
         }
 
         if (flushOnly) {

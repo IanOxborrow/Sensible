@@ -282,7 +282,7 @@ export default class HomeScreen extends Component {
                                                 ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", false, newRecordingList)
 
                                                 //delete the recording from the file system
-                                                const deletePath = RecordingManager.currentRecording.getFolderPath();
+                                                const deletePath = RecordingManager.currentRecording.folderPath;
                                                 ofstream.delete(deletePath, true);
 
 
