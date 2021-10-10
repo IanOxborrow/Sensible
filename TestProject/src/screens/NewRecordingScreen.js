@@ -45,6 +45,7 @@ class NewRecordingScreen extends Component {
             errorVisible: false,
             currentError: "",
             recordingTitle: "Recording " + (props.route.params.recording_number + 1),
+            baseTitle: "Recording " + (props.route.params.recording_number + 1),
             helpShown: false,
         };
 
@@ -95,8 +96,11 @@ class NewRecordingScreen extends Component {
             }
         }
 
-        RecordingManager.currentRecording.name = this.state.recordingTitle;
-
+        if (this.state.recordingTitle.replace(/\s/g, "") !== "") {
+            RecordingManager.currentRecording.name = this.state.recordingTitle;
+        } else {
+            RecordingManager.currentRecording.name = this.state.baseTitle;
+        }
         if (this.state.currentLabelAddition !== "") {
             const newLabel = {labelName: this.state.currentLabelAddition};
             this.state.addedLabels.push(newLabel);
