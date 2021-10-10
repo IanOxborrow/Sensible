@@ -97,6 +97,11 @@ class NewRecordingScreen extends Component {
 
         RecordingManager.currentRecording.name = this.state.recordingTitle;
 
+        if (this.state.currentLabelAddition !== "") {
+            const newLabel = {labelName: this.state.currentLabelAddition};
+            this.state.addedLabels.push(newLabel);
+            this.setState({addedLabels: [...this.state.addedLabels]});
+        }
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
             "sensors": selectedSensors,
