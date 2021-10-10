@@ -164,12 +164,18 @@ class OFStream : NSObject {
 
     let fileURL = URL(fileURLWithPath: path)
 
+    if (!fileManager.fileExists(atPath: path)) {
+      resolve("")
+      return
+    }
+
     //reading
     do {
       let fileText = try String(contentsOf: fileURL, encoding: .utf8)
       resolve(fileText)
     }
     catch {
+      resolve("error: file did not exist")
       // reject()
     }
   }

@@ -45,15 +45,20 @@ export default class HomeScreen extends Component {
      * @return {Promise<void>}
      */
     async init() {
+        console.log("1")
         await RecordingManager.loadConfig();
         // Request permissions and check whether each sensor is working (this makes it faster for next time)
         for (const sensorId of Object.values(SensorType)) {
             const sensorClass = getSensorClass(sensorId);
+            console.log(sensorId + "a")
             await sensorClass.requestPermissions();
+            console.log(sensorId + "b")
             await sensorClass.isSensorWorking();
         }
+        console.log("2")
         // Load the recordings
         await RecordingManager.loadRecordings();
+        console.log("3")
         this.state.loading = false;
     }
 
@@ -156,6 +161,8 @@ export default class HomeScreen extends Component {
     }
 
     render() {
+
+        console.log(RecordingManager.SAVE_FILE_PATH)
 
         let sensorRows = this.state.availableSensors.map((id) => {
             return this.sensorRow(SensorInfo[id].name, id);
