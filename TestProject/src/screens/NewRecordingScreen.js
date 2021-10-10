@@ -101,7 +101,7 @@ class NewRecordingScreen extends Component {
         } else {
             RecordingManager.currentRecording.name = this.state.baseTitle;
         }
-        if (this.state.currentLabelAddition !== "") {
+        if (this.state.currentLabelAddition !== "" && this.state.currentLabelAddition != this.state.addedLabels[this.state.addedLabels.length-1].labelName) {
             const newLabel = {labelName: this.state.currentLabelAddition};
             this.state.addedLabels.push(newLabel);
             this.setState({addedLabels: [...this.state.addedLabels]});
