@@ -328,8 +328,16 @@ class NewRecordingScreen extends Component {
                     label="Start Recording"
                     onPress={() => {
                         // Prevent the recording from being started if no sensors have been selected
+                        for (sensor in Object.entries(this.state.usedSensors)) {
+                            if (!Object.entries(this.state.usedSensors)[sensor][1]) {
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: "No sensors selected! Please select a sensor."
+                                })
+                                return;
+                            }
+                        }
                         if (Object.entries(this.state.usedSensors).length === 0) {
-                            // TODO: Display a toast with the following
                             this.setState({
                                 errorVisible: true,
                                 currentError: "No sensors selected! Please select a sensor."
