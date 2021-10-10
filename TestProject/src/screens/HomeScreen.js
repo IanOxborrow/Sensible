@@ -141,6 +141,8 @@ export default class HomeScreen extends Component {
                     <Text style={{padding: 10}}>Loading recordings...</Text>
                 }
 
+                {this.state.recordings_list.length == 0 ? <Text style={styles.infoText}>No recordings found</Text> : <Text></Text>}
+
                 <FlatList
                     style={styles.list}
                     data={this.state.recordings_list}
@@ -411,4 +413,9 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
+    infoText: {
+        position: 'relative',
+        textAlign: 'center',
+        marginTop: 30,
+    }
 });
