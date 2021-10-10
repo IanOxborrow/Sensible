@@ -93,6 +93,9 @@ class NewRecordingScreen extends Component {
             }
         }
 
+        // TODO: Update this to change the recording name
+        RecordingManager.currentRecording.name = "This is a custom name";
+
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
             "sensors": selectedSensors,
