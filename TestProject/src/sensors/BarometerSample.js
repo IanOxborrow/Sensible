@@ -16,7 +16,7 @@ export default class BarometerSample extends SensorSample
      *
      * @returns The name of each component in an array
      */
-    getComponents()
+    static getComponents()
     {
         return ['pressure'];
     }

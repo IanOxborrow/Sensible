@@ -3,9 +3,16 @@ import Sensor from './Sensor';
 import { MagnetometerSample } from '../Sensors';
 import {magnetometer, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
 import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class Magnetometer extends Sensor
 {
+    static sensorWorking = null;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = false;
+    static permissionsSatisfied = false;
+
     constructor(dataStore, sampleRate)
     {
         super(dataStore, sampleRate);
@@ -30,6 +37,13 @@ export default class Magnetometer extends Sensor
     }
 
     /**
+     * Requests any permissions required for this sensor
+     */
+    static async requestPermissions() {
+        Magnetometer.permissionsSatisfied = true;
+    }
+
+    /**
      * Created by Chathura Galappaththi
      *
      * Checks whether the sensor is able to be used
@@ -37,22 +51,58 @@ export default class Magnetometer extends Sensor
      * @return True if the sensor is working, False otherwise
      */
     static async isSensorWorking() {
-        let status = null;
+        if (!Magnetometer.permissionsSatisfied) {
+            return false;
+        } else if (Magnetometer.sensorWorking != null) {
+            return Magnetometer.sensorWorking;
+        }
+
         const subscription = await magnetometer.subscribe({
             next: () => {
-                status = true;
+                Magnetometer.sensorWorking = true;
             },
             error: () => {
-                status = false;
+                Magnetometer.sensorWorking = false;
+                Magnetometer.sampleRateCalculated = true;
             }
         });
 
-        while (status == null) {
+        while (Magnetometer.sensorWorking == null) {
             await sleep(1);
         }
         subscription.unsubscribe();
 
-        return status
+        return Magnetometer.sensorWorking;
+    }
+
+    /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (Magnetometer.sensorWorking == null) {
+            console.warn("Magnetometer.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return Magnetometer.sensorWorking;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Tests the maximum possible sample rate (requires ~3min to run)
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        if (!await Magnetometer.isSensorWorking()) {
+            return -1;
+        }
+
+        return Magnetometer.maxSampleRate;
     }
 
     /**
@@ -69,7 +119,27 @@ export default class Magnetometer extends Sensor
             }
 
             this.isEnabled = true;
-            this.subscription = magnetometer.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
+            let samples = 0;
+            let start = null;
+            let duration = 0;
+            this.subscription = magnetometer.subscribe(({ x, y, z, timestamp }) => {
+                this.pushSample(x, y, z);
+
+                // Calculate the max sample rate if it is currently using the default
+                if (RecordingManager.sampleRatesCalculated === 0 && !Magnetometer.sampleRateCalculated) {
+                    if (start == null) {
+                        start = timestamp;
+                    }
+
+                    samples++;
+                    duration = (timestamp - start)/1000;
+                    if (duration >= 3*60) {
+                        Magnetometer.maxSampleRate = samples/duration;
+                        Magnetometer.sampleRateCalculated = true;
+                        RecordingManager.saveConfig();
+                    }
+                }
+            });
             this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}

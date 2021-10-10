@@ -7,24 +7,30 @@
  * @flow strict-local
  */
 
- import React, {Component} from 'react';
- import {HardwareType, SensorInfo, SensorType} from '../Sensors';
- import {LineChart} from 'react-native-chart-kit';
- import Appbar from '../react-native-paper-src/components/Appbar';
- import ToggleButton from '../react-native-paper-src/components/ToggleButton';
- import Toast, {DURATION} from 'react-native-easy-toast';
+import React, {Component} from 'react';
+import {HardwareType, SensorInfo, SensorType} from '../Sensors';
+import {LineChart} from 'react-native-chart-kit';
+import Appbar from '../react-native-paper-src/components/Appbar';
+import ToggleButton from '../react-native-paper-src/components/ToggleButton';
+import Toast, {DURATION} from 'react-native-easy-toast';
+import ModalDropdown from 'react-native-modal-dropdown';
 
- import {
-     StyleSheet,
-     View,
-     Text,
-     Dimensions,
-     Button,
-     FlatList,
-     TouchableOpacity,
-     Image,
- } from 'react-native';
- import RecordingManager from "../RecordingManager";
+
+import {
+    ActivityIndicator,
+    StyleSheet,
+    View,
+    Modal,
+    Text,
+    Dimensions,
+    Button,
+    FlatList,
+    TouchableOpacity,
+    Image,
+    TouchableWithoutFeedback
+} from 'react-native';
+import RecordingManager from "../RecordingManager";
+import PaperButton from "../react-native-paper-src/components/Button";
 
  const data = {
      labels: [],
@@ -53,6 +59,7 @@
      backgroundColor: '#000000',
      backgroundGradientFrom: "#000000",
      backgroundGradientTo: "#000000",
+     button: "#000000",
      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
  };
 
@@ -60,6 +67,8 @@
  class RecordingScreen extends Component {
      constructor(props) {
          super(props);
+         this.lastGraphUpdate = 0;
+         this.graphUpdateInterval = 400; // in ms
          this.state = {
              startTime: new Date(),
              lastUpdateTime: new Date(),
@@ -71,7 +80,11 @@
              checkedStatus: {},
              currentSensor: -1,
              recorderzIndex: -1,
-             terminating: false
+             terminating: false,
+             subscriptions: [],
+             indicatorStatus: true,
+             showLoadingSymbol: true,
+             helpShown: false,
          };
 
          console.log(this.state.sensorIds);
@@ -91,8 +104,37 @@
              throw new Error('NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised');
          }
 
-         // Enable all sensors and start all recorders
-         RecordingManager.currentRecording.start();
+         // Set an empty label and the meta file
+         RecordingManager.currentRecording.startTime = Date.now();
+         RecordingManager.currentRecording.setLabel(null);
+         RecordingManager.currentRecording.createMetadataFile();
+
+         this.state.subscriptions.push(setInterval(() => {this.toggleIndicators()}, 1000));
+         this.state.subscriptions.push(setInterval(() => {this.setState({})}, this.graphUpdateInterval));
+
+         //stop the loading symbol from showing and start the recording
+         setTimeout(() => {
+             this.setState({showLoadingSymbol: false})
+
+             // Enable all sensors and start all recorders
+             RecordingManager.currentRecording.start();
+
+         }, 3000);
+     }
+
+     componentWillUnmount() {
+        for (let i = 0; i < this.state.subscriptions.length; i++) {
+            clearTimeout(this.state.subscriptions[i])
+        }
+     }
+
+     /**
+       * Created by Ryan Turner
+       *
+       * Toggles the display of the indicators
+       */
+     toggleIndicators() {
+        this.setState({indicatorStatus: !this.state.indicatorStatus})
      }
 
      // Funtion to create each item in the list
@@ -117,7 +159,6 @@
              newLabel = label.labelName;
          }
          // Update the label
-         // TODO: Change this to use the current `Recording` instance
          RecordingManager.currentRecording.setLabel(newLabel);
          this.state.currentLabel = newLabel;
          // Output a debug message
@@ -158,81 +199,85 @@
          );
      };
 
+     updateGraphData() {
+         let maxPoints = 10;
+         // Add a new point
+         let sample = null;
+
+         if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
+             return;
+         }
+
+         sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
+         yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
+
+         // Don't update the graph if a new sample hasn't come in
+         if (sample == null) {
+             return;
+         }
+
+         // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
+         // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+         this.state.dataSource.push(sample.getData()[0]);
+         // Add the corresponding x-value
+         let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
+         if (timeElapsed >= 1) {
+             this.state.lastUpdateTime = new Date();
+             let label = Math.round((new Date() - this.state.startTime) / 1000);
+             this.state.labelSource.push(label.toString());
+         } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
+             let labelText = this.state.currentLabel;
+             labelText = labelText ? labelText : '';
+             this.state.labelSource.push(labelText);
+         } else {
+             this.state.labelSource.push('');
+         }
+
+         // Remove the first point (from the front)
+         if (this.state.dataSource.length >= maxPoints) {
+             this.state.dataSource.shift();
+             this.state.labelSource.shift();
+         }
+
+         if (this.state.currentLabel) {
+             chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
+             chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+             chartConfig.button = hslToHex((this.labelsPallet[this.state.currentLabel] + 5) % 360, 50, 50);
+         } else {
+             chartConfig.backgroundGradientTo = "#000000";
+             chartConfig.backgroundGradientFrom = "#000000";
+         }
+
+         this.lastGraphUpdate = Date.now();
+     };
+
      render() {
-         const updateGraphData = () => {
-             let maxPoints = 10;
-             // Add a new point
-             let sample = null;
-
-             if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
-                 return;
-             }
-
-             sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
-             yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
-
-             // Don't update the graph if a new sample hasn't come in
-             if (sample == null) {
-                 return;
-             }
-
-             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-             // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-             this.state.dataSource.push(sample.getData()[0]);
-             // Add the corresponding x-value
-             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
-             if (timeElapsed >= 1) {
-                 this.state.lastUpdateTime = new Date();
-                 let label = Math.round((new Date() - this.state.startTime) / 1000);
-                 this.state.labelSource.push(label.toString());
-             } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
-                 let labelText = this.state.currentLabel;
-                 labelText = labelText ? labelText : '';
-                 this.state.labelSource.push(labelText);
-             } else {
-                 this.state.labelSource.push('');
-             }
-
-             // Remove the first point (from the front)
-             if (this.state.dataSource.length >= maxPoints) {
-                 this.state.dataSource.shift();
-                 this.state.labelSource.shift();
-             }
-
-             if (this.state.currentLabel) {
-                 chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
-                 chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
-             } else {
-                 chartConfig.backgroundGradientTo = "#000000";
-                 chartConfig.backgroundGradientFrom = "#000000";
-             }
-         };
-
-         const updateGraphUI = () => {
-             this.forceUpdate();
-         };
-
-         // these get called with every update
-         updateGraphData();
-         var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
+         // Limit the rate at which the graph is updated
+         if (Date.now() - this.lastGraphUpdate >= this.graphUpdateInterval) {
+             this.updateGraphData();
+             this.lastGraphUpdate = Date.now();
+         }
 
          data.datasets[0].data = this.state.dataSource.map(value => value);
          data.labels = this.state.labelSource.map(value => value);
 
          let sensorButtonIcons = this.state.sensorIds.map(sensorId => {
-             return <ToggleButton
-                 key={sensorId}
-                 icon={SensorInfo[sensorId].imageSrc}
-                 value={SensorInfo[sensorId].name}
-                 status={this.state.checkedStatus[sensorId]}
-                 onPress={() => {
-                     this.toggleGraphDisplay(sensorId)
-                 }}
-                 onLongPress={() => {
-                     this.displayToast(SensorInfo[sensorId].name)
-                 }}
-                 delayPressIn={500}
-             />
+             // Mic does not get a button (#9)
+             if (sensorId != 9) {
+                 return <ToggleButton
+                     key={sensorId}
+                     icon={SensorInfo[sensorId].imageSrc}
+                     value={SensorInfo[sensorId].name}
+                     status={this.state.checkedStatus[sensorId]}
+                     onPress={() => {
+                         this.toggleGraphDisplay(sensorId)
+                     }}
+                     onLongPress={() => {
+                         this.displayToast(SensorInfo[sensorId].name)
+                     }}
+                     delayPressIn={500}
+                 />
+             }
          })
 
          return (
@@ -241,11 +286,19 @@
 
                  <Appbar.Header>
                      <Appbar.Content title={RecordingManager.currentRecording.name}/>
-                     <View style={[styles.indicators]}>
+                     <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                          onPress={() => {this.setState({helpShown: true})}}/>
+                     <View id="indicators" style={[this.state.indicatorStatus ? styles.indicators : styles.indicatorsOff]}>
                         {this.state.sensorIds.includes("9") ? <Image source={SensorInfo[9].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
                         {this.state.sensorIds.includes("12") ? <Image source={SensorInfo[12].imageSrc} style={[styles.sensorIndicator, {marginEnd: 'auto'}]}/> : <View></View>}
                      </View>
                  </Appbar.Header>
+
+                <Modal transparent={false} visible={this.state.showLoadingSymbol}>
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}>
+                        <ActivityIndicator size="large" animating={this.state.showLoadingSymbol} color={'#6200ee'} />
+                    </View>
+                </Modal>
 
                  <View style={styles.content}>
                      <View>
@@ -288,10 +341,15 @@
                                keyExtractor={item => item.labelName}
                                renderItem={({item, index}) => (
                                    <TouchableOpacity onPress={() => this.setLabel(item)}>
-                                       <View elevation={5} style={styles.listItem,
-                                       {backgroundColor : this.state.currentLabel ? hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50) : 'white'}}>
+                                       {this.state.currentLabel == item.labelName ?
+                                       <View elevation={5} style={[styles.listItem, {backgroundColor: chartConfig.button}]}>
                                            <Text style={styles.listItemText}> {item.labelName} </Text>
                                        </View>
+                                       :
+                                       <View elevation={5} style={[styles.listItem, {backgroundColor: "#FFFFFF"}]}>
+                                           <Text style={styles.listItemText}> {item.labelName} </Text>
+                                       </View>
+                                       }
                                    </TouchableOpacity>
                                )}
                      />
@@ -300,8 +358,10 @@
                          <Button title="Finish" color="#6200F2"
                                  disabled={this.state.terminating}
                                  onPress={async () => {
-                                     clearTimeout(subscription);
                                      this.setState({terminating: true});
+                                     for (let i = 0; i < this.state.subscriptions.length; i++) {
+                                         clearTimeout(this.state.subscriptions[i])
+                                     }
                                      await RecordingManager.currentRecording.finish();
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: true,
@@ -310,8 +370,10 @@
                          <Button title="Cancel" color="#6200F2"
                                  disabled={this.state.terminating}
                                  onPress={async () => {
-                                     clearTimeout(subscription);
                                      this.setState({terminating: true});
+                                     for (let i = 0; i < this.state.subscriptions.length; i++) {
+                                         clearTimeout(this.state.subscriptions[i])
+                                     }
                                      await RecordingManager.currentRecording.finish(true);
                                      this.props.navigation.navigate('HomeScreen', {
                                          complete: false,
@@ -320,14 +382,37 @@
                      </View>
                  </View>
                  <Toast ref={(toast) => this.toast = toast}
-                        position='top'
-                        positionValue={70}
-                        style={{backgroundColor: 'white'}}
-                        textStyle={{color: 'black'}}
-                        opacity={0.8}
-                     // fadeInDuration={1000} Not sure these work, computer's a bit laggy
-                     // fadeOutDuration={1000}
+                    position='top'
+                    positionValue={70}
+                    style={{backgroundColor: 'white'}}
+                    textStyle={{color: 'black'}}
+                    opacity={0.8}
+                    // fadeInDuration={1000} Not sure these work, computer's a bit laggy
+                    // fadeOutDuration={1000}
                  />
+                 <Modal
+                     animationType="fade"
+                     transparent={true}
+                     visible={this.state.helpShown}>
+                     <TouchableWithoutFeedback onPress={() => {
+                         this.setState({helpShown: false})
+                     }}>
+                         <View style={styles.modalOverlay}/>
+                     </TouchableWithoutFeedback>
+
+                     <View style={styles.parentView}>
+                         <View style={styles.modalView}>
+                             <Text>A tutorial video can be found here: link</Text>
+                             <PaperButton
+                                style={{marginTop: 10}}
+                                mode="contained"
+                                onPress={() => {
+                                     this.setState({helpShown: false})
+                                 }}
+                             >Close</PaperButton>
+                         </View>
+                     </View>
+                 </Modal>
              </View>
          );
      }
@@ -403,8 +488,49 @@
      indicators: {
         justifyContent: 'flex-end',
         marginTop: 5,
+     },
+     indicatorsOff: {
+        justifyContent: 'flex-end',
+        marginTop: 5,
+        display: 'none',
+     },
+     modalView: {
+         margin: 30,
+         backgroundColor: "white",
+         borderRadius: 20,
+         padding: 20,
+         alignItems: "flex-start",
+         shadowColor: "#000000",
+         shadowOffset: {
+             width: 0,
+             height: 2
+         },
+         shadowOpacity: 0.25,
+         shadowRadius: 4,
+         elevation: 5
+     },
 
-     }
+     parentView: {
+         flex: 1,
+         justifyContent: "flex-end",
+         alignItems: "center",
+     },
+
+     closeModal: {
+         marginTop: 10,
+         alignSelf: 'center'
+         //marginLeft: 100,
+         //marginRight: 100,
+     },
+
+     modalOverlay: {
+         position: 'absolute',
+         top: 0,
+         bottom: 0,
+         left: 0,
+         right: 0,
+         backgroundColor: 'rgba(0,0,0,0.5)'
+     },
  });
 
  export default RecordingScreen;

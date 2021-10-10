@@ -4,7 +4,7 @@ import React, {Component, useState, useRef} from "react";
 import {FloatingAction} from "react-native-floating-action";
 //import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
-import IconButton from "../react-native-paper-src/components/Button"
+import PaperButton from "../react-native-paper-src/components/Button";
 import Appbar from '../react-native-paper-src/components/Appbar'
 import {getSensorClass, HardwareType, SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
@@ -42,11 +42,20 @@ class NewRecordingScreen extends Component {
             modalVisible: false,
             currentSensorInfo: null,
             startingRecording: false,
+            errorVisible: false,
+            currentError: "",
+            recordingTitle: "Recording " + (props.route.params.recording_number + 1),
+            baseTitle: "Recording " + (props.route.params.recording_number + 1),
+            helpShown: false,
         };
 
         // Ensure the recording class has been initialised
         if (RecordingManager.currentRecording == null) {
             throw new Error("NewRecordingScreen.constructor: RecordingManager.currentRecording has not been initialised");
+        }
+
+        for (const sensorId of Object.values(SensorType)) {
+            this.state.sensorSampleRates[sensorId] = Math.trunc((getSensorClass(sensorId).maxSampleRate - getSensorClass(sensorId).minSampleRate)/2);
         }
     }
 
@@ -68,7 +77,7 @@ class NewRecordingScreen extends Component {
             if (!selected) {
                 continue;
             }
-            
+
             // For sensors that aren't implemented
             if (sensorId == null) {
                 continue;
@@ -86,8 +95,17 @@ class NewRecordingScreen extends Component {
                 await RecordingManager.currentRecording.addRecorder(sensorId);
             }
         }
-        await RecordingManager.currentRecording.createMetadataFile()
 
+        if (this.state.recordingTitle.replace(/\s/g, "") !== "") {
+            RecordingManager.currentRecording.name = this.state.recordingTitle;
+        } else {
+            RecordingManager.currentRecording.name = this.state.baseTitle;
+        }
+        if (this.state.currentLabelAddition !== "" && this.state.currentLabelAddition != this.state.addedLabels[this.state.addedLabels.length-1].labelName) {
+            const newLabel = {labelName: this.state.currentLabelAddition};
+            this.state.addedLabels.push(newLabel);
+            this.setState({addedLabels: [...this.state.addedLabels]});
+        }
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
             "sensors": selectedSensors,
@@ -113,32 +131,64 @@ class NewRecordingScreen extends Component {
                 </View>
 
                 <View style={{alignSelf: 'center', flexDirection: "row"}}>
-                    <TextInput
-                        scrollEnabled={false}
-                        placeholder="sample rate"
-                        style={{paddingRight: 10}}
-                        ref={input => {
-                            this.sampleRateInput = input;
-                        }}
-                        onChangeText={
-                            text => {
-                                this.state.sensorSampleRates[sensorId] = text
+                    {
+                        SensorInfo[sensorId].type == HardwareType.SENSOR &&
+                        <TextInput
+                            scrollEnabled={false}
+                            placeholder="sample rate"
+                            style={{paddingRight: 10}}
+                            ref={input => {
+                                this.sampleRateInput = input;
+                            }}
+                            keyboardType="numeric"
+                            value={this.state.sensorSampleRates[sensorId].toString()}
+                            onChangeText={
+                                text => {
+                                    if (text === "") {
+                                        this.state.sensorSampleRates[sensorId] = text
+                                        this.state.usedSensors[sensorId] = false;
+                                    }
+                                    else {
+                                        text = Number(text.replace(/[^0-9]/g, ''));
+                                        const maxSampleRate = getSensorClass(sensorId).maxSampleRate
+                                        const minSampleRate = getSensorClass(sensorId).minSampleRate
+                                        if (text > maxSampleRate) {
+                                            this.state.sensorSampleRates[sensorId] = maxSampleRate;
+                                        }
+                                        else if (text < minSampleRate) {
+                                            this.state.sensorSampleRates[sensorId] = minSampleRate;
+                                        }
+                                        else {
+                                            this.state.sensorSampleRates[sensorId] = text;
+                                        }
+                                        this.state.usedSensors[sensorId] = true;
+                                    }
+                                    this.setState({});
+                                }
                             }
-                        }
-                    />
+                        />
+                    }
+                    {
+                        SensorInfo[sensorId].type == HardwareType.RECORDER &&
+                        <Text style={styles.descriptionText}>Sample rate set</Text>
+                    }
 
                     <CheckBox
                         style={{flexDirection: "row"}}
                         isChecked={this.state.usedSensors[sensorId]}
                         onClick={async () => {
-                            // Make sure that a sample rate has been speciified before allowing the check box to be selected
-                            if (!(sensorId in this.state.sensorSampleRates) || this.state.sensorSampleRates[sensorId] < 0) {
-                                return;
+                            // Make sure that a sample rate has been specified before allowing the check box to be selected
+                            if (SensorInfo[sensorId].type == HardwareType.SENSOR && this.state.sensorSampleRates[sensorId] === "") {
+                                this.state.sensorSampleRates[sensorId] = Math.trunc((getSensorClass(sensorId).maxSampleRate - getSensorClass(sensorId).minSampleRate)/2);
                             }
                             // Prevent the sensor from being added if it doesn't work
                             // TODO: Perform this check before getting to this screen
                             else if (!(await getSensorClass(sensorId).isSensorWorking())) {
-                                console.log("Sensor is not working!");
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: sensorInfo.name + " could not be set. Your phone may not have access to this sensor.",
+                                })
+                                // Box will be unchecked automatically
                                 return;
                             }
 
@@ -236,22 +286,32 @@ class NewRecordingScreen extends Component {
 
     render() {
         let sensorRows = Object.entries(SensorInfo).map(([sensorId, sensorInfo]) => {
-            return this.sensorRow(sensorInfo, sensorId);
+            if (getSensorClass(sensorId).isSensorWorkingSync()) {
+                return this.sensorRow(sensorInfo, sensorId);
+            } else {
+                return <Text key={sensorId} style={styles.sensorInactive}>{sensorInfo.name} not active - check settings</Text>;
+            }
         })
-
 
         return (
             <View style={styles.container}>
                 <StatusBar barStyle="dark-content"/>
 
                 <Appbar.Header>
-                    <Appbar.Content title="New Recording Screen"/>
+                    <TextInput style={styles.title} value={this.state.recordingTitle} onChangeText={text => {
+                        if (text.length < 20) {
+                            this.setState({recordingTitle: text.replace(/[^0-9a-z' ']/gi, '')})
+                        }
+                    }} />
+                    <Appbar.Content/>
+                    <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                                            onPress={() => {this.setState({helpShown: true})}}/>
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')}
                                    onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
 
                 <View style={styles.content}>
-                    
+
                     <FlatList
                         styles={{flex: 1}}
                         removeClippedSubviews={false}
@@ -269,7 +329,7 @@ class NewRecordingScreen extends Component {
                             }
                         ListFooterComponent={this.labelListFooter}/>
                 </View>
-                
+
                 <FAB
                     style={styles.fab}
                     loading={this.state.startingRecording}
@@ -278,11 +338,21 @@ class NewRecordingScreen extends Component {
                     onPress={() => {
                         // Prevent the recording from being started if no sensors have been selected
                         if (Object.entries(this.state.usedSensors).length === 0) {
-                            // TODO: Display a toast with the following
-                            console.log("Please select at least one sensor");
+                            this.setState({
+                                errorVisible: true,
+                                currentError: "No sensors selected! Please select a sensor."
+                            })
                             return;
                         }
-
+                        for (var i = 0; i < Object.entries(this.state.usedSensors).length; i++) {
+                            if (!Object.entries(this.state.usedSensors)[i][1]) {
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: "No sensors selected! Please select a sensor."
+                                })
+                                return;
+                            }
+                        }
                         this.startRecording();
                         this.setState({startingRecording: true})
                     }}
@@ -306,13 +376,59 @@ class NewRecordingScreen extends Component {
                                 style={styles.sensorDescriptions}>Measures: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.measure : ""}</Text>
                             <Text
                                 style={styles.sensorDescriptions}>Output: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.output : ""}</Text>
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
                                 }}
-                            />
+                            >Close</PaperButton>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.errorVisible}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({errorVisible: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.errorView}>
+                            <Text>Error: {this.state.currentError}</Text>
+                            <PaperButton
+                                style={styles.closeModal}
+                                mode="contained"
+                                onPress={() => {
+                                    this.setState({errorVisible: false})
+                                }}
+                            >Close</PaperButton>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.helpShown}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({helpShown: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text>A tutorial video can be found here: link</Text>
+                            <PaperButton
+                                style={{marginTop: 10}}
+                                mode="contained"
+                                onPress={() => {
+                                    this.setState({helpShown: false})
+                                }}
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -450,6 +566,47 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
+
+    errorView: {
+        margin: 30,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+
+    errorText: {
+        alignItems: "center",
+        textAlign: "center",
+    },
+
+    descriptionText: {
+        color: "lightgray",
+        position: "relative",
+        left: -25,
+    },
+
+    sensorInactive: {
+        height: 25,
+        color: "red",
+    },
+
+    title: {
+        color: "white",
+        textAlign: "left",
+        fontWeight: "bold",
+        fontSize: 20,
+        marginLeft: 10,
+        width: "60%",
+    }
 });
 
 //export default StackNav

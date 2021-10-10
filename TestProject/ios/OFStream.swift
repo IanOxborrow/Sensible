@@ -11,11 +11,13 @@ import React
 @objc(OFStream)
 class OFStream : NSObject {
   
-  var outputStreams: [OutputStream]
+  var outputStreams: [OutputStream?]
   //var isOpen: [Bool]
-  
+  let fileManager: FileManager
+
   override init () {
     self.outputStreams = []
+    fileManager = FileManager.default
   }
 
   @objc
@@ -28,10 +30,24 @@ class OFStream : NSObject {
     
     print("got to exists")
     
-    let fileManager = FileManager.default
+    //let fileManager = FileManager.default
     resolve(fileManager.fileExists(atPath: path))
   }
   
+  @objc
+  func directoryExists(_ directory: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    
+    //let fileManager = FileManager.default
+    var isDir : ObjCBool = false
+    NSLog("we in the direoctry babes")
+
+    if fileManager.fileExists(atPath: directory, isDirectory:&isDir) {
+      resolve(true)
+    } else {
+      resolve(false)
+    }
+  }
+
   /**
    * Creates a new file stream (a buffered file stream) which can later be used
    * to write to a file
@@ -71,9 +87,9 @@ class OFStream : NSObject {
    * @param text        The content to write to file
    */
   @objc
-  func write(streamIndex: Int, text: String) {
+  func write(_ streamIndex: Int, text: String) {
     //let outputStream = outputStreams[streamIndex]
-    let bytesWritten = outputStreams[streamIndex].write(text)
+    let bytesWritten = outputStreams[streamIndex]!.write(text)
   
     if bytesWritten < 0 {
       print("write failure")
@@ -113,8 +129,9 @@ class OFStream : NSObject {
   @objc
   func close(_ streamIndex: Int, resolve: RCTPromiseResolveBlock,
              rejecter reject: RCTPromiseRejectBlock) {
-    outputStreams[streamIndex].close()
-    outputStreams.remove(at: streamIndex)
+    outputStreams[streamIndex]!.close()
+    // outputStreams.remove(at: streamIndex)
+    outputStreams[streamIndex] = nil
     resolve(nil)
   }
   
@@ -147,12 +164,18 @@ class OFStream : NSObject {
 
     let fileURL = URL(fileURLWithPath: path)
 
+    if (!fileManager.fileExists(atPath: path)) {
+      resolve("")
+      return
+    }
+
     //reading
     do {
       let fileText = try String(contentsOf: fileURL, encoding: .utf8)
       resolve(fileText)
     }
     catch {
+      resolve("error: file did not exist")
       // reject()
     }
   }
@@ -166,7 +189,7 @@ class OFStream : NSObject {
   func delete(_ path: String, recursive: Bool, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
     
     
-    let fileManager = FileManager.default
+    //let fileManager = FileManager.default
     
     //make sure the file exists
     if (!fileManager.fileExists(atPath: path)) {
@@ -176,7 +199,7 @@ class OFStream : NSObject {
     // make sure that the folder is meant to be recursivley deleted
     let fileURLs = try! fileManager.contentsOfDirectory(atPath: path)
     if (fileURLs.count == 0 && !recursive) {
-      let error = "[iOS] OFStream.delete: Received a folder with no recursive flag. Path: \(path)";
+      let _ = "[iOS] OFStream.delete: Received a folder with no recursive flag. Path: \(path)";
       
       //reject(error)
       return
@@ -186,7 +209,7 @@ class OFStream : NSObject {
     do {
       try fileManager.removeItem(atPath: path)
     } catch {
-      let error = "[iOS] OFStream.delete: Could not delete \(path)";
+      let _ = "[iOS] OFStream.delete: Could not delete \(path)";
       //reject(error);
     }
     
@@ -202,18 +225,43 @@ class OFStream : NSObject {
   @objc
   func mkdir(_ path: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
     
-    let fileManager = FileManager.default
-    
+    print("mkdir")
+    print(path)
+    //let fileManager = FileManager.default
+
     
     if (!fileManager.fileExists(atPath: path)) {
       
-      let fileURL = URL(fileURLWithPath: path)
       do {
-        try "".write(to: fileURL, atomically: true, encoding: .utf8)
+        try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+        //try "".write(to: fileURL, atomically: true, encoding: .utf8)
+        NSLog("created directory \(path)")
       } catch {
-        print("[iOS] OFStream.mkdir: Could not create directory \(path)" )
+        reject("[iOS] OFStream.mkdir: Could not create directory \(path)", "\(error)", nil)
       }
+    } else {
+      reject("[iOS] OFStream.mkdir: Could not create directory \(path)", "Path already existed", nil)
     }
+  }
+
+
+  /**
+   * Create a folder if it doesn't exist
+   *
+   * @param path    The path of the folder to create
+   * @param promise Returns nothing on success, otherwise returns an error
+   */
+  @objc
+  func copyFile(_ origin: String, destination: String, resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    
+    //let fileManager = FileManager.default
+  
+    do {
+      try fileManager.copyItem(atPath: origin, toPath: destination)
+    } catch {
+      NSLog("error copying file")
+      NSLog("Error info: \(error)")
+    }    
   }
 }
 

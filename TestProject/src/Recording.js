@@ -6,7 +6,7 @@ import {
     getSensorFileName,
     SensorType,
     MicrophoneRecorder,
-    BackCameraRecorder, SensorInfo
+    BackCameraRecorder, SensorInfo, getSensorSampleClass
 } from "./Sensors";
 import Label from './sensors/Label';
 import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
@@ -20,8 +20,9 @@ const { ofstream } = NativeModules;
 export default class Recording {
     constructor(name, folderPath, enabledSensors, enabledRecorders) {
         this.savedRecording = true // Determines whether the recording has been loaded from file
+        this.id = RecordingManager.generateRecordingId();
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
-        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
+        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + 'Recording_' + this.id + '/' : folderPath;
         this.sampleRate = 200; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
@@ -29,26 +30,27 @@ export default class Recording {
         this.enabledRecorders = enabledSensors === undefined ? {} : enabledSensors;
         this.graphableData = {};
         this.fileStreamIndices = {};
-        this.logicalTime = 0;
+        this.startTime = null;
         this.labels = [];
-
-        console.log("recording")
-        console.log(this.folderPath)
 
         // TODO: Make this platform independent!
         if (folderPath === undefined) {
             this.savedRecording = false;
+            // Create the folder if it doesn't already exist
+            ofstream.mkdir(this.folderPath)
+                .then(() => {
+                    console.log('Successfully created folder ' + this.folderPath);
+                })
+                .catch(err => {
+                    throw Error(err);
+                });
 
-            if (Platform.OS !== 'ios') {
-                // Create the folder if it doesn't already exist
-                ofstream.mkdir(this.folderPath)
-                    .then(() => {
-                        console.log('Successfully created folder ' + this.folderPath);
-                    })
-                    .catch(err => {
-                        throw Error(err);
-                    });
+            // Create the file stream for the labels
+            const createLabelsFile = async () => {
+                this.fileStreamIndices[-1] = await ofstream.open(this.folderPath + "labels.csv", false);
+                await ofstream.write(this.fileStreamIndices[-1], 'label,start_time,end_time\n');
             }
+            createLabelsFile();
         }
     }
 
@@ -58,10 +60,10 @@ export default class Recording {
         }
 
         // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
+        //if (Platform.OS !== 'ios') {
             // TODO: Write this in a cleaner format
             // Create the metadata
-            let metadata = '{"name":"' + this.name + '","sensors":[';
+            let metadata = '{"id": ' + this.id + ', "name":"' + this.name + '", "startTime":' + this.startTime + ',"sensors":[';
             let hasSensors = false
             let hasRecorders = false;
             for (const type of Object.keys(this.enabledSensors)) {
@@ -84,7 +86,7 @@ export default class Recording {
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
-        }
+        //}
     }
 
     /**
@@ -95,8 +97,8 @@ export default class Recording {
      */
 
     async initialiseGenericSensor(type, sampleRate) {
-
         const sensorClass = getSensorClass(type);
+        const sensorSampleClass = getSensorSampleClass(type);
         const sensorFile = this.folderPath + getSensorFileName(type);
         // Create the timeframe array for the sensor (with an initial timeframe)
         this.graphableData[type] = [new GenericTimeframe(this, this.timeframeSize, this.bufferSize, type)];
@@ -105,7 +107,7 @@ export default class Recording {
 
         // Create a new file and store the stream index for later
         this.fileStreamIndices[type] = await ofstream.open(sensorFile, false);
-        
+        ofstream.write(this.fileStreamIndices[type], sensorSampleClass.getComponents().toString() + ',label\n');
     }
 
     /**
@@ -130,41 +132,6 @@ export default class Recording {
                 await this.initialiseGenericSensor(SensorType.BAROMETER, sampleRate);
                 break;
             case SensorType.GPS:
-                // request GPS permission
-                if (Platform.OS == 'ios') {
-                    const authorisation = await Geolocation.requestAuthorization("whenInUse");
-                    console.log('Im here!')
-                    if (authorisation == 'granted' || authorisation == 'restricted') {
-                        console.log('iOS - You can use the GPS');
-                    } else {
-                        console.log('iOS - GPS permission not granted');
-                        console.log(authorisation);
-                        // TODO: Stop the initialisation if permission is denied
-                    }
-                } else {
-                   try {
-                      const granted = await PermissionsAndroid.request(
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                         {
-                             title: 'Location Permission',
-                             message:
-                                 'This app needs access to your location ' +
-                                 'in order to collect location data',
-                             buttonNeutral: 'Ask Me Later',
-                             buttonNegative: 'Cancel',
-                             buttonPositive: 'OK',
-                         }
-                         );
-                         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                             console.log('You can use the GPS');
-                         } else {
-                             console.log('GPS permission denied');
-                             // TODO: Stop the initialisation if permission is denied
-                         }
-                     } catch (err) {
-                         console.warn(err);
-                     }
-                 }
                 await this.initialiseGenericSensor(SensorType.GPS, sampleRate);
                 break;
             default:
@@ -190,14 +157,23 @@ export default class Recording {
     /**
      * Set the label for all incoming data from hereon
      * @param name The name of the label
+     * @param flushOnly True to only update the labels file
      */
-    setLabel(name)
+    setLabel(name, flushOnly)
     {
         // Finalise the old label
-        if (this.labels.length > 0 && this.labels[this.labels.length - 1].endTime == null)
+        const lastLabel = this.labels[this.labels.length - 1];
+        if (this.labels.length > 0 && lastLabel.endTime == null)
         {
+            // TODO: Figure out why the initial null label isn't here -- may want to create a new label class at the start
             this.labels[this.labels.length - 1].endTime = Date.now();
+            ofstream.write(this.fileStreamIndices[-1], lastLabel.name + ',' + lastLabel.startTime + ',' + lastLabel.endTime + '\n');
         }
+
+        if (flushOnly) {
+            return;
+        }
+
         // Create the new label
         let label = new Label(name, Date.now());
         this.labels.push(label);
@@ -228,6 +204,14 @@ export default class Recording {
     }
 
     /**
+     *
+     * @returns returns the path of a recording
+     */
+    getFolderPath() {
+        return this.folderPath;
+    }
+
+    /**
      * Open the share menu to download the sensor file
      * @param type The type of sensor they would like to get the timeframe for
      */
@@ -247,6 +231,8 @@ export default class Recording {
 
         // Open the share menu to allow downloading the file
         const fileName = getSensorFileName(type);
+        console.log(this.folderPath + fileName)
+
         const path = 'file://' + this.folderPath + fileName;
         Share.open({
             url: path,
@@ -276,14 +262,17 @@ export default class Recording {
      */
     async finish(clear = false)
     {
-        // TODO: Do something for clear
+        // Flush out the last label
+        this.setLabel(null, true);
         // Disable each sensor and its file stream
         for (const [sensorType, fileStreamIndex] of Object.entries(this.fileStreamIndices)) {
             // Disable all sensors
-            this.enabledSensors[sensorType].disable();
-            
+            if (sensorType > -1) {
+                this.enabledSensors[sensorType].disable();
+            }
+
             await ofstream.close(fileStreamIndex);
-            
+
         }
 
         // Stop all recorders
@@ -302,7 +291,7 @@ export default class Recording {
         // Update listing
         else {
             try {
-                ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
+                await ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
             } catch (e) {
                 throw new Error("Recording.finish: " + e);
             }
