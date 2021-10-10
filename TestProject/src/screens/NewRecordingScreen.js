@@ -295,8 +295,8 @@ class NewRecordingScreen extends Component {
 
                 <Appbar.Header>
                     <TextInput style={styles.title} value={this.state.recordingTitle} onChangeText={text => {
-                        if (text.length < 24) {
-                            this.setState({recordingTitle: text})
+                        if (text.length < 20) {
+                            this.setState({recordingTitle: text.replace(/[^0-9a-z' ']/gi, '')})
                         }
                     }} />
                     <Appbar.Content/>
