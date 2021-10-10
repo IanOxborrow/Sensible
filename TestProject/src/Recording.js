@@ -20,8 +20,9 @@ const { ofstream } = NativeModules;
 export default class Recording {
     constructor(name, folderPath, enabledSensors, enabledRecorders) {
         this.savedRecording = true // Determines whether the recording has been loaded from file
+        this.id = RecordingManager.generateRecordingId();
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
-        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + this.name.replace(/ /g, '_') + '/' : folderPath;
+        this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + 'Recording_' + this.id + '/' : folderPath;
         this.sampleRate = 200; // in Hz
         this.bufferSize = 5; // The number of samples to store in the buffer before saving all of them to file at once
         this.timeframeSize = 10; // The number of samples in a timeframe. Additional points will be saved to file.
@@ -35,24 +36,21 @@ export default class Recording {
         // TODO: Make this platform independent!
         if (folderPath === undefined) {
             this.savedRecording = false;
+            // Create the folder if it doesn't already exist
+            ofstream.mkdir(this.folderPath)
+                .then(() => {
+                    console.log('Successfully created folder ' + this.folderPath);
+                })
+                .catch(err => {
+                    throw Error(err);
+                });
 
-            if (Platform.OS !== 'ios') {
-                // Create the folder if it doesn't already exist
-                ofstream.mkdir(this.folderPath)
-                    .then(() => {
-                        console.log('Successfully created folder ' + this.folderPath);
-                    })
-                    .catch(err => {
-                        throw Error(err);
-                    });
-
-                // Create the file stream for the labels
-                const createLabelsFile = async () => {
-                    this.fileStreamIndices[-1] = await ofstream.open(this.folderPath + "labels.csv", false);
-                    await ofstream.write(this.fileStreamIndices[-1], 'label,start_time,end_time\n');
-                }
-                createLabelsFile();
+            // Create the file stream for the labels
+            const createLabelsFile = async () => {
+                this.fileStreamIndices[-1] = await ofstream.open(this.folderPath + "labels.csv", false);
+                await ofstream.write(this.fileStreamIndices[-1], 'label,start_time,end_time\n');
             }
+            createLabelsFile();
         }
     }
 
@@ -62,10 +60,10 @@ export default class Recording {
         }
 
         // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
+        //if (Platform.OS !== 'ios') {
             // TODO: Write this in a cleaner format
             // Create the metadata
-            let metadata = '{"name":"' + this.name + '", "startTime":' + this.startTime + ',"sensors":[';
+            let metadata = '{"id": ' + this.id + ', "name":"' + this.name + '", "startTime":' + this.startTime + ',"sensors":[';
             let hasSensors = false
             let hasRecorders = false;
             for (const type of Object.keys(this.enabledSensors)) {
@@ -88,7 +86,7 @@ export default class Recording {
                 .catch(err => {
                     throw new Error(this.constructor.name + '.initialiseGenericSensor: ' + err);
                 });
-        }
+        //}
     }
 
     /**
@@ -206,6 +204,14 @@ export default class Recording {
     }
 
     /**
+     *
+     * @returns returns the path of a recording
+     */
+    getFolderPath() {
+        return this.folderPath;
+    }
+
+    /**
      * Open the share menu to download the sensor file
      * @param type The type of sensor they would like to get the timeframe for
      */
@@ -225,6 +231,8 @@ export default class Recording {
 
         // Open the share menu to allow downloading the file
         const fileName = getSensorFileName(type);
+        console.log(this.folderPath + fileName)
+
         const path = 'file://' + this.folderPath + fileName;
         Share.open({
             url: path,

@@ -42,6 +42,7 @@ export default class RecordingManager {
 
         //split the string so that it can be displayed more easily
         const recordings = content.split("\n");
+        console.log(recordings)
 
         for (let i = 0; i < recordings.length - 1; i++) {
             const params = recordings[i].split(";");
@@ -59,9 +60,10 @@ export default class RecordingManager {
 
             // Instantiate a new recording class
             const recording = new this.RecordingClass(params[0], params[1], enabledSensors, enabledRecorders);
+            recording.id = metadata.id
             this.recordings.push({
                 title: recording.name,
-                id: this.recordings.length + 1,
+                id: recording.id,
                 info: recording
             });
         }
@@ -120,6 +122,14 @@ export default class RecordingManager {
                 getSensorClass(sensorId).maxSampleRate = rate;
                 getSensorClass(sensorId).sensorWorking = rate > -1;
                 RecordingManager.sampleRatesCalculated++;
+            }
+        }
+    }
+
+    static generateRecordingId() {
+        for (let id = 1; id < RecordingManager.recordings.length + 2; id++) {
+            if (!RecordingManager.recordings[id - 1] || RecordingManager.recordings[id - 1].id != id) {
+                return id;
             }
         }
     }
