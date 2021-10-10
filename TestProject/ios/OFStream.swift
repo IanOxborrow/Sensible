@@ -187,17 +187,20 @@ class OFStream : NSObject {
     
     //make sure the file exists
     if (!fileManager.fileExists(atPath: path)) {
+      resolve("")
       return
     }
     
     // make sure that the folder is meant to be recursivley deleted
-    let fileURLs = try! fileManager.contentsOfDirectory(atPath: path)
+    /*if (recursive) {
+      let fileURLs = try! fileManager.contentsOfDirectory(atPath: path)
+    }
+    
     if (fileURLs.count == 0 && !recursive) {
       let _ = "[iOS] OFStream.delete: Received a folder with no recursive flag. Path: \(path)";
       
       //reject(error)
-      return
-    }
+    }*/
     
     // delete the file
     do {
@@ -207,7 +210,7 @@ class OFStream : NSObject {
       //reject(error);
     }
     
-    resolve(nil)
+    resolve("")
   }
     
   /**
@@ -221,14 +224,12 @@ class OFStream : NSObject {
     
     print("mkdir")
     print(path)
-    //let fileManager = FileManager.default
-
     
     if (!fileManager.fileExists(atPath: path)) {
       
       do {
         try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        //try "".write(to: fileURL, atomically: true, encoding: .utf8)
+        resolve(nil)
         NSLog("created directory \(path)")
       } catch {
         reject("[iOS] OFStream.mkdir: Could not create directory \(path)", "\(error)", nil)
@@ -252,9 +253,11 @@ class OFStream : NSObject {
   
     do {
       try fileManager.copyItem(atPath: origin, toPath: destination)
+      resolve(nil)
     } catch {
       NSLog("error copying file")
       NSLog("Error info: \(error)")
+      resolve("Error info: \(error)")
     }    
   }
 }

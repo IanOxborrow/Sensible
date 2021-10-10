@@ -179,12 +179,10 @@ export default class HomeScreen extends Component {
 
                                     const directoryExists = await ofstream.directoryExists(RecordingManager.SAVE_FILE_PATH + "sharing");
 
-
                                     console.log("is here 2")
                                     if (directoryExists) {
                                         // delete the contents of the share folder
                                         await ofstream.delete(RecordingManager.SAVE_FILE_PATH + "sharing", true);
-
                                     }
 
 
@@ -223,7 +221,6 @@ export default class HomeScreen extends Component {
                                     const shareFolder = RecordingManager.SAVE_FILE_PATH + "sharing/"
                                     const zipFile = RecordingManager.SAVE_FILE_PATH + RecordingManager.currentRecording.name + ".zip"
 
-
                                     await zip(shareFolder, zipFile)
                                     .then((path) => {
                                         console.log(`zip completed at ${path}`)
@@ -248,10 +245,9 @@ export default class HomeScreen extends Component {
 
                                     console.log("is here 5")
 
-                                    console.log(response)
+                                    await ofstream.delete(zipFile, false)
 
-                                    await ofstream.delete(zipFile)
-
+                                    console.log("is here 6")
                                     // deselect all the selected sensors
                                     for (const [key, value] of Object.entries(this.state.selectedSensors)) {
                                         this.state.selectedSensors[key] = false;
