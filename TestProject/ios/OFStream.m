@@ -17,6 +17,11 @@
                     rejecter:(RCTPromiseRejectBlock)reject
                     )
 
+  RCT_EXTERN_METHOD(directoryExists: (NSString *)path
+                  resolve: (RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
   RCT_EXTERN_METHOD(open: (NSString *)path
                     append: (BOOL *)append
                     resolve: (RCTPromiseResolveBlock)resolve
@@ -50,12 +55,18 @@
                     )
 
   RCT_EXTERN_METHOD(delete: (NSString *)path
-                    recursive: (NSBoolean *)recursive
+                    recursive: (BOOL *)recursive
                     resolve: (RCTPromiseResolveBlock)resolve
                     rejecter: (RCTPromiseRejectBlock)reject
                     )
 
   RCT_EXTERN_METHOD(mkdir: (NSString *)path
+                    resolve: (RCTPromiseResolveBlock)resolve
+                    rejecter: (RCTPromiseRejectBlock)reject
+                    )
+
+  RCT_EXTERN_METHOD(copyFile: (NSString *)origin
+                    destination: (NSString *)destination
                     resolve: (RCTPromiseResolveBlock)resolve
                     rejecter: (RCTPromiseRejectBlock)reject
                     )

@@ -23,17 +23,7 @@ import {
     Image,
     TouchableWithFeedback,
 } from 'react-native';
-import sensors from 'react-native-sensors';
-
 const { ofstream } = NativeModules;
-
-import {
-    Accelerometer,
-    Barometer,
-    GPS,
-    Gyroscope,
-    Magnetometer
-} from "../Sensors";
 
 export default class HomeScreen extends Component {
     constructor(props) {
@@ -46,6 +36,7 @@ export default class HomeScreen extends Component {
             loading: true,
             modalVisible: false,
             activeItem: 0,
+            selectedRecording: null,
             helpShown: false,
         };
 
@@ -58,15 +49,20 @@ export default class HomeScreen extends Component {
      * @return {Promise<void>}
      */
     async init() {
+        console.log("1")
         await RecordingManager.loadConfig();
         // Request permissions and check whether each sensor is working (this makes it faster for next time)
         for (const sensorId of Object.values(SensorType)) {
             const sensorClass = getSensorClass(sensorId);
+            console.log(sensorId + "a")
             await sensorClass.requestPermissions();
+            console.log(sensorId + "b")
             await sensorClass.isSensorWorking();
         }
+        console.log("2")
         // Load the recordings
         await RecordingManager.loadRecordings();
+        console.log("3")
         this.state.loading = false;
     }
 
@@ -82,6 +78,48 @@ export default class HomeScreen extends Component {
         }
         // Update nothing
         return null;
+    }
+
+    // returns a row for each sensor. It is used in the modal
+    sensorRow(name, sensorID) {
+
+        return (
+            <View key={sensorID} style={{flexDirection: "row", alignItems: "center", justifyContent: 'flex-end'}}>
+
+                <Text style={{paddingLeft: 10}}>{name}</Text>
+
+                <CheckBox
+                    isChecked={this.state.selectedSensors[name]}
+                    onClick={async () => {
+
+                        //modifiy the state to record that a checkbox has been pressed
+                        this.state.selectedSensors[name] = !this.state.selectedSensors[name]
+                        this.setState(this.state.selectedSensors)
+                    }}
+                />
+            </View>
+        )
+    }
+
+    showAlert() {
+        return Alert.alert(
+            "Alert Title",
+            "My Alert Msg",
+            [
+            {
+                text: "Cancel",
+                onPress: () => Alert.alert("Cancel Pressed"),
+                style: "cancel",
+            },
+            ],
+            {
+            cancelable: true,
+            onDismiss: () =>
+                Alert.alert(
+                "This alert was dismissed by tapping outside of the alert dialog."
+                ),
+            }
+        );
     }
 
     // returns a row for each sensor. It is used in the modal
@@ -128,10 +166,11 @@ export default class HomeScreen extends Component {
 
     render() {
 
+        console.log(RecordingManager.SAVE_FILE_PATH)
+
         let sensorRows = this.state.availableSensors.map((id) => {
             return this.sensorRow(SensorInfo[id].name, id);
         })
-
 
         return (
             <View style={[styles.container, {flexDirection: 'column'}]}>
@@ -140,7 +179,6 @@ export default class HomeScreen extends Component {
                     <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
                                                         onPress={() => {this.setState({helpShown: true})}}/>
                 </Appbar.Header>
-
                 {
                     // Only show whilst recordings are being loaded
                     this.state.loading &&
@@ -159,7 +197,8 @@ export default class HomeScreen extends Component {
 
                             this.setState({
                                 modalVisible: true,
-                                availableSensors: Object.keys(item.info.enabledSensors).concat(Object.keys(item.info.enabledRecorders)).sort()
+                                availableSensors: Object.keys(item.info.enabledSensors).concat(Object.keys(item.info.enabledRecorders)).sort(),
+                                selectedRecording: item
                             })
                         }}>
                             <View elevation={5} style={styles.listItem}>
@@ -264,7 +303,6 @@ export default class HomeScreen extends Component {
                                 mode="contained"
                                 onPress={() => {
 
-
                                     const showAlert = () =>
                                     Alert.alert(
                                         "Delete this recording?",
@@ -272,18 +310,21 @@ export default class HomeScreen extends Component {
                                         [
                                             {text: 'Cancel', onPress: () => {}},
                                             {text: 'Delete', onPress: () => {
-
                                                 // deselect all the selected sensors
                                                 for (const [key, value] of Object.entries(this.state.selectedSensors)) {
                                                     this.state.selectedSensors[key] = false;
                                                 }
 
                                                 //construct the new recordings file and save it
-                                                var newRecordingList = "";
-                                                for (var recording of this.state.recordings_list)  {
-                                                    console.log("recording" + recording.title + " " + recording.id)
-                                                    if (recording.title != RecordingManager.currentRecording.name) {
+                                                let newRecordingList = "";
+                                                let recordingIdx;
+                                                for (let i = 0; i < RecordingManager.recordings.length; i++)  {
+                                                    const recording = RecordingManager.recordings[i];
+                                                    if (recording.id != this.state.selectedRecording.id) {
                                                         newRecordingList = newRecordingList + recording.title + ";" + recording.info.folderPath + "\n";
+                                                    }
+                                                    else {
+                                                        recordingIdx = i;
                                                     }
                                                 }
 
@@ -294,9 +335,8 @@ export default class HomeScreen extends Component {
                                                 ofstream.delete(deletePath, true);
 
 
-                                                console.log("setting new list")
-                                                const newList = this.state.recordings_list.splice(this.state.activeItem, 1);
-                                                this.setState({modalVisible: false, recordings_list: newList})
+                                                RecordingManager.recordings.splice(recordingIdx, 1);
+                                                this.setState({modalVisible: false})
 
                                             }},
                                         ],
