@@ -44,8 +44,8 @@ class NewRecordingScreen extends Component {
             startingRecording: false,
             errorVisible: false,
             currentError: "",
-            recordingTitle: "Recording " + (props.route.params.recording_number + 1),
-            baseTitle: "Recording " + (props.route.params.recording_number + 1),
+            recordingTitle: "Recording " + (RecordingManager.currentRecording.id),
+            baseTitle: "Recording " + (RecordingManager.currentRecording.id),
             helpShown: false,
         };
 

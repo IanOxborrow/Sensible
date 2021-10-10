@@ -8,6 +8,7 @@ import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
 import ModalDropdown from 'react-native-modal-dropdown';
 import Share from 'react-native-share';
+
 import CheckBox from 'react-native-check-box';
 import { zip } from 'react-native-zip-archive'
 import {
@@ -17,6 +18,7 @@ import {
     FlatList,
     TouchableOpacity,
     Modal,
+    Platform,
     TouchableWithoutFeedback,
     Alert,
     NativeModules,
@@ -238,14 +240,29 @@ export default class HomeScreen extends Component {
                            <PaperButton
                                 style={styles.closeModal}
                                 mode="contained"
+                                label="Export"
                                 onPress={async () => {
                                     this.setState({modalVisible: false})
 
-                                    // delete the contents of the share folder
-                                    ofstream.delete(RecordingManager.SAVE_FILE_PATH + "sharing", true);
+                                    console.log("is here 1")
 
-                                    // write new share folder
-                                    ofstream.mkdir(RecordingManager.SAVE_FILE_PATH + "sharing")
+                                    const directoryExists = await ofstream.directoryExists(RecordingManager.SAVE_FILE_PATH + "sharing");
+
+                                    console.log("is here 2")
+                                    if (directoryExists) {
+                                        // delete the contents of the share folder
+                                        await ofstream.delete(RecordingManager.SAVE_FILE_PATH + "sharing", true);
+                                    }
+
+
+                                    console.log("is here 2.5 " + directoryExists)
+
+                                    if (!directoryExists) {
+                                        // write new share folder
+                                        await ofstream.mkdir(RecordingManager.SAVE_FILE_PATH + "sharing")
+                                    }
+
+                                    console.log("is here 3")
 
                                     // copy each of the files into the sharing folder
                                     for (const [sensorId, value] of Object.entries(this.state.selectedSensors)) {
@@ -276,21 +293,33 @@ export default class HomeScreen extends Component {
                                     const shareFolder = RecordingManager.SAVE_FILE_PATH + "sharing/"
                                     const zipFile = RecordingManager.SAVE_FILE_PATH + RecordingManager.currentRecording.name + ".zip"
 
-                                    zip(shareFolder, zipFile)
-                                        .then((path) => {
-                                            console.log(`zip completed at ${path}`)
-                                        })
-                                        .catch((error) => {
-                                            console.error(error)
-                                        })
+                                    await zip(shareFolder, zipFile)
+                                    .then((path) => {
+                                        console.log(`zip completed at ${path}`)
+                                    })
+                                    .catch((error) => {
+                                        console.error(error)
+                                    })
 
+                                    console.log("is here 4")
+
+                                    //const shareResponse = await Share.open(options);
                                     // open the share dialogue
-                                    Share.open({
+                                    await Share.open({
                                         url: "file://" + zipFile,
                                         subject: RecordingManager.currentRecording.name,
+                                    }).then((res) => {
+                                        console.log(res);
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
                                     });
 
+                                    console.log("is here 5")
 
+                                    await ofstream.delete(zipFile, false)
+
+                                    console.log("is here 6")
                                     // deselect all the selected sensors
                                     for (const [key, value] of Object.entries(this.state.selectedSensors)) {
                                         this.state.selectedSensors[key] = false;
@@ -314,6 +343,7 @@ export default class HomeScreen extends Component {
                                                 for (const [key, value] of Object.entries(this.state.selectedSensors)) {
                                                     this.state.selectedSensors[key] = false;
                                                 }
+                                                RecordingManager.usedRecordingIds.delete(this.state.selectedRecording.id);
 
                                                 //construct the new recordings file and save it
                                                 let newRecordingList = "";
@@ -384,9 +414,7 @@ export default class HomeScreen extends Component {
                         style={styles.fab}
                         icon={require('../assets/baseline_add_black.png')}
                         onPress={name => {
-                            RecordingManager.currentRecording = new Recording(
-                                'Recording ' + (this.state.recordings_list.length + 1),
-                            );
+                            RecordingManager.currentRecording = new Recording();
                             this.props.navigation.navigate('NewRecordingScreen', {
                                 recording_number: this.state.recordings_list.length,
                             });

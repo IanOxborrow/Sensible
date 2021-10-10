@@ -7,6 +7,7 @@ const { ofstream } = NativeModules;
 export default class RecordingManager {
     // Store all recordings
     static recordings = [];
+    static usedRecordingIds = new Set();
     // Store the current recording (ie. any new recordings that haven't been finalised)
     static currentRecording = null;
     static SAVE_FILE_PATH = RNFetchBlob.fs.dirs.DocumentDir + '/';
@@ -42,7 +43,6 @@ export default class RecordingManager {
 
         //split the string so that it can be displayed more easily
         const recordings = content.split("\n");
-        console.log(recordings)
 
         for (let i = 0; i < recordings.length - 1; i++) {
             const params = recordings[i].split(";");
@@ -59,8 +59,8 @@ export default class RecordingManager {
             }
 
             // Instantiate a new recording class
-            const recording = new this.RecordingClass(params[0], params[1], enabledSensors, enabledRecorders);
-            recording.id = metadata.id
+            const recording = new this.RecordingClass(params[0], params[1], enabledSensors, enabledRecorders, metadata.id);
+            this.usedRecordingIds.add(recording.id);
             this.recordings.push({
                 title: recording.name,
                 id: recording.id,
@@ -127,8 +127,11 @@ export default class RecordingManager {
     }
 
     static generateRecordingId() {
-        for (let id = 1; id < RecordingManager.recordings.length + 2; id++) {
-            if (!RecordingManager.recordings[id - 1] || RecordingManager.recordings[id - 1].id != id) {
+        console.log("GAMER")
+        console.log(this.usedRecordingIds)
+        for (let id = 1; id < this.recordings.length + 2; id++) {
+            if (!this.usedRecordingIds.has(id)) {
+                console.log("Using " + id)
                 return id;
             }
         }

@@ -18,9 +18,9 @@ import Geolocation from 'react-native-geolocation-service';
 const { ofstream } = NativeModules;
 
 export default class Recording {
-    constructor(name, folderPath, enabledSensors, enabledRecorders) {
+    constructor(name, folderPath, enabledSensors, enabledRecorders, id) {
         this.savedRecording = true // Determines whether the recording has been loaded from file
-        this.id = RecordingManager.generateRecordingId();
+        this.id = id == undefined ? RecordingManager.generateRecordingId() : id;
         this.name = name; // TODO: Throw an error if a # or any non-alphanumeric characters are thrown
         this.folderPath = folderPath === undefined ? RecordingManager.SAVE_FILE_PATH + 'Recording_' + this.id + '/' : folderPath;
         this.sampleRate = 200; // in Hz
@@ -62,6 +62,7 @@ export default class Recording {
         // TODO: Make this platform independent!
         //if (Platform.OS !== 'ios') {
             // TODO: Write this in a cleaner format
+            console.log("Using " + this.id);
             // Create the metadata
             let metadata = '{"id": ' + this.id + ', "name":"' + this.name + '", "startTime":' + this.startTime + ',"sensors":[';
             let hasSensors = false
@@ -290,6 +291,7 @@ export default class Recording {
         }
         // Update listing
         else {
+            RecordingManager.usedRecordingIds.add(this.id);
             try {
                 await ofstream.writeOnce(RecordingManager.SAVE_FILE_PATH + "recordings.config", true, this.toString() + "\n");
             } catch (e) {
