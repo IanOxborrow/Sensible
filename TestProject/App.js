@@ -8,7 +8,7 @@
  */
 
 import React, {useEffect} from "react";
-import {PermissionsAndroid, Platform} from 'react-native';
+import {NativeModules, PermissionsAndroid, Platform} from 'react-native';
 import MainStackNavigator from './src/navigation/MainStackNavigator'
 import SplashScreen from 'react-native-splash-screen'
 import RecordingManager from "./src/RecordingManager";
@@ -25,8 +25,11 @@ export default class App extends React.Component {
      * @return {Promise<void>}
      */
     async requestStoragePermission() {
-        // TODO: Implement this for iOS
-        //check(PERMISSIONS.IOS.STOREKIT)
+
+        //ios does not require permission to write to the file system, so we can return early
+        if (Platform.OS == 'ios') {
+            return
+        }
 
         // Get saving permission (Android Only!)
         try {
@@ -41,7 +44,9 @@ export default class App extends React.Component {
                     buttonPositive: 'OK',
                 }
             );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+            //check if permission is granted or if the platform is ios. (storge is allowed on ios by default)
+            if (granted === PermissionsAndroid.RESULTS.GRANTED || Platform.OS === 'ios') {
                 console.log('You can use the device storage');
             } else {
                 console.log('Storage permission denied');
@@ -57,6 +62,8 @@ export default class App extends React.Component {
      */
     async init() {
         RecordingManager.RecordingClass = Recording;
+
+        // TODO: Test the above and read from saved file
         await this.requestStoragePermission();
     }
 

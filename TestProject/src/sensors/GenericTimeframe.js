@@ -64,15 +64,12 @@ export default class GenericTimeframe extends SensorTimeframe
      */
     save(sample)
     {
-        if (this.type === SensorType.MICROPHONE) {
+        if (this.type === SensorType.MICROPHONE || this.type === SensorType.BACK_CAMERA) {
             return;
         }
 
-        // TODO: Make this platform independent!
-        if (Platform.OS !== 'ios') {
-            const label = this.label == null ? "" : this.label.toString();
-            ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
-        }
+        const label = this.label == null ? "null" : this.label.toString();
+        ofstream.write(this.recording.fileStreamIndices[this.type], sample.getData().toString() + ',' + label + '\n');
     }
 
     /**

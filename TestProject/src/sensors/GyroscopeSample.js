@@ -18,7 +18,7 @@ export default class GyroscopeSample extends SensorSample
      *
      * @returns The name of each component in an array
      */
-    getComponents()
+    static getComponents()
     {
         return ['x', 'y', 'z'];
     }
