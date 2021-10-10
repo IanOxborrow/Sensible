@@ -111,7 +111,7 @@ export const SensorInfo = {
         measure: "Amplitude",
         units: "dB",
         description: {
-            measure: "Audio (what your phone hears)",
+            measure: "Audio (what your phone hears) Note: Will not be graphed.",
             output: "MP3 file"
         }
     },
