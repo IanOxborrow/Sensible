@@ -60,6 +60,8 @@
  class RecordingScreen extends Component {
      constructor(props) {
          super(props);
+         this.lastGraphUpdate = 0;
+         this.graphUpdateInterval = 400; // in ms
          this.state = {
              startTime: new Date(),
              lastUpdateTime: new Date(),
@@ -100,7 +102,8 @@
          RecordingManager.currentRecording.setLabel(null);
          RecordingManager.currentRecording.createMetadataFile();
 
-         this.state.subscriptions.push(setInterval(() => {this.toggleIndicators()}, 1000))
+         this.state.subscriptions.push(setInterval(() => {this.toggleIndicators()}, 1000));
+         this.state.subscriptions.push(setInterval(() => {this.setState({})}, this.graphUpdateInterval));
 
      }
 
@@ -181,63 +184,63 @@
          );
      };
 
+     updateGraphData() {
+         let maxPoints = 10;
+         // Add a new point
+         let sample = null;
+
+         if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
+             return;
+         }
+
+         sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
+         yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
+
+         // Don't update the graph if a new sample hasn't come in
+         if (sample == null) {
+             return;
+         }
+
+         // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
+         // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
+         this.state.dataSource.push(sample.getData()[0]);
+         // Add the corresponding x-value
+         let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
+         if (timeElapsed >= 1) {
+             this.state.lastUpdateTime = new Date();
+             let label = Math.round((new Date() - this.state.startTime) / 1000);
+             this.state.labelSource.push(label.toString());
+         } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
+             let labelText = this.state.currentLabel;
+             labelText = labelText ? labelText : '';
+             this.state.labelSource.push(labelText);
+         } else {
+             this.state.labelSource.push('');
+         }
+
+         // Remove the first point (from the front)
+         if (this.state.dataSource.length >= maxPoints) {
+             this.state.dataSource.shift();
+             this.state.labelSource.shift();
+         }
+
+         if (this.state.currentLabel) {
+             chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
+             chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
+         } else {
+             chartConfig.backgroundGradientTo = "#000000";
+             chartConfig.backgroundGradientFrom = "#000000";
+         }
+
+         this.lastGraphUpdate = Date.now();
+     };
+
      render() {
-         const updateGraphData = () => {
-             let maxPoints = 10;
-             // Add a new point
-             let sample = null;
-
-             if (SensorInfo[this.state.currentSensor].type != HardwareType.SENSOR) {
-                 return;
-             }
-
-             sample = RecordingManager.currentRecording.getSensorData(this.state.currentSensor).getLatestSample();
-             yAxisTitle = SensorInfo[this.state.currentSensor].measure + "(" + SensorInfo[this.state.currentSensor].units + ")"
-
-             // Don't update the graph if a new sample hasn't come in
-             if (sample == null) {
-                 return;
-             }
-
-             // TODO: Use data from `this.state` and the `getData()` function of each sample to create n axis
-             // this.state.dataSource.push(sample.x); // TODO: Figure out how to display 3 axis
-             this.state.dataSource.push(sample.getData()[0]);
-             // Add the corresponding x-value
-             let timeElapsed = (new Date() - this.state.lastUpdateTime) / 1000;
-             if (timeElapsed >= 1) {
-                 this.state.lastUpdateTime = new Date();
-                 let label = Math.round((new Date() - this.state.startTime) / 1000);
-                 this.state.labelSource.push(label.toString());
-             } else if (timeElapsed > 0.5 && timeElapsed < 0.8) {
-                 let labelText = this.state.currentLabel;
-                 labelText = labelText ? labelText : '';
-                 this.state.labelSource.push(labelText);
-             } else {
-                 this.state.labelSource.push('');
-             }
-
-             // Remove the first point (from the front)
-             if (this.state.dataSource.length >= maxPoints) {
-                 this.state.dataSource.shift();
-                 this.state.labelSource.shift();
-             }
-
-             if (this.state.currentLabel) {
-                 chartConfig.backgroundGradientTo = hslToHex(this.labelsPallet[this.state.currentLabel], 50, 50);
-                 chartConfig.backgroundGradientFrom = hslToHex((this.labelsPallet[this.state.currentLabel] + 10) % 360, 50, 50);
-             } else {
-                 chartConfig.backgroundGradientTo = "#000000";
-                 chartConfig.backgroundGradientFrom = "#000000";
-             }
-         };
-
-         const updateGraphUI = () => {
-             this.forceUpdate();
-         };
-
-         // these get called with every update
-         updateGraphData();
-         var subscription = setTimeout(updateGraphUI, 300); // call render again at the specified interval
+         // Limit the rate at which the graph is updated
+         if (Date.now() - this.lastGraphUpdate >= this.graphUpdateInterval) {
+             this.updateGraphData();
+             this.lastGraphUpdate = Date.now();
+         }
 
          data.datasets[0].data = this.state.dataSource.map(value => value);
          data.labels = this.state.labelSource.map(value => value);
@@ -322,7 +325,6 @@
                          <Button title="Finish" color="#6200F2"
                                  disabled={this.state.terminating}
                                  onPress={async () => {
-                                     clearTimeout(subscription);
                                      this.setState({terminating: true});
                                      for (let i = 0; i < this.state.subscriptions.length; i++) {
                                          clearTimeout(this.state.subscriptions[i])
@@ -335,7 +337,6 @@
                          <Button title="Cancel" color="#6200F2"
                                  disabled={this.state.terminating}
                                  onPress={async () => {
-                                     clearTimeout(subscription);
                                      this.setState({terminating: true});
                                      for (let i = 0; i < this.state.subscriptions.length; i++) {
                                          clearTimeout(this.state.subscriptions[i])
