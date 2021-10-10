@@ -44,6 +44,7 @@ class NewRecordingScreen extends Component {
             startingRecording: false,
             errorVisible: false,
             currentError: "",
+            recordingTitle: "Recording " + props.route.params.recording_number,
         };
 
         // Ensure the recording class has been initialised
@@ -93,8 +94,7 @@ class NewRecordingScreen extends Component {
             }
         }
 
-        // TODO: Update this to change the recording name
-        RecordingManager.currentRecording.name = "This is a custom name";
+        RecordingManager.currentRecording.name = this.state.recordingTitle;
 
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
@@ -288,7 +288,12 @@ class NewRecordingScreen extends Component {
                 <StatusBar barStyle="dark-content"/>
 
                 <Appbar.Header>
-                    <Appbar.Content title="New Recording Screen"/>
+                    <TextInput style={styles.title} value={this.state.recordingTitle} onChangeText={text => {
+                        if (text.length < 24) {
+                            this.setState({recordingTitle: text})
+                        }
+                    }} />
+                    <Appbar.Content/>
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')}
                                    onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
@@ -551,6 +556,15 @@ const styles = StyleSheet.create({
         height: 25,
         color: "red",
     },
+
+    title: {
+        color: "white",
+        textAlign: "left",
+        fontWeight: "bold",
+        fontSize: 20,
+        marginLeft: 10,
+        width: "70%",
+    }
 });
 
 //export default StackNav
