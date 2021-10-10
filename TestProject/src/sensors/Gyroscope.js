@@ -1,18 +1,21 @@
 /* eslint-disable prettier/prettier */
 import Sensor from './Sensor';
 import { GyroscopeSample } from '../Sensors';
-import { gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import {gyroscope, setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
+import {sleep} from "../Utilities";
+import RecordingManager from "../RecordingManager";
 
 export default class Gyroscope extends Sensor
 {
-    constructor(dataStore, sampleRate = null)
+    static sensorWorking = null;
+    static maxSampleRate = RecordingManager.DEFAULT_MAX_SAMPLE_RATE;
+    static minSampleRate = RecordingManager.DEFAULT_MIN_SAMPLE_RATE;
+    static sampleRateCalculated = false;
+    static permissionsSatisfied = false;
+
+    constructor(dataStore, sampleRate)
     {
-        super(dataStore);
-        // Enable the sensor if the parameter has been passed in
-        if (sampleRate != null)
-        {
-            this.enable(sampleRate);
-        }
+        super(dataStore, sampleRate);
     }
 
     /**
@@ -34,22 +37,110 @@ export default class Gyroscope extends Sensor
     }
 
     /**
-     * Enable the gyroscope
-     * @param sampleRate The rate at which gyroscope data should be sampled
+     * Requests any permissions required for this sensor
      */
-    enable(sampleRate)
+    static async requestPermissions() {
+        Gyroscope.permissionsSatisfied = true;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Checks whether the sensor is able to be used
+     *
+     * @return True if the sensor is working, False otherwise
+     */
+    static async isSensorWorking() {
+        if (!Gyroscope.permissionsSatisfied) {
+            return false;
+        } else if (Gyroscope.sensorWorking != null) {
+            return Gyroscope.sensorWorking;
+        }
+
+        const subscription = await gyroscope.subscribe({
+            next: () => {
+                Gyroscope.sensorWorking = true;
+            },
+            error: () => {
+                Gyroscope.sensorWorking = false;
+                Gyroscope.sampleRateCalculated = true;
+            }
+        });
+
+        while (Gyroscope.sensorWorking == null) {
+            await sleep(1);
+        }
+        subscription.unsubscribe();
+
+        return Gyroscope.sensorWorking;
+    }
+
+    /**
+     * This should be used only where necessary and only if isSensorWorking()
+     * has already been called at least once
+     *
+     * @return {boolean} True if the sensor is working, False otherwise
+     */
+    static isSensorWorkingSync() {
+        if (Gyroscope.sensorWorking == null) {
+            console.warn("Gyroscope.sensorWorking: sensor status has not been established");
+            return false;
+        }
+
+        return Gyroscope.sensorWorking;
+    }
+
+    /**
+     * Created by Chathura Galappaththi
+     *
+     * Tests the maximum possible sample rate (requires ~3min to run)
+     *
+     * @return {Promise<number>} The maximum sampling rate
+     */
+    static async getMaxSampleRate() {
+        if (!await Gyroscope.isSensorWorking()) {
+            return -1;
+        }
+
+        return Gyroscope.maxSampleRate;
+    }
+
+    /**
+     * Enable the gyroscope
+     */
+    enable()
     {
         if (!this.isEnabled)
         {
-            if (sampleRate === 0)
+            if (this.sampleRate === 0)
             {
-                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + sampleRate +
+                throw new Error(this.constructor.name + '.enable: Received an invalid sample rate of ' + this.sampleRate +
                     '. Sample rates must be strictly positive');
             }
 
             this.isEnabled = true;
-            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => this.pushSample(x, y, z));
-            this.updateSampleRate(sampleRate);
+            let samples = 0;
+            let start = null;
+            let duration = 0;
+            this.subscription = gyroscope.subscribe(({ x, y, z, timestamp }) => {
+                this.pushSample(x, y, z);
+
+                // Calculate the max sample rate if it is currently using the default
+                if (RecordingManager.sampleRatesCalculated === 0 && !Gyroscope.sampleRateCalculated) {
+                    if (start == null) {
+                        start = timestamp;
+                    }
+
+                    samples++;
+                    duration = (timestamp - start)/1000;
+                    if (duration >= 3*60) {
+                        Gyroscope.maxSampleRate = samples/duration;
+                        Gyroscope.sampleRateCalculated = true;
+                        RecordingManager.saveConfig();
+                    }
+                }
+            });
+            this.updateSampleRate(this.sampleRate);
         }
         else {throw new Error(this.constructor.name + '.enable: Sensor is already enabled!');}
     }
@@ -88,6 +179,7 @@ export default class Gyroscope extends Sensor
               'sensor is disabled');
         }
 
-        setUpdateIntervalForType(SensorTypes.gyroscope, this.frequencyToPeriod(sampleRate) * 1000);
+        this.sampleRate = sampleRate;
+        setUpdateIntervalForType(SensorTypes.gyroscope, this.frequencyToPeriod(this.sampleRate) * 1000);
     }
 }

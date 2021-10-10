@@ -3,10 +3,11 @@ import { ErrorChecking } from '../Errors';
 
 export default class Sensor
 {
-    constructor(dataStore)
+    constructor(dataStore, sampleRate)
     {
         this.isEnabled = false;
         this.dataStore = dataStore;
+        this.sampleRate = sampleRate;
 
         /*** Everything below this is for checking that child classes implement functions correctly */
         // // Only run the checks if we're allowed to
