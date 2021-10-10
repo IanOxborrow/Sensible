@@ -138,7 +138,7 @@ export const SensorInfo = {
         measure: "Video",
         units: "",
         description: {
-            measure: "Video feed of the back camera",
+            measure: "Video feed of the back camera. Note: Will not be graphed",
             output: "MP4 file"
         }
     }

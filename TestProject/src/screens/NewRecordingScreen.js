@@ -4,7 +4,7 @@ import React, {Component, useState, useRef} from "react";
 import {FloatingAction} from "react-native-floating-action";
 //import DropDownPicker from "react-native-dropdown-picker";
 import FAB from "../react-native-paper-src/components/FAB/FAB";
-import IconButton from "../react-native-paper-src/components/Button"
+import PaperButton from "../react-native-paper-src/components/Button";
 import Appbar from '../react-native-paper-src/components/Appbar'
 import {getSensorClass, HardwareType, SensorInfo, SensorType} from "../Sensors";
 import CheckBox from 'react-native-check-box'
@@ -44,6 +44,9 @@ class NewRecordingScreen extends Component {
             startingRecording: false,
             errorVisible: false,
             currentError: "",
+            recordingTitle: "Recording " + (props.route.params.recording_number + 1),
+            baseTitle: "Recording " + (props.route.params.recording_number + 1),
+            helpShown: false,
         };
 
         // Ensure the recording class has been initialised
@@ -93,9 +96,16 @@ class NewRecordingScreen extends Component {
             }
         }
 
-        // TODO: Update this to change the recording name
-        RecordingManager.currentRecording.name = "This is a custom name";
-
+        if (this.state.recordingTitle.replace(/\s/g, "") !== "") {
+            RecordingManager.currentRecording.name = this.state.recordingTitle;
+        } else {
+            RecordingManager.currentRecording.name = this.state.baseTitle;
+        }
+        if (this.state.currentLabelAddition !== "" && this.state.currentLabelAddition != this.state.addedLabels[this.state.addedLabels.length-1].labelName) {
+            const newLabel = {labelName: this.state.currentLabelAddition};
+            this.state.addedLabels.push(newLabel);
+            this.setState({addedLabels: [...this.state.addedLabels]});
+        }
         // Navigate to the next screen
         this.props.navigation.navigate("RecordingScreen", {
             "sensors": selectedSensors,
@@ -288,7 +298,14 @@ class NewRecordingScreen extends Component {
                 <StatusBar barStyle="dark-content"/>
 
                 <Appbar.Header>
-                    <Appbar.Content title="New Recording Screen"/>
+                    <TextInput style={styles.title} value={this.state.recordingTitle} onChangeText={text => {
+                        if (text.length < 20) {
+                            this.setState({recordingTitle: text.replace(/[^0-9a-z' ']/gi, '')})
+                        }
+                    }} />
+                    <Appbar.Content/>
+                    <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                                            onPress={() => {this.setState({helpShown: true})}}/>
                     <Appbar.Action icon={require('../assets/baseline_close_black.png')}
                                    onPress={() => this.props.navigation.goBack()}/>
                 </Appbar.Header>
@@ -321,14 +338,21 @@ class NewRecordingScreen extends Component {
                     onPress={() => {
                         // Prevent the recording from being started if no sensors have been selected
                         if (Object.entries(this.state.usedSensors).length === 0) {
-                            // TODO: Display a toast with the following
                             this.setState({
                                 errorVisible: true,
                                 currentError: "No sensors selected! Please select a sensor."
                             })
                             return;
                         }
-
+                        for (var i = 0; i < Object.entries(this.state.usedSensors).length; i++) {
+                            if (!Object.entries(this.state.usedSensors)[i][1]) {
+                                this.setState({
+                                    errorVisible: true,
+                                    currentError: "No sensors selected! Please select a sensor."
+                                })
+                                return;
+                            }
+                        }
                         this.startRecording();
                         this.setState({startingRecording: true})
                     }}
@@ -352,13 +376,13 @@ class NewRecordingScreen extends Component {
                                 style={styles.sensorDescriptions}>Measures: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.measure : ""}</Text>
                             <Text
                                 style={styles.sensorDescriptions}>Output: {this.state.currentSensorInfo != null ? this.state.currentSensorInfo.description.output : ""}</Text>
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
                                 }}
-                            />
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -375,13 +399,36 @@ class NewRecordingScreen extends Component {
                     <View style={styles.parentView}>
                         <View style={styles.errorView}>
                             <Text>Error: {this.state.currentError}</Text>
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({errorVisible: false})
                                 }}
-                            />
+                            >Close</PaperButton>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.helpShown}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({helpShown: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text>A tutorial video can be found here: link</Text>
+                            <PaperButton
+                                style={{marginTop: 10}}
+                                mode="contained"
+                                onPress={() => {
+                                    this.setState({helpShown: false})
+                                }}
+                            >Close</PaperButton>
                         </View>
                     </View>
                 </Modal>
@@ -551,6 +598,15 @@ const styles = StyleSheet.create({
         height: 25,
         color: "red",
     },
+
+    title: {
+        color: "white",
+        textAlign: "left",
+        fontWeight: "bold",
+        fontSize: 20,
+        marginLeft: 10,
+        width: "60%",
+    }
 });
 
 //export default StackNav

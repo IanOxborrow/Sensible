@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import FAB from '../react-native-paper-src/components/FAB/FAB';
 import Appbar from '../react-native-paper-src/components/Appbar';
+import PaperButton from "../react-native-paper-src/components/Button";
 import {getSensorClass, getSensorFileName, SensorInfo, SensorType} from '../Sensors';
 import Recording from '../Recording';
 import RecordingManager from "../RecordingManager";
@@ -18,7 +19,9 @@ import {
     Modal,
     TouchableWithoutFeedback,
     Alert,
-    NativeModules
+    NativeModules,
+    Image,
+    TouchableWithFeedback,
 } from 'react-native';
 const { ofstream } = NativeModules;
 
@@ -34,6 +37,7 @@ export default class HomeScreen extends Component {
             modalVisible: false,
             activeItem: 0,
             selectedRecording: null,
+            helpShown: false,
         };
 
         // Perform any initialisation required then update the state
@@ -172,12 +176,16 @@ export default class HomeScreen extends Component {
             <View style={[styles.container, {flexDirection: 'column'}]}>
                 <Appbar.Header>
                     <Appbar.Content title="Sensible"/>
+                    <Appbar.Action style={[styles.helpIcon]} size={35} icon={require("../assets/help_icon.png")}
+                                                        onPress={() => {this.setState({helpShown: true})}}/>
                 </Appbar.Header>
                 {
                     // Only show whilst recordings are being loaded
                     this.state.loading &&
                     <Text style={{padding: 10}}>Loading recordings...</Text>
                 }
+
+                {this.state.recordings_list.length == 0 ? <Text style={styles.infoText}>No recordings found</Text> : <Text></Text>}
 
                 <FlatList
                     style={styles.list}
@@ -215,9 +223,9 @@ export default class HomeScreen extends Component {
                             {this.sensorRow("Labels", -1)}
                             {this.sensorRow("Metadata", -2)}
 
-                            <FAB
+                            <PaperButton
                                 style={styles.closeModal}
-                                label="Close"
+                                mode="contained"
                                 onPress={() => {
                                     this.setState({modalVisible: false})
 
@@ -226,10 +234,10 @@ export default class HomeScreen extends Component {
                                         this.state.selectedSensors[key] = false;
                                     }
                                 }}
-                            />
-                           <FAB
+                            >Close</PaperButton>
+                           <PaperButton
                                 style={styles.closeModal}
-                                label="Export"
+                                mode="contained"
                                 onPress={async () => {
                                     this.setState({modalVisible: false})
 
@@ -289,10 +297,10 @@ export default class HomeScreen extends Component {
                                     }
 
                                 }}
-                            />
-                            <FAB
+                            >Export</PaperButton>
+                            <PaperButton
                                 style={styles.deleteModal}
-                                label="Delete"
+                                mode="contained"
                                 onPress={() => {
 
                                     const showAlert = () =>
@@ -340,10 +348,33 @@ export default class HomeScreen extends Component {
                                     showAlert();
 
                                 }}
-                            />
+                            >Delete</PaperButton>
                         </View>
                     </View>
 
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.helpShown}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.setState({helpShown: false})
+                    }}>
+                        <View style={styles.modalOverlay}/>
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.parentView}>
+                        <View style={styles.modalView}>
+                            <Text>A tutorial video can be found here: link</Text>
+                            <PaperButton
+                                style={{marginTop: 10}}
+                                mode="contained"
+                                onPress={() => {
+                                    this.setState({helpShown: false})
+                                }}
+                            >Close</PaperButton>
+                        </View>
+                    </View>
                 </Modal>
 
                 {
@@ -439,7 +470,7 @@ const styles = StyleSheet.create({
     },
     deleteModal: {
         position: 'relative',
-        top: -23,
+        top: -12,
         marginTop: 0,
         alignSelf: 'flex-end'
     },
@@ -450,5 +481,10 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+    infoText: {
+        position: 'relative',
+        textAlign: 'center',
+        marginTop: 30,
     },
 });
