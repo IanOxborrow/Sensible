@@ -1,0 +1,31 @@
+# Sprint Meeting
+Date: Sunday 10th October, 2021
+Time: 12:00 - 1:55
+Location: Zoom Meeting
+Members attended: Ryan Turner (u6040885), Madeleine Carden (u5849803),Ian Oxborrow (u6668026), King Ho Cheung (u6181123), Chathura Galappaththi (@u6947345), Tristan Smith (u6949592)
+
+12:20
+* Meeting start
+* For some reason a huge amount of lag has started to appear with the graph
+
+10:27
+* the lag with the graph is likely due to stacking updates that happen when the user interacts with the screen
+
+10:38
+* removing some of the update requests stops the graph from being high fps but prevents the graph from laying
+
+1:02
+* a link has been put into the chat that should let the component be updated in a more controlled way
+
+1:20
+* going through user feedback
+* landscape will be disabled as it was not meant to be there in the first place
+
+1:29
+* users would like to see the graph have a constant scale so that when the numbers are constant they appear to be constant
+
+1:37
+* Ryan has written down smaller tasks that will be finished by the end of the day for the audit
+
+1:55
+* Meeting close
