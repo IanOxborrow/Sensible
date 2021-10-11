@@ -62,7 +62,7 @@ To assign tasks to everyone and show the estimated hours the task needed we use 
 
 ## Communication
 
-To communicate to possible investors of the project, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.docx)
+To communicate to possible investors of the project and potential users, we have created a promotional video, project description and team biography, which can be found here: [Sensible Promotional Video](Background%20Documentation/Assessment/21-S1-2-C_Sensible.pdf)
 
 To communicate our understanding of the project requirements to our stakeholders we have created a User Story Map here: [User Story Map](https://miro.com/app/board/o9J_l3Ib_I4=/)
 
@@ -76,7 +76,9 @@ To keep track of the communication at meetings we have kept minutes of all clien
 
 To see how our team is mitigating risks and plans for when issues occur, you can view our risk register here: [Risk Register](Background%20Documentation/Risk%20register/risk%20register.pdf)
 
-# Prototypes and Releases
+## Prototypes and Releases
+
+If you would like to download the beta version of our app to your own device, follow the instructions found here: [Release instructions](Background%20Documentation/User%20testing/Sensible_Application_for_Android_and_iOS.pdf)
 
 You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_29-08.pdf)
 
