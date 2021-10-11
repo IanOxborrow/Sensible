@@ -80,7 +80,7 @@ To see how our team is mitigating risks and plans for when issues occur, you can
 
 If you would like to download the beta version of our app to your own device, follow the instructions found here: [Release instructions](Background%20Documentation/User%20testing/Sensible_Application_for_Android_and_iOS.pdf)
 
-You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_29-08.pdf)
+You can find our Burdown Chart documenting our estimated and actual progress on the project here: [Burndown Chart](Background%20Documentation/Burndown%20Chart/Burndown_Chart_10-10.png)
 
 # System Documentation
 
